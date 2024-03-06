@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <style>
+        .viewcharts {
+            background-color: #9d9d9d;
+        }
+        .charts {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .charts .chart {
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+<!--    <div class="container-fluid">-->
+<!--        <div class="card card-default">-->
+<!--            <div class="card-body">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!--Popup Start-->
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+</script>
+</body>
+</html>

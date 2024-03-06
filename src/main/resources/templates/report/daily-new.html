@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/report/daily-new}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label for="reservation" th:text="#{dateReport}"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                  </span>
+                                </div>
+                                <input type="text" class="form-control float-right" id="reservation" name="dateRanger">
+                            </div>
+                        </div>
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}"
+                               class="form-control" hidden>
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                            <a href="#" id="export" style="cursor: pointer;" class="btn btn-success mx-2" onclick="exportExcel()">
+                                <i class="fas fa-file-excel"></i><span class="px-2" th:text="#{export}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" th:if="${models != null && models.size > 0}">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router table-responsive">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{dateReport}"></th>
+                            <th class="text-center" scope="col" th:text="#{newUser}"></th>
+                            <th class="text-center" scope="col" th:text="#{activeUser}"></th>
+                            <th class="text-center" scope="col" th:text="#{smsoutUser}"></th>
+                            <th class="text-center" scope="col" th:text="#{numberSmsout}"></th>
+                            <th class="text-center" scope="col" th:text="#{calldataUser}"></th>
+                            <th class="text-center" scope="col" th:text="#{calldataMinute}"></th>
+                            <th class="text-center" scope="col" th:text="#{newUserInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{activeUserInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{calloutMinuteInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{smsOutUserInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{numberSmsoutInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{calldataUserInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{calldataMinuteInMonth}"></th>
+                            <th class="text-center" scope="col" th:text="#{totalUser}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model ,item:${models}">
+                            <td>
+                                <a href="javascript:void(0);" class="btn" title="View" th:attr="onclick=|viewDetail('${model.id}')|" style="color: #00709E; background: transparent; white-space: nowrap;">
+                                    <span th:text="${model.dateReport}"></span>
+                                </a>
+                            </td>
+                            <!--                            <td th:text="${#dates.format(model.dateReport, 'yyyy-MM-dd')}" style="white-space: nowrap;"></td>-->
+                            <td th:text="${#numbers.formatDecimal(model.newUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.activeUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.smsoutUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.numberSmsout, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.calldataUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.calldataMinute, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.newUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.activeUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.calloutMinuteInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.smsOutUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.numberSmsoutInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.calldataUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.calldataMinuteInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(model.totalUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-delete" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.delete}"></p>
+                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-modal-xl" class="modal fade" th:fragment="view">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" th:if="${model  != null}">
+                <div class="text-center p-3" id="outPopup">
+                    <h3 style="color: #00709E;" th:text="#{title.view}"></h3>
+                    <div>
+                        <table class="table table-striped table-bordered detail-view">
+                            <tbody id="detail_author">
+                            <tr>
+                                <th style="text-align: left;" th:text="#{dateReport}"></th>
+                                <td style="text-align: left;" th:text="${model.dateReport}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{newUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.newUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{activeUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.activeUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calloutUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calloutUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calloutMinute}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calloutMinute, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{smsoutUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.smsoutUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{numberSmsout}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.numberSmsout, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calldataUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calldataUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calldataMinute}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calldataMinute, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{newUserInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.newUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{activeUserInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.activeUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calloutUserInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calloutUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calloutMinuteInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calloutMinuteInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{smsOutUserInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.smsOutUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{numberSmsoutInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.numberSmsoutInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calldataUserInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calldataUserInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{calldataMinuteInMonth}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.calldataMinuteInMonth, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{totalUser}"></th>
+                                <td style="text-align: left;" th:text="${#numbers.formatDecimal(model.totalUser, 0, 'COMMA', 0, 'POINT')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+    $(document).ready(function() {
+        if ('[[${dateRanger}]]' === null || '[[${dateRanger}]]' === '') {
+            $('#reservation').val('');
+        } else {
+            $('#reservation').val('[[${dateRanger}]]');
+        }
+    });
+
+    //pagination
+    function linkpage(page) {
+    console.log(page);
+    var urlPage = window.location.href;
+    var utlBase = '';
+    var urlParram = '';
+    let start = 0;
+    for (let i = 0; i < urlPage.length - 1; i++) {
+        if (urlPage.charAt(i) == '?') {
+            start = i;
+            break;
+        }
+    }
+    if (start > 0) {
+        utlBase = urlPage.substring(0, start);
+        urlParram = urlPage.substring(start, urlPage.length);
+    } else {
+        utlBase = urlPage;
+    }
+    console.log(page);
+    start = 0;
+    for (let i = urlPage.length - 1; i > 0; i--) {
+        if (urlPage.charAt(i) == '/') {
+            start = i;
+            break;
+        }
+    }
+    if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+        utlBase += '/' + page;
+    } else {
+        utlBase = utlBase.substring(0, start + 1) + page;
+    }
+    var pageSize = document.getElementById('pageSizeInput').value;
+    var urlSearchParams = new URLSearchParams(urlPage);
+    // Thay đổi giá trị của tham số pageSize
+    urlSearchParams.set('pageSize', `[[${pageSize}]]`);
+    urlSearchParams.set('dateRanger', `[[${dateRanger}]]`);
+    var dem = 0;
+    urlParram = '';
+    urlSearchParams.forEach(function(value, key) {
+        if (dem == 1) {
+            urlParram += '?' + key + '=' + value;
+        } else if (dem > 1) {
+            urlParram += '&' + key + '=' + value;
+        }
+        dem++;
+    });
+    console.log(urlParram);
+    var newUrl = utlBase + urlParram;
+    window.location.href = newUrl;
+}
+
+    function deleteIcon(id, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#popup-delete").modal('show');
+
+        $("#confirmDel").click(function() {
+            $("#popup-delete").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/user/customer-info/official-account/delete/${page}?id=${id}&pageSize=${pageSize}`;
+        });
+
+        $("#closeDel").click(function() {
+            $("#popup-delete").modal('hide');
+        });
+    }
+
+    //reset value search
+    var reset = document.querySelector('#reset')
+    reset.onclick = function(e){
+        e.preventDefault();
+        $('#reservation').val('');
+    }
+
+    //View detail
+    function viewDetail(id){
+        console.log("Open Popup Detail: " + id);
+        $.get("[[@{/report/daily-new/view/}]]" + id,
+            function(data, status) {
+                console.log(data);
+                $("#view-modal-xl").replaceWith(data);
+                $("#view-modal-xl").modal('show');
+            }
+        );
+    }
+
+    var tabPressed = false; // Biến để kiểm tra xem bạn đã bấm tab ra ngoài chưa
+    $('#reservation').daterangepicker()
+        .on('apply.daterangepicker', function(ev, picker) {
+            var startDate = picker.startDate.format('DD/MM/yyyy');
+            var endDate = picker.endDate.format('DD/MM/yyyy');
+
+            // Gán giá trị vào trường nhập liệu sau khi người dùng đã chọn phạm vi ngày
+            $('#reservation').val(startDate + ' - ' + endDate);
+        })
+        .on('cancel.daterangepicker', function() {
+            $('#reservation').val('');
+        });
+
+    $('#reservation').on('keydown', function(e) {
+        if (e.key === 'Tab') {
+            tabPressed = true;
+        }
+    });
+
+    $('#reservation').on('focusout', function() {
+        if (!tabPressed) {
+            $('#reservation').val('');
+        }
+        tabPressed = false;
+    });
+
+    function exportExcel() {
+        var dateRanger = document.getElementById("reservation").value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '[[${@environment.getProperty('server.servlet.context-path')}]]/report/daily-new/export', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'blob';
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var blob = xhr.response;
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'exported-file.xlsx'; // Tên tệp Excel tải xuống
+                link.click();
+            }
+        };
+        var data = 'dateRanger=' + encodeURIComponent(dateRanger);
+        xhr.send(data);
+    }
+</script>
+</body>
+</html>

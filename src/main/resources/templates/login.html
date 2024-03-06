@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{login}"></title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/kakoakicon.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/logo-nxbgd-removebg-preview.png}" >
+    <link rel="stylesheet" th:href="@{/css/subcss.css}">
+    <style>
+        body {
+            background: url('img/Kakoak.png') no-repeat center center fixed;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+        }
+
+        .card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 40px;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            color: #4A4A4A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            width: 350px;
+            position: relative;
+        }
+        form .form-field::before {
+            font-size: 20px;
+            position: absolute;
+            left: 15px;
+            top: 17px;
+            color: #888888;
+            content: " ";
+            display: block;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        form .form-field:nth-child(1)::before {
+            background-image: url(img/user-icon.png);
+            width: 20px;
+            height: 20px;
+            top: 15px;
+        }
+        form .form-field:nth-child(2)::before {
+            background-image: url(img/lock-icon.png);
+            width: 16px;
+            height: 16px;
+        }
+        form .form-field {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        form input {
+            font-family: inherit;
+            width: 100%;
+            outline: none;
+            background-color: #fff;
+            border-radius: 4px;
+            border: none;
+            display: block;
+            padding: 0.9rem 0.7rem;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+            font-size: 17px;
+            color: #4A4A4A;
+            text-indent: 40px;
+        }
+        form .btn {
+            outline: none;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 auto;
+            padding: 0.9rem 2.5rem;
+            text-align: center;
+            background-color: #379237;
+            color: #fff;
+            border-radius: 4px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+            font-size: 17px;
+        }
+
+        .form-field {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-field input[type="text"],
+        .form-field img {
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9" style="height: 100vh;">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <form th:action="@{/login}" method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                            <div class="form-field">
+                                <input type="email" name="username" th:placeholder="#{username}" required/>
+                            </div>
+
+                            <div class="form-field">
+                                <input type="password" name="password" th:placeholder="#{pass}" required/>
+                            </div>
+
+                            <div class="form-field">
+                                <input type="text" name="captcha" placeholder="Captcha" required style="margin-right: 5px;">
+                                <img th:src="@{/generate-security}" alt="Captcha" class="img-thumbnail" style="border-radius: 5px;">
+                            </div>
+
+                            <div class="form-field">
+                                <div class="alert alert-success d-flex align-items-center p-2 my-2" role="alert"  th:if="${success}">
+                                    <div th:text="${success}" th:if="${success}">
+                                        An example alert with an icon
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-danger d-flex align-items-center p-2 my-2" role="alert" th:if="${error}">
+                                    <div th:text="${error}" th:if="${error}">
+                                        An example alert with an icon
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <button class="btn" type="submit" th:text="#{loginBut}"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

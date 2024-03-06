@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/game/html5/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="statusForm" name="statusForm" th:value="${statusForm}">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="name" style="font-weight: bold"><span>[[#{name}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="name" th:field="*{name}" name="name" value="${name}"
+                                       class="form-control" th:placeholder="#{name}" aria-label="name" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="link" style="font-weight: bold"><span>[[#{link}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="link" th:field="*{link}" name="link" value="${link}"
+                                       class="form-control" th:placeholder="#{link}" aria-label="link" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('link')}" th:errors="*{link}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="visible" style="font-weight: bold"><span>[[#{visible}]]</span><span style="color:red"> *</span></label>
+                                <input type="number" id="visible" th:field="*{visible}" name="visible" value="${visible}"
+                                       class="form-control" th:placeholder="#{visible}" aria-label="visible" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('visible')}" th:errors="*{visible}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="recommend" style="font-weight: bold"><span>[[#{recommend}]]</span><span style="color:red"> *</span></label>
+                                <input type="number" id="recommend" th:field="*{recommend}" name="recommend" value="${recommend}"
+                                       class="form-control" th:placeholder="#{recommend}" aria-label="recommend" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('recommend')}" th:errors="*{recommend}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="order" style="font-weight: bold"><span>[[#{order}]]</span><span style="color:red"> *</span></label>
+                                <input type="number" id="order" th:field="*{order}" name="order" value="${order}"
+                                       class="form-control" th:placeholder="#{order}" aria-label="order" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('order')}" th:errors="*{order}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="description" style="font-weight: bold"><span>[[#{description}]]</span></label>
+                                <textarea type="text" id="description" name="description"
+                                          th:field=*{description}
+                                          class="form-control" maxlength="255"
+                                          style="font-size: 14px;" rows="8"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div>
+                                <div id="dnd" class="form-group d-inline-block">
+                                    <label for="file_image"><span>[[#{iconImage}]] <span style="color: red;">*</span></span></label>
+                                    <div id="image_upload" class="form-control d-flex justify-content-center" style="height: 227px; width: 227px; padding: 5px;">
+                                        <img id="previewImage" th:src="${@environment.getProperty('domain.cms')} + *{icon}"/>
+                                    </div>
+                                </div>
+                                <input type="file" id="file_image" accept="image/*" hidden="hidden" style="cursor: pointer;">
+                                <input type="text" id="fileInput1" name="thumbUpload" hidden>
+                            </div>
+
+                            <div>
+                                <div id="dnd2" class="form-group  d-inline-block">
+                                    <label for="file_image_2"><span>[[#{banner}]] <span style="color: red;">*</span></span></label>
+                                    <div id="image_upload_2" class="form-control d-flex justify-content-center" style="height: 227px; min-width: 400px; padding: 5px;">
+                                        <img id="previewImage2" th:src="${@environment.getProperty('domain.cms')} + *{banner}"/>
+                                    </div>
+                                </div>
+                                <input type="file" id="file_image_2" accept="image/*" hidden="hidden" style="cursor: pointer;">
+                                <input type="text" id="fileInput2" name="thumbUpload2" hidden>
+                            </div>
+
+                            <div class="col-12 col-md-12">
+                                <label for="file" style="font-weight: bold; padding-bottom: 5px;"><span>Font</span></label>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="file" id="file" name="ttfUpfileload" class="form-control input-group-addon"
+                                               accept=".ttf" style="line-height: inherit; border-radius: 0px !important; border-top-left-radius: 3px !important;
+                                                    border-bottom-left-radius: 3px !important; z-index: initial; opacity: initial; position: initial;" onchange="checkFileTtf()">
+                                        <label class="custom-file-label" for="file" id="ttfLabel">
+                                            <span class="input-group-addon" id="browseButton2">Choose file</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                        <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2" th:href="@{/user/game/html5/index}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+
+    <div class="modal fade" id="modal-crop-image">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="d-flex flex-column justify-content-between align-items-center h-100" style="width: 100%;">
+                            <img id="image" th:src="@{/img/vn.jpeg}" style="max-width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  id="closePopupButton">Close</button>
+                    <button type="button" class="btn btn-default" id="apply_crop_image">OK</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-crop-image_2">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="w-100"><h4 class="modal-title text-center">CROP BANNER</h4></div>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="d-flex flex-column justify-content-between align-items-center h-100" style="width: 100%;">
+                            <img id="image2" th:src="@{/img/vn.jpeg}" style="max-width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="closePopupButton2">Close</button>
+                    <button type="button" class="btn btn-default" id="apply_crop_image_2">OK</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+    $(document).ready(function() {
+        //======== BEGIN CROPPER SETUP 1 ========
+        $("#image_upload").click( function() {
+            $("#file_image").click();
+        });
+
+        let image = document.getElementById("image");
+        let cropper = "";
+        let fileName = "";
+        $("#file_image").change(function(e) {
+            let reader = new FileReader();
+            console.log(e.target.files.length);
+            if(e.target.files.length == 0)
+                return;
+            reader.readAsDataURL(e.target.files[0]);
+
+            reader.onload = () => {
+                image.setAttribute("src", reader.result);
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(image, {
+                    aspectRatio: 1 / 1,
+                    viewMode: 1,
+                    minContainerWidth: 512,
+                    minContainerHeight: 512,
+
+                });
+
+                $('#modal-crop-image').modal('show');
+            };
+            fileName = e.target.files[0].name.split(".")[0];
+
+        });
+
+
+        $("#apply_crop_image").click(function(e) {
+            let imgSrc;
+            e.preventDefault();
+            const croppedCanvas = cropper.getCroppedCanvas({
+                width: 512,
+                height: 512,
+            });
+            if (croppedCanvas) {
+                imgSrc = croppedCanvas.toDataURL("image/jpeg", 0.75);
+            }
+            console.log(imgSrc);
+
+            $("#previewImage").attr("src", imgSrc);
+            $("#fileInput1").val(imgSrc);
+            $('#modal-crop-image').modal('hide');
+        });
+        //======== END CROPPER SETUP 1 ========
+
+        //======== BEGIN CROPPER SETUP 2 ========
+        $("#image_upload_2").click( function() {
+            $("#file_image_2").click();
+        });
+
+        let image2 = document.getElementById("image2");
+        let cropper2 = "";
+        let fileName2 = "";
+        $("#file_image_2").change(function(e) {
+            let reader = new FileReader();
+            console.log(e.target.files.length);
+            if(e.target.files.length == 0)
+                return;
+            reader.readAsDataURL(e.target.files[0]);
+
+            reader.onload = () => {
+                image2.setAttribute("src", reader.result);
+                if (cropper2) {
+                    cropper2.destroy();
+                }
+                cropper2 = new Cropper(image2, {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    minContainerWidth: 1080,
+                    minContainerHeight: 720,
+
+                });
+
+                $('#modal-crop-image_2').modal('show');
+            };
+            fileName2 = e.target.files[0].name.split(".")[0];
+
+        });
+
+
+        $("#apply_crop_image_2").click(function(e) {
+            e.preventDefault();
+            console.log(cropper2);
+            let imgSrc2 = cropper2.getCroppedCanvas({}).toDataURL("image/jpeg", 0.75);
+            console.log(imgSrc2);
+
+            $("#previewImage2").attr("src", imgSrc2);
+            $("#fileInput2").val(imgSrc2);
+            $('#modal-crop-image_2').modal('hide');
+        });
+        //======== END CROPPER SETUP 2 ========
+    });
+
+    function checkFileTtf() {
+        var fileInput = document.getElementById("file");
+        var label = document.getElementById('ttfLabel');
+
+        if (fileInput.files.length > 0) {
+            label.innerHTML = fileInput.files[0].name;
+        } else {
+            label.innerHTML = 'Choose file';
+        }
+    }
+</script>
+</body>
+</html>

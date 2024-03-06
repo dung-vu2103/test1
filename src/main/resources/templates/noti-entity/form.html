@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/noti-entity/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="title" style="font-weight: bold"><span>[[#{title}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="title" th:field="*{title}" name="name" value="${title}"
+                                       class="form-control" aria-label="title" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="startAt" style="font-weight: bold"><span>[[#{startAt}]]</span><span style="color:red"> *</span></label>
+                                <input type="datetime-local" th:field="*{startAt}" id="startAt" name="startAt" th:value="${startAt} ? ${startAt} : ''"
+                                       class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="endAt" style="font-weight: bold"><span>[[#{endAt}]]</span><span style="color:red"> *</span></label>
+                                <input type="datetime-local" th:field="*{endAt}" id="endAt" name="endAt" th:value="${endAt} ? ${endAt} : ''"
+                                       class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="cronType" style="font-weight: bold"><span>Run time configuration</span><span style="color:red"> *</span></label>
+                                <div style="display: flex;">
+                                    <select id="cronType" name="cronType" class="form-control mr-2" required style="width: 35%;">
+                                        <option th:each="option : ${T(java.util.Arrays).asList('onetime', 'hourly', 'daily', 'weekly', 'monthly')}"
+                                                th:value="${option}"
+                                                th:selected="${option == model.cronParamDto.cron_type}"
+                                                th:text="#{${option}}">
+                                        </option>
+                                    </select>
+                                    <select class="form-control mr-2" style="width: 15%;" id="cronHour" name="cronHour">
+                                        <option th:each="option : ${#numbers.sequence(0, 23)}"
+                                                th:value="${option}"
+                                                th:selected="${option == model.cronParamDto.cron_hour}"
+                                                th:text="${option}">
+                                        </option>
+                                    </select>
+                                    <select class="form-control" style="width: 15%;" id="cronMin" name="cronMin">
+                                        <option th:each="option : ${#numbers.sequence(0, 59)}"
+                                                th:value="${option}"
+                                                th:selected="${option == model.cronParamDto.cron_minute}"
+                                                th:text="${option}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6" id="cronWeekDayDiv">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="cronWeekDay" style="font-weight: bold"><span>[[#{cronWeekDay}]]</span><span style="color:red"> *</span></label>
+                                <select id="cronWeekDay" name="cronWeekDay[]" class="form-control" multiple="multiple" style="background-color: #1c7430; height: 100%;">
+                                    <option th:each="option : ${T(java.util.Arrays).asList('MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN')}"
+                                            th:value="${option}"
+                                            th:text="${option}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6" id="cronMonthDayDiv">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="cronMonthDay" style="font-weight: bold"><span>[[#{cronMonthDay}]]</span><span style="color:red"> *</span></label>
+                                <select id="cronMonthDay" name="cronMonthDay[]" class="form-control" multiple="multiple">
+                                    <option th:each="option : ${#numbers.sequence(1, 31)}"
+                                            th:value="${option}"
+                                            th:text="${option}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6" id="inputTypeDiv">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="inputType" style="font-weight: bold"><span>[[#{inputType}]]</span><span style="color:red"> *</span></label>
+                                <select id="inputType" name="inputType" th:field="*{inputType}" class="form-control" required>
+                                    <option value="text" th:selected="${inputType == 'text'}" th:text="#{enterPhonenumber}"></option>
+                                    <option value="file" th:selected="${inputType == 'file'}" th:text="#{usingFileUpload}"></option>
+                                    <option value="active_users" th:selected="${inputType == 'active_users'}" th:text="#{allActiveUsers}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6" id="phoneNoListDiv">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="phoneNoList" style="font-weight: bold"><span>[[#{phoneNoList}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="phoneNoList" th:field="*{phoneNoList}" name="phoneNoList" value="${phoneNoList}"
+                                       class="form-control" aria-label="title" required>
+                                <div class="custom-file" id="conditionValueExcelDiv">
+                                    <input type="file" id="excelUpload" name="excelUpload" class="custom-file-input" accept=".xlm, .xls, .xlsm, .xlsx" required>
+                                    <label id="fileNameDisplay" class="custom-file-label" for="excelUpload">Choose file</label>
+                                    <a class="btn btn-info btn-sm m-2" href="https://ringme.vn/cms-sdk-upload/excels/2023/12/6/h6o6dw9pp7t8xwj9b8a41i7tjzcmh8xh.xlsx" rel="noreferrer noopener" data-pjax="0" target="_blank" download="" style="margin-right: 10px;"><span class="glyphicon glyphicon-download"></span>File Mẫu</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <div class="col-12 col-md-12">
+                                <label for="msgType" style="font-weight: bold"><span>[[#{msgType}]]</span></label>
+                                <select id="msgType" name="msgType" th:field=*{msgType} class="form-control" required>
+                                    <option value="">--Select Type--</option>
+                                    <option value="game" th:selected="${msgType == 'game'}">Game</option>
+                                    <option value="cinema" th:selected="${msgType == 'cinema'}">Cinema</option>
+                                    <option value="video" th:selected="${msgType == 'video'}">Video</option>
+                                    <option value="package" th:selected="${msgType == 'package'}">Package</option>
+                                    <option value="livestream" th:selected="${livestream == 'livestream'}">Livestream
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12">
+                                <label for="msgContent" style="font-weight: bold"><span>[[#{msgContent}]]</span></label>
+                                <textarea type="text" id="msgContent" th:field="*{msgContent}" name="msgContent" value="${msgContent}"
+                                          class="form-control" style="height: 38px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 p-3">
+                            <label for="linkTo" style="font-weight: bold">Link to</label>
+                            <input th:value="${model.linkTo}" type="text" id="linkTo" class="form-control" aria-label="linkTo" readonly onclick="linkToo()">
+                        </div>
+                        <div class="col-md-6 p-3">
+                            <label for="deeplinkConfigureId">Deep link</label>
+                            <select id="deeplinkConfigureId" name="deeplinkConfigureId" class="form-control" required>
+                                <option th:value="${model.deeplinkConfigureId}" th:text="${model.deeplinkConfigureDto.title}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="deeplinkParams" th:value="${model.deeplinkParams}">
+                    <input type="hidden" id="deeplinkParams2" name="deeplinkParams" th:value="${model.deeplinkParams}">
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 image">
+                                <div id="dnd2" class="form-group h-100 w-100 d-inline-block">
+                                    <label for="file_image2"><span>[[#{image}]]</span></label>
+                                    <div id="image_upload2" class="text-center">
+                                        <div th:if="${model.id != null}"><img id="previewImage2"
+                                                                              class="img-fluid img-thumbnail"
+                                                                              th:src="${model.imagePath}"/>
+                                        </div>
+                                        <div th:if="${model.id == null}"><img id="previewImage2"
+                                                                              th:src="@{/img/bg_login4.jpg}"
+                                                                              class="img-fluid img-thumbnail"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="file" id="file_image2" name="thumbUpload2" accept="image/*"
+                                       hidden="hidden"
+                                       style="cursor: pointer;">
+                                <input type="text" id="file_image_data2" name="thumbUpload" hidden>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                        <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2" th:href="@{/noti-entity/index}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                    <div class="modal fade" id="modal-crop-image">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex flex-column justify-content-between align-items-center h-100"
+                                             style="width: 100%;">
+                                            <img id="image" th:src="@{/img/vn.jpeg}" style="max-width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            id="closePopupButton">Close
+                                    </button>
+                                    <button type="button" class="btn btn-default" id="apply_crop_image">OK</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                </form>
+                <div class="modal fade" id="deeplink-modal">
+                    <div class="modal-content modal-dialog modal-sm">
+                        <div id="dl-body" class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><br>
+                            <h5>Deeplink Configuration</h5><br>
+                            <div class="col-12 col-md-12 mb-3">
+                                <label style="font-weight: bold">ref</label>
+                                <input type="text" id="ref" placeholder="Name of package" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="deeplink-param-save" type="button" class="btn btn-primary" onclick="done()">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" th:inline="javascript">
+
+    function linkToo() {
+        var deeplinkParams = $("#deeplinkParams").val();
+        if(deeplinkParams != null && deeplinkParams != "")
+            $("#deeplink-modal").modal('show');
+    }
+    function done() {
+        var ref = $("#ref").val();
+        var linkTo = $("#linkTo").val();
+        if(ref != null && ref != "") {
+            linkTo += "?ref=" + encodeURIComponent(ref);
+            $("#deeplinkParams2").val(makeJson(ref));
+            console.log($("#deeplinkParams2").val());
+        }
+        console.log(linkTo);
+        $("#linkTo").val(linkTo);
+        $("#deeplink-modal").modal('hide');
+    }
+
+    function makeJson(ref) {
+        var jsonData = {
+            "ref": ref
+        };
+        return JSON.stringify(jsonData);
+    }
+
+    $(document).ready(function() {
+        $('#deeplinkConfigureId').select2({
+            ajax: {
+                type: 'GET',
+                url: [[${@environment.getProperty('server.servlet.context-path')}]] + '/user/marketing/deeplink-configure/ajax-search',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        input: params.term
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            placeholder: [[#{select2.deeplink}]],
+            minimumInputLength: 0,
+            allowClear: true
+        });
+
+        $('#deeplinkConfigureId').on('select2:select', function (e) {
+            var selectedData = e.params.data;
+            var deeplinkParams = selectedData.deeplinkParams;
+            console.log("Đã chọn: " + selectedData.deeplink);
+            $("#linkTo").val(selectedData.deeplink);
+            $("#deeplinkParams").val(deeplinkParams);
+            if(deeplinkParams != null) {
+                $("#deeplink-modal").modal('show');
+            }
+        });
+
+        $('#cronWeekDay').select2({}).val([[${model.cronParamDto.cron_week_days}]]).trigger('change');
+        $('#cronMonthDay').select2({}).val([[${model.cronParamDto.cron_month_days}]]).trigger('change');
+        $("#excelUpload").change(function() {
+            let inputElement = document.getElementById('excelUpload');
+            // Kiểm tra nếu người dùng đã chọn file
+            if (inputElement.files.length > 0) {
+                // Người dùng đã chọn file, thực hiện các hành động cần thiết ở đây
+                var fileName2 = inputElement.files[0].name;
+                document.getElementById('fileNameDisplay').innerText = `${fileName2}`;
+            } else {
+                // Người dùng đã nhấn Cancel
+                console.log('Người dùng đã nhấn Cancel');
+                document.getElementById('fileNameDisplay').innerText = "Choose file";
+            }
+        });
+        hideAllInputType();
+        handlerInputType();
+        $("#inputType").change(function() {
+            hideAllInputType();
+            handlerInputType();
+        })
+
+        function handlerInputType() {
+            var selectedValue = $("#inputType").val();
+            if(selectedValue == 'text') {
+                $("#phoneNoListDiv").show();
+                $("#phoneNoList").show();
+                $("#phoneNoList").attr("disabled", false);
+            } else if(selectedValue == 'file') {
+                $("#phoneNoListDiv").show();
+                $("#conditionValueExcelDiv").show();
+                $("#excelUpload").attr("disabled", false);
+            } else {
+                $("#phoneNoListDiv").hide();
+                $("#phoneNoList").attr("disabled", false);
+                $("#excelUpload").attr("disabled", false);
+            }
+        }
+
+        hideAllCronType();
+        handlerCronType();
+        $("#cronType").change(function() {
+            hideAllCronType();
+            handlerCronType();
+        })
+        function handlerCronType() {
+            var selectedValue = $("#cronType").val();
+            if(selectedValue == 'weekly') {
+                $("#cronWeekDayDiv").show();
+                $("#cronMin").show();
+                $("#cronHour").show();
+                $("#cronWeekDay").attr("disabled", false);
+                $("#cronMin").attr("disabled", false);
+                $("#cronHour").attr("disabled", false);
+            } else if(selectedValue == 'monthly') {
+                $("#cronMonthDayDiv").show();
+                $("#cronMin").show();
+                $("#cronHour").show();
+                $("#cronMonthDay").attr("disabled", false);
+                $("#cronMin").attr("disabled", false);
+                $("#cronHour").attr("disabled", false);
+            } else if(selectedValue == 'hourly') {
+                $("#cronMin").show();
+                $("#cronMin").attr("disabled", false);
+            } else if(selectedValue == 'daily') {
+                $("#cronMin").show();
+                $("#cronHour").show();
+                $("#cronMin").attr("disabled", false);
+                $("#cronHour").attr("disabled", false);
+            }
+        }
+
+
+        function hideAllInputType() {
+            $("#phoneNoList").hide();
+            $("#conditionValueExcelDiv").hide();
+
+            $("#phoneNoList").attr("disabled", true);
+            $("#excelUpload").attr("disabled", true);
+        }
+
+        function hideAllCronType() {
+            $("#cronWeekDayDiv").hide();
+            $("#cronMonthDayDiv").hide();
+            $("#cronMin").hide();
+            $("#cronHour").hide();
+
+            $("#cronWeekDay").attr("disabled", true);
+            $("#cronMonthDay").attr("disabled", true);
+            $("#cronMin").attr("disabled", true);
+            $("#cronHour").attr("disabled", true);
+        }
+    })
+
+    $(function () {
+        $('#image_upload2').height($('#image_upload2').height());
+        $('#previewImage2').height($('#previewImage2').height());
+
+        $("#image_upload2").click( function() {
+            $("#file_image2").click();
+        });
+//======== BEGIN CROPPER SETUP ========
+        let image = document.getElementById("image");
+        let cropper = "";
+        let fileName = "";
+        var idPreviewImg = "";
+        var fileImageData = "";
+
+        $("#file_image2").change(function(e) {
+            idPreviewImg = "#previewImage2";
+            fileImageData = "#file_image_data2";
+            let reader = new FileReader();
+            console.log(e.target.files.length);
+            if(e.target.files.length == 0)
+                return;
+            reader.readAsDataURL(e.target.files[0]);
+
+            reader.onload = () => {
+                image.setAttribute("src", reader.result);
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(image, {
+                    aspectRatio: 1 / 1,
+                    viewMode: 1,
+                    minContainerWidth: 450,
+                    minContainerHeight: 500
+
+                });
+
+                $('#modal-crop-image').modal('show');
+            };
+            fileName = e.target.files[0].name.split(".")[0];
+        });
+
+        $("#apply_crop_image").click(function(e) {
+            e.preventDefault();
+            console.log(cropper);
+            let imgSrc = cropper.getCroppedCanvas({}).toDataURL("image/jpeg", 0.75);
+            console.log(imgSrc);
+
+            $(idPreviewImg).attr("src", imgSrc);
+            idPreviewImg = "";
+            $(fileImageData).val(imgSrc);
+            $('#modal-crop-image').modal('hide');
+        });
+        //======== END CROPPER SETUP ========
+    });
+</script>
+</body>
+</html>

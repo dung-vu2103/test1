@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <!--  PAGE CSS SECTION  -->
+  <!--  PAGE SCRIPT SECTION  -->
+</head>
+<body>
+  <!-- Main content -->
+  <div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+      <div class="card card-default">
+        <div class="card-body">
+          <form th:action = "@{/sys/menu/save}" id="formMenu" class="create-role" method="post" th:object = "${menu}">
+            <div class="row mb-3">
+              <div class='col-12 col-md-4 mb-3'>
+                <input type="text" id="id" readonly hidden th:field =*{id} name="id">
+
+                <label for="nameVn" style="font-weight: bold" > [[#{menuName}]] <span style="color:red"> *</span></label>
+                <input type="text" id="nameVn" th:field =*{nameVn} name="nameVn" class="form-control" aria-label="name" required>
+                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('nameVn')}" th:errors="*{nameVn}" required></p>
+              </div>
+
+              <div class='col-12 col-md-4 mb-3'>
+                <label for="nameEn" style="font-weight: bold" > [[#{menuName}]] <span style="color:red"> *</span></label>
+                <input type="text" id="nameEn" th:field =*{nameEn} name="nameEn" class="form-control" aria-label="name" required>
+                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('nameEn')}" th:errors="*{nameEn}" required></p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class='col-12 col-md-4 mb-3'>
+                <label for="parentName" th:text="#{menuPa}" style="font-weight: bold"></label>
+                <select class="form-control select2" name="menuParentId" id="parentName">
+                  <option value="0"></option>
+                  <option th:each = "item,istat:${listMenu1}" th:selected = "${menu.parentName}?${menu.parentName.id}==${item.id}:'false'" th:value="${item.id}" th:text="${item.nameVn}"></option>
+                </select>
+              </div>
+
+              <div class='col-12 col-md-4 mb-3'>
+                <label for="orderNum"  style="font-weight: bold"> [[#{loca}]]<span style="color:red"> *</span></label>
+                <input type="text" id="orderNum" th:field =*{orderNum} name="orderNum" class="form-control" aria-label="Fullname" required>
+                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('orderNum')}" th:errors="*{orderNum}"></p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class='col-12 col-md-4 mb-3'>
+                <label for="icon" style="font-weight: bold">[[#{icon}]]<span style="color:red"> *</span></label>
+                <select class="form-control select2" name="icon" id="icon">
+                  <option th:each = "item : ${icons}" th:selected = "${menu.id}?${menu.icon.id}==${item.id}:'false'" th:value="${item.id}" style="" >
+                    <span th:text="${item.name}">---</span>
+                  </option>
+                </select>
+              </div>
+
+              <div class='col-12 col-md-4 mb-3'>
+                <label for="router" style="font-weight: bold">[[#{path}]]<span style="color:red"> *</span></label>
+                <select class="form-control select2" name="router" id="router">
+                  <option th:each = "item,istat:${routers}" th:selected = "${menu.id != null && menu.router != null}?${menu.router.id}==${item.id}:'false'" th:value="${item.id}" th:text="${item.description +': '+ item.router_link}"></option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" th:attr="onclick=|disableButton()|" class="btn btn-primary me-md-2" th:text="#{save}"></button>
+          </form>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- PAGE JAVASCRIPT CODE -->
+  <script layout:fragment="content_page_script">
+    $(function(){
+      $('.select2').select2({
+        theme: 'bootstrap4'
+      });
+    });
+
+    function disableButton() {
+        document.getElementById("formMenu").submit();
+        document.getElementById("formMenu").querySelector("button[type='submit']").disabled = true;
+      }
+  </script>
+</body>
+</html>

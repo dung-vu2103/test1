@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  PAGE CSS SECTION  -->
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    <!--  PAGE SCRIPT SECTION  -->
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+</head>
+<body>
+    <!-- Main content -->
+    <div class="content" layout:fragment="page_content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <form th:action="@{/sys/role/create}" method="get">
+                            <button type="submit" class="btn btn-primary"  th:text="#{addNew}"></button>
+                        </form>
+                    </div>
+
+                    <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}" class="form-control" hidden>
+
+                    <div class="table_router">
+                        <table id="roleDatatable" class="table custom-table table-bordered">
+                            <thead class="thead-light">
+                            <tr>
+                                <th class="text-center" scope="col" th:text="#{no}"></th>
+                                <th class="text-center" scope="col" th:text="#{name}"></th>
+                                <th class="text-center" scope="col" th:text="#{des}"></th>
+                                <th class="text-center" scope="col" th:text="#{action}"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each = "role,item:${roles}">
+                                <td class="text-center" th:text="${item.index + 10*currentPage - 9}" th:if="${item.index + 1}">1</td>
+                                <td>
+                                    <a th:href="@{'/sys/role/view/'+${role.id}}">
+                                        <span th:text="${role.roleName}?${role.roleName}:'(Not set)'"></span>
+                                    </a>
+                                </td>
+                                <td th:text="${role.description}?:'Not set'">@mdo</td>
+                                <td>
+                                    <div class="d-flex flex-row justify-content-center">
+                                        <a th:href="@{'/sys/role/update/'+${role.id}}" class="btn" title="Edit">
+                                            <i class="far fa-edit" style="color: #00709e;"></i>
+                                        </a>
+                                        <button th:attr="onclick='delete1(\'' + ${role.id} + '\')'" style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                            <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                        </button>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:replace="common :: table_paging2"> </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- PAGE JAVASCRIPT CODE -->
+    <script layout:fragment="content_page_script">
+        function linkpage(page) {
+            console.log(page);
+            var urlPage = window.location.href;
+            var utlBase = '';
+            var urlParram = '';
+            let start = 0;
+            for (let i = 0; i < urlPage.length - 1; i++) {
+                if (urlPage.charAt(i) == '?') {
+                    start = i;
+                    break;
+                }
+            }
+            if (start > 0) {
+                utlBase = urlPage.substring(0, start);
+                urlParram = urlPage.substring(start, urlPage.length);
+            } else {
+                utlBase = urlPage;
+            }
+            console.log(page);
+            start = 0;
+            for (let i = urlPage.length - 1; i > 0; i--) {
+                if (urlPage.charAt(i) == '/') {
+                    start = i;
+                    break;
+                }
+            }
+            if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+                utlBase += '/' + page;
+            } else {
+                utlBase = utlBase.substring(0, start + 1) + page;
+            }
+            var pageSize = document.getElementById('pageSizeInput').value;
+            var urlSearchParams = new URLSearchParams(urlPage);
+            // Thay đổi giá trị của tham số pageSize
+            urlSearchParams.set('pageSize', pageSize);
+            var dem = 0;
+            urlParram = '';
+            urlSearchParams.forEach(function(value, key) {
+                if (dem == 1) {
+                    urlParram += '?' + key + '=' + value;
+                } else if (dem > 1) {
+                    urlParram += '&' + key + '=' + value;
+                }
+                dem++;
+            });
+            console.log(urlParram);
+            var newUrl = utlBase + urlParram;
+            window.location.href = newUrl;
+        }
+
+        $(function(){
+            $('#roleDatatable').DataTable({
+              "paging": false,
+              "lengthChange": false,
+              "searching": true,
+              "ordering": true,
+              "info": false,
+              "autoWidth": false,
+              "responsive": true,
+            });
+
+        });
+
+        function delete1(id){
+            // Lấy các phần tử cần sử dụng
+            const popupDel = document.getElementById('popupDel');
+            const confirmButtonDel = document.getElementById('confirmButtonDel');
+            const closeDel = document.getElementById('closeDel');
+
+            // Hiển thị popup khi click vào biểu tượng
+            popupDel.style.display = 'block';
+
+            // Ẩn popup khi click vào nút xác nhận
+            confirmButtonDel.addEventListener('click', () => {
+                popupDel.style.display = 'none';
+                window.location.href = '/' + window.location.pathname.split('/')[1]+`/sys/role/delete/${id}`;
+            });
+
+            // Ẩn popup khi click vào nút xác nhận
+            closeDel.addEventListener('click', () => {
+                popupDel.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

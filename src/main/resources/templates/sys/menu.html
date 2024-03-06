@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  PAGE CSS SECTION  -->
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    <!--  PAGE SCRIPT SECTION  -->
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+</head>
+<body>
+    <!-- Main content -->
+    <div class="content" layout:fragment="page_content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-body">
+                    <form th:action="@{/sys/menu/index}" method="get">
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-8 my-3" id="countryCodeDiv">
+                                <label for="parentName"><span>[[#{parentName}]]</span></label>
+                                <select id="parentName" name="parentName" class="form-control">
+                                    <option th:value="${parentName}" th:text="${parentNameMenu}"></option>
+                                </select>
+                            </div>
+
+                            <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}" class="form-control" hidden>
+
+                            <div class="col-12 text-center col-md-3 my-5">
+                                <button type="submit" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                    <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                                </button>
+
+                                <a th:href="@{/sys/menu/create}" style="cursor: pointer;" class="btn btn-primary mx-2">
+                                    <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="table_router">
+                        <table class="table custom-table table-bordered">
+                            <thead class="thead-light">
+                            <tr>
+                                <th class="text-center" scope="col" th:text="#{no}"></th>
+                                <th class="text-center" scope="col" th:text="#{menuPa}">Menu parent</th>
+                                <th class="text-center" scope="col" th:text="#{name}"></th>
+                                <th class="text-center" scope="col" th:text="#{loca}"></th>
+                                <th class="text-center" scope="col" th:text="#{path}"></th>
+                                <th class="text-center" scope="col" th:text="#{action}">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each = "menu,item:${menus}">
+                                <td class="text-center" scope="row" th:text="${item.index + 10*currentPage - 9}"></td>
+                                <td th:text="${menu.parentName}?${menu.parentName.nameVn}">Otto</td>
+                                <td>
+                                    <span th:text="${menu.nameVn}">Menu Name</span>
+                                </td>
+                                <td class="text-center" th:text="${menu.orderNum}">Otto</td>
+                                <td th:text="${menu.router?.router_link}">Otto</td>
+                                <td>
+                                    <div class="d-flex flex-row justify-content-center">
+                                        <a th:href="@{'/sys/menu/update/'+${menu.id}}" class="btn" title="Edit">
+                                            <i class="far fa-edit" style="color: #00709e;"></i>
+                                        </a>
+                                        <button th:attr="onclick=|delete1('${menu.id}', '${currentPage}', '${pageSize}')|" style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                            <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:replace="common :: table_paging2"> </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+        <div class="modal fade" id="delete-modal-sm">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" th:text="#{action.todo}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p th:text="#{apply.delete}"></p>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button id="apply" type="button" class="btn btn-primary" th:text="#{apply}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+    <!-- PAGE JAVASCRIPT CODE -->
+    <script layout:fragment="content_page_script">
+        function linkpage(page) {
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for (let i = 0; i < urlPage.length - 1; i++) {
+            if (urlPage.charAt(i) == '?') {
+                start = i;
+                break;
+            }
+        }
+        if (start > 0) {
+            utlBase = urlPage.substring(0, start);
+            urlParram = urlPage.substring(start, urlPage.length);
+        } else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for (let i = urlPage.length - 1; i > 0; i--) {
+            if (urlPage.charAt(i) == '/') {
+                start = i;
+                break;
+            }
+        }
+        if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+            utlBase += '/' + page;
+        } else {
+            utlBase = utlBase.substring(0, start + 1) + page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function(value, key) {
+            if (dem == 1) {
+                urlParram += '?' + key + '=' + value;
+            } else if (dem > 1) {
+                urlParram += '&' + key + '=' + value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+
+    function delete1(id, pageNo, pageSize) {
+        if(pageNo == null || pageNo == "" || pageNo == "null")
+            pageNo = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#delete-modal-sm").modal('show');
+        $("#apply").click(function() {
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/sys/menu/delete/${pageNo}?id=${id}&pageSize=${pageSize}`;
+            $('#delete-modal-sm').modal('hide');
+        });
+    }
+
+    $(document).ready(function() {
+        $('#parentName').select2({
+            ajax: {
+                type: 'GET',
+                url: '[[${@environment.getProperty('server.servlet.context-path')}]]/sys/menu/ajax-search',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        input_: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            placeholder: `[[#{select2.parentName}]]`,
+            minimumInputLength: 0,
+            allowClear: true
+        });
+    });
+    </script>
+</body>
+</html>

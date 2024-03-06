@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head layout:fragment="kakoak_layout_header">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/x-icon" th:href="@{/img/kakoakicon.png}">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SupperApp</title>
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.1/font/bootstrap-icons.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+    <link th:href="@{/webjars/font-awesome/6.4.2/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link th:href="@{/webjars/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css}" rel="stylesheet" type="text/css">
+    <!-- Select2 -->
+    <link rel="stylesheet" th:href="@{/webjars/select2/4.0.13/css/select2.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}" type="text/css"/>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet"th:href="@{/webjars/sweetalert2__theme-bootstrap-4/5.0.15/bootstrap-4.min.css}">
+    <link th:href="@{/webjars/AdminLTE/3.2.0/dist/css/adminlte.min.css}" rel="stylesheet">
+
+    <style>
+        /*css cho select2 resposive*/
+        span.select2-container {
+            width: unset !important;
+        }
+
+        span.select2-selection {
+            height: 37.6px !important; /* Hoặc bạn có thể thay đổi giá trị này để phù hợp với thiết kế của bạn */
+            padding: 0.45rem 0.75rem !important
+        }
+
+        ul.select2-selection__rendered li {
+            margin-top: 0px !important;
+        }
+    </style>
+    <!-- jQuery -->
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <!-- Bootstrap -->
+    <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
+    <!-- Select2 -->
+    <script th:src="@{/webjars/select2/4.0.13/js/select2.full.min.js}"></script>
+    <!-- InputMask -->
+    <script th:src="@{/webjars/moment/2.29.4/min/moment.min.js}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script th:src="@{/webjars/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js}"></script>
+    <!-- SweetAlert2 -->
+    <script th:src="@{/webjars/sweetalert2/11.7.32/dist/sweetalert2.min.js}"></script>
+    <!-- AdminLTE -->
+    <script th:src="@{/webjars/AdminLTE/3.2.0/dist/js/adminlte.js}"></script>
+    <!-- OPTIONAL SCRIPTS -->
+</head>
+<body class="hold-transition text-sm sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a th:href="@{/}" class="nav-link">Home</a>
+            </li>
+        </ul>
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a onclick="changeLanguage('en')" title="English" class="w-100 h-100 p-2" href="#" role="button">
+                    <img th:src="@{/img/en.jpeg}" style="width: 30px;" alt="English">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="changeLanguage('vn')" title="Vietnamese" class="w-100 h-100 p-2" href="#" role="button">
+                    <img th:src="@{/img/vn.jpeg}" style="width: 30px;" alt="Vietnamese">
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="alert-primary d-none" role="alert" th:text="${success}" th:if="${success}" id="successAlert"></div>
+    <div class="alert-danger d-none" role="alert" th:text="${error}" th:if="${error}" id="errorAlert"></div>
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+    <aside th:replace="common :: left_menu_v2"></aside>
+    <div class="modal fade" id="logoutModal">
+        <div class="modal-dialog modal-sm-2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="#{sureOut}">Small Modal</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p th:text="#{choose}">One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class="btn btn-primary" th:href="@{/logout}" th:text="#{logout}"></a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0" th:text="${title}">Dashboard v3</h1>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <!-- Main content -->
+        <div layout:fragment="page_content"></div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <footer class="main-footer" th:fragment="ringme_footer">
+        <strong>Copyright &copy; 2023 <a href="https://ringme.vn/">ringme.vn</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 2.0
+        </div>
+    </footer>
+</div>
+
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- AdminLTE for demo purposes -->
+<script layout:fragment="content_page_script"></script>
+
+<script layout:fragment="content_page_script2"></script>
+
+<script>
+    var APPNAME = "[[${@environment.getProperty('server.servlet.context-path')}]]";
+    var ROOT_URL= window.location.origin  + APPNAME;
+    console.log("APPNAME: " + APPNAME);
+    console.log("ROOT_URL: " + ROOT_URL);
+    $(function() {
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 8000,
+            timerProgressBar: true
+        });
+        let menu_leaves = $("a[id *= 'a-']");
+
+        var current_link = $(location).attr('href');
+        let try_link;
+        if (current_link.lastIndexOf("?") != -1) {
+            try_link = current_link.substring(0, current_link.lastIndexOf("?"));
+        } else {
+            try_link = current_link;
+        }
+        //console.log("--> " + try_link);
+
+        var found = findMenu(try_link, menu_leaves);
+        if (found != null) {
+            console.log("FOUND: --> " + found.id);
+            var listIds = found.id.split("-");
+            console.log(listIds.length);
+
+            if (listIds.length > 2) {
+                liItem = "#li";
+                for (var i = 1; i < listIds.length - 1; i++) {
+                    var liItem = liItem + "-" + listIds[i];
+                    $(liItem).addClass("menu-open");
+                }
+
+            }
+            $("#" + found.id).addClass("active");
+        }
+
+        if($("#successAlert").length) {
+            let contentSuccess = $("#successAlert").text();
+            Toast.fire({
+                icon: 'success',
+                text: contentSuccess,
+                timerProgressBar: true,
+            })
+        }
+        if($("#errorAlert").length) {
+            let contentERROR = $("#errorAlert").text();
+            Toast.fire({
+                icon: 'error',
+                text: contentERROR,
+                timerProgressBar: true,
+            })
+        }
+    });
+
+    function findMenu(link, menus) {
+        console.log("PATTERN ===> " + link);
+
+        for (var i = 0; i < 5; i++) {
+            console.log("I  = " + i);
+            for (var y = 0; y < menus.length; y++) {
+                //console.log(menus.get(y).href);
+                if(ROOT_URL.match(link)) {
+                    return null;
+                } else if (menus.get(y).href.match(link) != null) {
+                    console.log(link + " ==> MATCHED: " + menus.get(y).href);
+                    return menus.get(y);
+                }
+            }
+            if (link.lastIndexOf("/") != -1) {
+                link = link.substring(0, link.lastIndexOf("/"));
+            } else {
+                return null;
+            }
+        }
+    }
+</script>
+
+<script>
+    function changeLanguage(lang) {
+        var context = "/" + window.location.pathname.split('/')[1];
+        fetch(context + '/change-language?lang=' + lang, {method: 'POST'})
+            .then(() => location.reload())
+            .catch((error) => console.error('Error:', error));
+    }
+</script>
+
+<script th:src="@{/js/demo-adminlte3.2.0.js}"></script>
+
+<script>
+    // Sử dụng jQuery để thay đổi title
+    $(document).ready(function() {
+        document.title = "SupperApp";
+    });
+</script>
+</body>
+</html>

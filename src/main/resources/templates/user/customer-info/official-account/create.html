@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/customer-info/official-account/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="statusForm" name="statusForm" th:value="${statusForm}">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="name" style="font-weight: bold"><span>[[#{name}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="name" th:field="*{name}" name="name" value="${name}"
+                                       class="form-control" th:placeholder="#{name}" aria-label="name" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="officialAccountId" style="font-weight: bold"><span>[[#{officialAccountId}]]</span><span style="color:red"> *</span></label>
+                                <input type="text" id="officialAccountId" th:field="*{officialAccountId}" name="officialAccountId" value="${officialAccountId}"
+                                       class="form-control" th:placeholder="#{officialAccountId}" aria-label="officialAccountId" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('officialAccountId')}" th:errors="*{officialAccountId}"></p>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label style="font-weight: bold"><span>[[#{status}]]</span><span style="color:red"> *</span></label>
+                                <select class="form-control" id="status" th:field="*{status}" name="status" required>
+                                    <option value='0' th:text="#{deactive}"></option>
+                                    <option value='1' th:text="#{active}"></option>
+                                </select>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+                            </div>
+
+                            <div class="form-group col-12 col-md-12 mb-3">
+                                <label for="listUser"><span>[[#{listUser}]]</span></label>
+                                <select class="form-control select2bs4" id="listUser" name="listUser">
+                                    <option th:each="u : ${model.officialUsers}"
+                                            th:text="${u.user.username}"
+                                            th:value="${u.userId}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-12 mb-3">
+                                <label for="description" style="font-weight: bold"><span>[[#{description}]]</span><span style="color:red"> *</span></label>
+                                <textarea class="form-control" id="description" th:field="*{description}" name="description" value="${description}"
+                                          th:placeholder="#{livestream.schedule.description}" aria-label="description" required></textarea>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6">
+                                <div id="dnd" class="form-group h-100 w-100 d-inline-block">
+                                    <label for="file_image"><span>[[#{image}]] <span style="color: red;">*</span></span></label>
+                                    <div id="image_upload" class="form-control d-flex justify-content-center" style="min-height: 227px; min-width: 400px; padding: 5px;">
+                                        <img id="previewImage" th:src="@{/img/bg_login4.jpg}" class="img-fluid"/>
+                                    </div>
+                                </div>
+                                <input type="file" id="file_image" accept="image/*" hidden="hidden" style="cursor: pointer;">
+                                <input type="text" id="fileInput1" name="thumbUpload" hidden>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col d-flex align-items-end justify-content-center pt-3"
+                         style="padding-left: 0 !important;">
+                        <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2" th:href="@{/user/customer-info/official-account/index}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+
+    <div class="modal fade" id="modal-crop-image">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="d-flex flex-column justify-content-between align-items-center h-100" style="width: 100%;">
+                            <img id="image" th:src="@{/img/vn.jpeg}" style="max-width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  id="closePopupButton">Close</button>
+                    <button type="button" class="btn btn-default" id="apply_crop_image">OK</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+    $(document).ready(function() {
+        //======== BEGIN CROPPER SETUP 1 ========
+        $("#image_upload").click( function() {
+            $("#file_image").click();
+        });
+
+        let image = document.getElementById("image");
+        let cropper = "";
+        let fileName = "";
+        $("#file_image").change(function(e) {
+            let reader = new FileReader();
+            console.log(e.target.files.length);
+            if(e.target.files.length == 0)
+                return;
+            reader.readAsDataURL(e.target.files[0]);
+
+            reader.onload = () => {
+                image.setAttribute("src", reader.result);
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(image, {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    minContainerWidth: 450,
+                    minContainerHeight: 500
+
+                });
+
+                $('#modal-crop-image').modal('show');
+            };
+            fileName = e.target.files[0].name.split(".")[0];
+
+        });
+
+
+        $("#apply_crop_image").click(function(e) {
+            e.preventDefault();
+            console.log(cropper);
+            let imgSrc = cropper.getCroppedCanvas({}).toDataURL("image/jpeg", 0.75);
+            console.log(imgSrc);
+
+            $("#previewImage").attr("src", imgSrc);
+            $("#fileInput1").val(imgSrc);
+            $('#modal-crop-image').modal('hide');
+        });
+        //======== END CROPPER SETUP 1 ========
+
+        $('#listUser').select2({
+            ajax: {
+                type: 'GET',
+                url: '[[${@environment.getProperty('server.servlet.context-path')}]]/user/customer-info/official-account/ajax-search-user',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        input_: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            placeholder: `[[#{select2.listUser}]]`,
+            minimumInputLength: 0,
+            allowClear: true,
+            multiple: true,
+            tags: true
+        }).val(getSelectedValues('listUser')).trigger('change');
+    });
+</script>
+</body>
+</html>

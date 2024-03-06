@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" type="image/x-icon" th:href="@{/img/logo-t.png}">
+    <title>CMS</title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/subcss.css}">
+</head>
+
+<body id="page-top">
+<div >
+    <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow border-bottom" th:replace="header :: header">
+    </nav>
+</div>
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav shadow-lg sidebar sidebar-dark accordion" id="accordionSidebar" th:replace="header :: menu">
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <div class="router">
+                    <div class="router_inner">
+                        <!--            <div class="router_title">-->
+                        <!--                                <span class="material-symbols-outlined">-->
+                        <!--                                    home-->
+                        <!--                                    </span><a href="#">Tra</a><span>/</span><a href="#">Router</a>-->
+                        <!--            </div>-->
+                        <div class="d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded">
+                            <form th:action="@{/sys/router/add}" method="post" >
+                                <div class="alert-primary" role="alert" th:text="${success}" th:if="${success}" id="successAlert"></div>
+                                <div class="alert-danger" role="alert" th:text="${error}" th:if="${error}" id="errorAlert"></div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label for="router" > [[#{path}]] <span style="color:red"> *</span></label>
+                                        <input type="text" name="router" class="form-control" id="router" th:placeholder="#{newPath}" autocomplete="off" required>
+                                    </div>
+                                    <div class="col">
+                                        <label for="router" > [[#{des}]] <span style="color:red"> *</span></label>
+                                        <input type="text" name="router-des" class="form-control" th:placeholder="#{des}" autocomplete="off" required>
+                                    </div>
+                                    <div class="d-flex col align-items-end">
+                                        <button class="btn btn-primary" type="submit" th:text="#{add}"></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="table_router">
+                            <div class="table_router_left">
+
+                                <input type="text" id="myInput1" onkeyup="searchFunction1()" th:placeholder="#{notAc}" autocomplete="off">
+                                <form th:action="@{/sys/router/active}" method="post" id="formActive">
+                                    <select id="mySelect1" name="router" size="5" multiple>
+                                        <option th:each = "router,istat:${routerUnActive}" th:value="${router.id}" th:text="${router.description+': '+router.router_link}"></option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="button_sub_router">
+                                <button th:attr="onclick=|submit12()|"><span class="material-symbols-outlined">
+                                        arrow_forward
+                                        </span></button>
+                                <button th:attr="onclick=|submit2()|"><span class="material-symbols-outlined">
+                                            arrow_back
+                                            </span></button>
+                            </div>
+                            <div class="table_router_right">
+                                <input type="text" id="myInput2"  onkeyup="searchFunction2()" th:placeholder="#{ac}" autocomplete="off">
+                                <form th:action="@{/sys/router/unactive}" method="post" id="formUnActive">
+                                    <select id="mySelect2" size="5" name="router" multiple>
+                                        <option th:each = "router,istat:${routerActive}" th:value="${router.id}" th:text="${router.description+': '+router.router_link}"></option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+<!-- Modal -->
+
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" th:replace="header :: modalLogout">
+</div>
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+
+<!-- Custom scripts for all pages-->
+<script>
+      function openModalActive(){
+            $('#modalActive').modal('show');
+      }
+
+      function openModalBlock(){
+          $('#modalBlock').modal('show');
+      }
+      function submit12(){
+          var form = document.getElementById("formActive");
+          form.submit();
+      }
+      function submit2(){
+          var form = document.getElementById("formUnActive");
+          form.submit();
+      }
+      function searchFunction1() {
+          // Lấy giá trị của input text và chuyển đổi thành chữ thường
+          var input, filter, select, options, i, txtValue;
+          input = document.getElementById("myInput1");
+          filter = input.value.toLowerCase();
+          // Lấy Select option
+          select = document.getElementById("mySelect1");
+          // Lấy tất cả các option
+          options = select.getElementsByTagName("option");
+          // Duyệt qua từng option và ẩn hoặc hiện tùy thuộc vào kết quả tìm kiếm
+          for (i = 0; i < options.length; i++) {
+              txtValue = options[i].text;
+              if (txtValue.toLowerCase().indexOf(filter) > -1) {
+              options[i].style.display = "";
+              } else {
+              options[i].style.display = "none";
+              }
+          }
+      }
+      function searchFunction2() {
+          // Lấy giá trị của input text và chuyển đổi thành chữ thường
+          var input, filter, select, options, i, txtValue;
+          input = document.getElementById("myInput2");
+          filter = input.value.toLowerCase();
+          // Lấy Select option
+          select = document.getElementById("mySelect2");
+          // Lấy tất cả các option
+          options = select.getElementsByTagName("option");
+          // Duyệt qua từng option và ẩn hoặc hiện tùy thuộc vào kết quả tìm kiếm
+          for (i = 0; i < options.length; i++) {
+              txtValue = options[i].text;
+              if (txtValue.toLowerCase().indexOf(filter) > -1) {
+              options[i].style.display = "";
+              } else {
+              options[i].style.display = "none";
+              }
+          }
+      }
+      function openModalReset(){
+            $('#resetpassword').modal('show');
+        }
+        function disableResetPassword() {
+          document.getElementById("resetpasswordform").submit();
+          document.getElementById("resetpasswordform").querySelector("button[type='submit']").disabled = true;
+        }
+    </script>
+
+</body>
+
+</html>

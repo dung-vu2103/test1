@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/sticker-item/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                    <input type="hidden" id="stickerId" name="stickerId" th:value="${model.stickerId}?${model.stickerId}">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="iorder" style="font-weight: bold"><span>[[#{Iorder}]]</span><span style="color:red"> *</span></label>
+                            <input type="number" min="1" id="iorder" th:field="*{iorder}" name="iorder" value="${iorder}"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="active" style="font-weight: bold"><span>[[#{State}]]</span></label>
+                            <select id="active" name="active" class="form-control" th:field="*{active}" required>
+                                <option value="1" th:selected="${active == 1}" th:text="#{active}"></option>
+                                <option value="-1" th:selected="${active == -1}">Deleted</option>
+                                <option value="0" th:selected="${active == 0}">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="imageUrlUpload" style="font-weight: bold"><span>[[#{ImageUrl}]]</span></label>
+                            <input type="hidden" id="imageUrl" name="imageUrl" th:value="${model.imageUrl}">
+                            <div class="custom-file">
+                                <input type="file" id="imageUrlUpload" name="imageUrlUpload" class="custom-file-input"
+                                       accept="image/*" onchange="handleFileSelection('imageUrlUpload', 'fileNameDisplay')">
+                                <label id="fileNameDisplay" class="custom-file-label" for="imageUrlUpload">Choose
+                                    file</label>
+                            </div>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="voiceUrlUpload" style="font-weight: bold"><span>[[#{VoiceUrl}]]</span></label>
+                            <input type="hidden" id="voiceUrl" name="voiceUrl" th:value="${model.voiceUrl}">
+                            <div class="custom-file">
+                                <input type="file" id="voiceUrlUpload" name="voiceUrlUpload" class="custom-file-input"
+                                       accept=".mp3" onchange="handleFileSelection('voiceUrlUpload', 'fileNameDisplay2')">
+                                <label id="fileNameDisplay2" class="custom-file-label" for="imageUrlUpload">Choose
+                                    file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                        <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2" th:href="@{'/sticker-item/index?stickerId=' + ${model.stickerId}}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script">
+    function handleFileSelection(idElement, idDisplay) {
+        let inputElement = document.getElementById(idElement);
+        // Kiểm tra nếu người dùng đã chọn file
+        if (inputElement.files.length > 0) {
+            // Người dùng đã chọn file, thực hiện các hành động cần thiết ở đây
+            var fileName2 = inputElement.files[0].name;
+            document.getElementById(idDisplay).innerText = `${fileName2}`;
+        } else {
+            // Người dùng đã nhấn Cancel
+            console.log('Người dùng đã nhấn Cancel');
+            document.getElementById(idDisplay).innerText = "Choose file";
+        }
+    }
+</script>
+</body>
+</html>

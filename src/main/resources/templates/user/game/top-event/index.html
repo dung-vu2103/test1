@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/game/top-event/search}" method="get">
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6 mb-3">
+                            <label for="reservation" th:text="#{date}"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                  </span>
+                                </div>
+                                <input type="text" class="form-control float-right" id="reservation" name="publishedTime">
+                                <input type="text" class="form-control float-right" id="startTime" name="startTime" hidden>
+                                <input type="text" class="form-control float-right" id="endTime" name="endTime" hidden>
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-center col-md-6 my-3">
+                            <button type="submit" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{name}"></th>
+                            <th class="text-center" scope="col" th:text="#{avatar}"></th>
+                            <th class="text-center" scope="col" th:text="#{phone}"></th>
+                            <th class="text-center" scope="col" th:text="#{score}"></th>
+                            <th class="text-center" scope="col" th:text="#{Date}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model, item:${models}">
+                            <td class="text-center" scope="row"
+                                th:text="${item.index + 1}">
+                            </td>
+                            <td th:text="${model.name}"></td>
+                            <td class="text-center">
+                                <div th:if="${model.avatar != ''}" class="dropdown">
+                                    <img class="dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                         style="height: 35px; width:35px" th:src="${model.avatar}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img style="height: 200px; width:200px" th:src="${model.avatar}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center" th:text="${model.msisdn}"></td>
+                            <td class="text-center" th:text="${#numbers.formatInteger(model.score,1,'COMMA')}"></td>
+                            <td class="text-center" th:text="${model.date}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+</div>
+</body>
+
+<!-- REQUIRED SCRIPTS -->
+
+<script layout:fragment="content_page_script">
+    //CUSTOM SCRIPT
+    $(document).ready(function() {
+        var reset = document.querySelector('#reset')
+        reset.onclick = function(e){
+            e.preventDefault();
+            $('#reservation').val('');
+            $('#startTime').val('');
+            $('#endTime').val('');
+        }
+
+        if ('[[${publishedTime}]]' === null || '[[${publishedTime}]]' === '') {
+            $('#reservation').val('');
+            $('#startTime').val('');
+            $('#endTime').val('');
+        } else {
+            $('#reservation').val('[[${publishedTime}]]');
+            $('#startTime').val('[[${startTime}]]');
+            $('#endTime').val('[[${endTime}]]');
+        }
+    });
+
+    var tabPressed = false; // Biến để kiểm tra xem bạn đã bấm tab ra ngoài chưa
+    $('#reservation').daterangepicker()
+        .on('apply.daterangepicker', function(ev, picker) {
+            var startDate = picker.startDate.format('yyyy-MM-DD');
+            var endDate = picker.endDate.format('yyyy-MM-DD');
+
+            // Gán giá trị vào trường nhập liệu sau khi người dùng đã chọn phạm vi ngày
+            $('#reservation').val(startDate + ' - ' + endDate);
+            $('#startTime').val(startDate);
+            $('#endTime').val(endDate);
+        })
+        .on('cancel.daterangepicker', function() {
+            $('#reservation').val('');
+            $('#startTime').val('');
+            $('#endTime').val('');
+        });
+
+    $('#reservation').on('keydown', function(e) {
+        if (e.key === 'Tab') {
+            tabPressed = true;
+        }
+    });
+
+    $('#reservation').on('focusout', function() {
+        if (!tabPressed) {
+            $('#reservation').val('');
+            $('#startTime').val('');
+            $('#endTime').val('');
+        }
+        tabPressed = false;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/function-category/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="title" style="font-weight: bold"><span>[[#{title}]]</span><span style="color:red"> *</span></label>
+                            <input type="text" id="title" th:field="*{title}" name="title"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="deeplink" style="font-weight: bold"><span>[[#{deeplink}]]</span><span style="color:red"> *</span></label>
+                            <input type="text" id="deeplink" th:field="*{deeplink}" name="deeplink"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="type" style="font-weight: bold"><span>[[#{type}]]</span></label>
+                            <select id="type" name="type" class="form-control" th:field="*{type}" required>
+                                <option value="0" th:selected="${type == 0}">In webview</option>
+                                <option value="1" th:selected="${type == 1}">In app</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="priority" style="font-weight: bold"><span>[[#{priority}]]</span><span style="color:red"> *</span></label>
+                            <input type="number" min="1" id="priority" th:field="*{priority}" name="priority"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="enable" style="font-weight: bold"><span>[[#{enable}]]</span></label>
+                            <select id="enable" name="type" class="form-control" th:field="*{enable}" required>
+                                <option value="0" th:selected="${enable == 0}">Off</option>
+                                <option value="1" th:selected="${enable == 1}">On</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <div id="dnd" class="form-group h-80 w-100 d-inline-block">
+                                <label for="file_image">Icon</label>
+                                <div id="image_upload" class="text-center h-100">
+                                    <p th:if="${model.id != null}"><img id="previewImage" th:src="(${@environment.getProperty('domain.nginx')} + ${model.icon})"/></p>
+                                    <p th:if="${model.id == null}"><img id="previewImage" th:src="@{/img/bg_login4.jpg}" class="img-fluid img-thumbnail"/></p>
+                                </div>
+                            </div>
+                            <input type="file" id="file_image" name="iconUpload2" accept="image/*" hidden="hidden" style="cursor: pointer;">
+                            <input type="text" id="file_image_data" name="iconUpload" hidden th:required="${model.id == null}">
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                        <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2" th:href="@{'/function-category/index'}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                    <div class="modal fade" id="modal-crop-image">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="w-100"><h4 class="modal-title text-center">CROP IMAGE</h4></div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex flex-column justify-content-between align-items-center h-100" style="width: 100%;">
+                                            <img id="image" th:src="@{/img/vn.jpeg}" style="max-width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"  id="closePopupButton">Close</button>
+                                    <button type="button" class="btn btn-default" id="apply_crop_image">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script">
+    $(function() {
+        $('#image_upload').height($('#image_upload').height());
+        $('#previewImage').height($('#previewImage').height());
+
+        $("#image_upload").click( function() {
+            $("#file_image").click();
+        });
+//======== BEGIN CROPPER SETUP ========
+        let image = document.getElementById("image");
+        let cropper = "";
+        let fileName = "";
+        var idPreviewImg = "";
+        var fileImageData = "";
+        $("#file_image").change(function(e) {
+            idPreviewImg = "#previewImage";
+            fileImageData = "#file_image_data";
+            let reader = new FileReader();
+            console.log(e.target.files.length);
+            if(e.target.files.length == 0)
+                return;
+            reader.readAsDataURL(e.target.files[0]);
+
+            reader.onload = () => {
+                image.setAttribute("src", reader.result);
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(image, {
+                    aspectRatio: 1 / 1,
+                    viewMode: 1,
+                    minContainerWidth: 450,
+                    minContainerHeight: 500
+                });
+
+                $('#modal-crop-image').modal('show');
+            };
+            fileName = e.target.files[0].name.split(".")[0];
+
+        });
+
+        $("#apply_crop_image").click(function(e) {
+            e.preventDefault();
+            console.log(cropper);
+            let imgSrc = cropper.getCroppedCanvas({}).toDataURL("image/jpeg", 0.75);
+            console.log(imgSrc);
+
+            $(idPreviewImg).attr("src", imgSrc);
+            idPreviewImg = "";
+            $(fileImageData).val(imgSrc);
+            $('#modal-crop-image').modal('hide');
+        });
+    });
+</script>
+</body>
+</html>

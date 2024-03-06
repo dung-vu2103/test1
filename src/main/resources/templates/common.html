@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div th:fragment = "table_paging" class="d-flex">
+  <div class="col-6" style="margin-top: 20px;">
+    <label>Item/page: </label>
+    <select class="border-bottom border-primary" id="pageSize" style="border:0px;">
+      <option th:selected = "${pageSize}?${pageSize==10}" value="10">10</option>
+      <option th:selected = "${pageSize}?${pageSize==15}" value="15">15</option>
+      <option th:selected = "${pageSize}?${pageSize==20}" value="20">20</option>
+      <option th:selected = "${pageSize}?${pageSize==25}" value="25">25</option>
+      <option th:selected = "${pageSize}?${pageSize==30}" value="30">30</option>
+    </select>
+  </div>
+  <div class="col-6">
+    <ul class="pagination pagination-sm" style="margin-bottom: 5px;">
+      <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage('${1}')|"><<</a></li>
+      <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage('${currentPage - 1}')|"><</a></li>
+      <li class="page-item disabled"><a class="page-link text-secondary" th:text="${'Page '+ currentPage+'/'+totalPages+ ' ('+totalItems+ ' items)'}">Page 1/4 (4 items)</a></li>
+      <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage('${currentPage + 1}')|">></a></li>
+      <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage('${totalPages}')|">>></a></li>
+    </ul>
+  </div>
+</div>
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4"  th:fragment="left_menu_v2">
+  <!-- Brand Logo -->
+  <a th:href="@{/}" class="brand-link">
+    <img th:src="@{/img/kakoakicon.png}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 ml-4" style="opacity: .8">
+    <h5 class="brand-text font-weight-bold">SuperApp CMS</h5>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center">
+      <a href="#" class="d-block" sec:authentication="principal.name">User</a>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class
+             with font-awesome or any other icon font library -->
+        <li class="nav-item" th:each="menu,item : ${listMenu}" th:id="'li-' + ${menu.id}">
+          <a th:href="@{${menu.lstChildMenus} ? '#' : ${menu.router?.router_link}}" th:id="${menu.lstChildMenus}? '#' : 'a-' + ${menu.id}" class="nav-link">
+            [(${menu.icon.name})]
+            <p>
+              &nbsp;[[${menu.name}]]
+              <i class="right fas fa-angle-left" th:if="${menu.lstChildMenus}"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" th:each="menu2,item2 : ${menu.lstChildMenus}">
+            <li class="nav-item" th:id="'li-' + ${menu.id} + '-' + ${menu2.id}">
+              <a th:href="@{${menu2.lstChildMenus} ? '#' : ${menu2.router?.router_link}}" th:id="${menu2.lstChildMenus}? '#' : 'a-' + ${menu.id} + '-' + ${menu2.id}" class="nav-link">
+                &nbsp;&nbsp;<i class="bi bi-arrow-return-right"></i>
+                <p>&nbsp;&nbsp;[[${menu2.name}]]</p>
+                <i class="right fas fa-angle-left" th:if="${menu2.lstChildMenus}"></i>
+              </a>
+              <ul class="nav nav-treeview" th:each="menu3,item3 : ${menu2.lstChildMenus}">
+                <li class="nav-item" th:id="'li-' + ${menu.id}+'-'+${menu2.id}+'-'+${menu3.id}">
+                  <a th:href="@{${menu3.router?.router_link}}" class="nav-link" th:id="${menu3.lstChildMenus}? '#' : 'a-' + ${menu.id}+'-'+${menu2.id}+'-'+${menu3.id}">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-return-right"></i>
+                    <p>&nbsp;&nbsp;[[${menu3.name}]]</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#logout" data-toggle="modal" data-target="#logoutModal">
+            <i class="fas fa-sign-out-alt"></i>
+            <p th:text="#{logout}">&nbsp;Logout</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>
+
+<!-- Main Footer -->
+<footer class="main-footer" th:fragment="ringme_footer">
+  <strong>Copyright &copy; 2023 <a href="https://ringme.vn/">ringme.vn</a>.</strong>
+  All rights reserved.
+  <div class="float-right d-none d-sm-inline-block">
+    <b>Version</b> 2.0
+  </div>
+</footer>
+
+<div th:fragment = "table_paging2" class="d-flex flex-row justify-content-end">
+  <ul class="pagination pagination-sm" style="margin-bottom: 5px;">
+    <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage('${1}')|"><<</a></li>
+    <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage('${currentPage - 1}')|"><</a></li>
+    <li class="page-item disabled"><a class="page-link text-secondary" th:text="${'Page '+ currentPage+'/'+totalPages+ ' ('+totalItems+ ' items)'}">Page 1/4 (4 items)</a></li>
+    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage('${currentPage + 1}')|">></a></li>
+    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage('${totalPages}')|">>></a></li>
+  </ul>
+</div>
+
+<div th:fragment = "table_paging3" class="d-flex flex-row justify-content-end">
+  <ul class="pagination pagination-sm" style="margin-bottom: 5px;">
+    <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage1('${1}')|"><<</a></li>
+    <li class="page-item "><a class="page-link" th:if="${currentPage > 1}" th:attr="onclick=|linkpage1('${currentPage - 1}')|"><</a></li>
+    <li class="page-item disabled"><a class="page-link text-secondary" th:text="${'Page '+ currentPage+'/'+totalPages+ ' ('+totalItems+ ' items)'}">Page 1/4 (4 items)</a></li>
+    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage1('${currentPage + 1}')|">></a></li>
+    <li class="page-item"><a class="page-link" th:if="${currentPage < totalPages}" th:attr="onclick=|linkpage1('${totalPages}')|">>></a></li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/noti-type/index}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="name" style="font-weight: bold" th:text="#{name}"></label>
+                            <input type="text" id="name" th:value="${name}?${name}" name="name"
+                                   class="form-control" aria-label="Rule Name">
+                        </div>
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="des" style="font-weight: bold" th:text="#{des}"></label>
+                            <input type="text" id="des" th:value="${des}?${des}" name="des"
+                                   class="form-control" aria-label="Rule Name">
+                        </div>
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}"
+                               class="form-control" hidden>
+
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+
+                            <a th:href="@{/noti-type/create}" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{name}"></th>
+                            <th class="text-center" scope="col" th:text="#{des}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model, item:${models}">
+                            <th class="text-center" scope="row" style="font-weight: normal; color: #000000;"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
+                            </th>
+                            <td>
+                                <a th:href="@{'/noti-type/index?id=' + ${model.id}}" class="btn" title="Update" style="color: #00709E; background: transparent; white-space: nowrap;">
+                                    <span th:text="${model.name}"></span>
+                                </a>
+                            </td>
+                            <td th:text="${model.des}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}')|"
+                                       style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-delete" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.delete}"></p>
+                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //pagination
+    function linkpage(page){
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for(let i = 0; i < urlPage.length-1; i++){
+            if(urlPage.charAt(i) =='?'){
+                start = i;
+                break;
+            }
+        }
+        if(start > 0){
+            utlBase = urlPage.substring(0,start);
+            urlParram = urlPage.substring(start,urlPage.length);
+        }else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for(let i = urlPage.length-1; i > 0; i--){
+            if(urlPage.charAt(i) =='/'){
+                start = i;
+                break;
+            }
+        }
+        if(isNaN(utlBase.substring(start+1,utlBase.length))){
+            utlBase += '/'+ page;
+        }
+        else{
+            utlBase = utlBase.substring(0, start + 1)+ page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        urlSearchParams.set('name', `[[${name}]]`);
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function(value, key) {
+            if(dem==1){
+                urlParram += '?'+key+'='+value;
+            }
+            else if(dem>1){
+                urlParram += '&'+key+'='+value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+
+    function deleteIcon(id, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#popup-delete").modal('show');
+
+        $("#confirmDel").click(function() {
+            $("#popup-delete").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/noti-type/delete/${page}?id=${id}&pageSize=${pageSize}`;
+        });
+
+        $("#closeDel").click(function() {
+            $("#popup-delete").modal('hide');
+        });
+    }
+
+    //reset value search
+    var reset = document.querySelector('#reset')
+    reset.onclick = function(e){
+        e.preventDefault();
+        $('#name').val('');
+        $('#des').val('');
+    }
+</script>
+</body>
+</html>

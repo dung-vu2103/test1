@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/noti-type/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                    <div class="row">
+                        <div class="col-6 mt-3">
+                            <label for="name" style="font-weight: bold"><span>[[#{name}]]</span><span style="color:red"> *</span></label>
+                            <input type="text" id="name" th:field="*{name}" name="name" value="${name}"
+                                   class="form-control" aria-label="title" required>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label for="des" style="font-weight: bold"><span>[[#{des}]]</span></label>
+                            <input type="text" id="des" th:field="*{des}" name="des" value="${des}"
+                                   class="form-control" aria-label="title">
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-end justify-content-center pt-3" style="padding-left: 0 !important;">
+                        <a type="button" class="btn btn-success me-md-2 m-2" th:href="@{/noti-type/index}" th:text="#{back}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
+                        <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script">
+</script>
+</body>
+</html>

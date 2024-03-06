@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cms_layout_1.html}">
+
+<head>
+    <script th:src="@{/js/music/show-on-form.js}"></script>
+    <!-- header from the content page-->
+</head>
+<body id="page-top">
+<div class="content" layout:fragment="page_content">
+    <div class="container-fluid">
+    <div class="card card-default">
+        <div class="card-body">
+            <form id="form" th:action="@{/sys/partner/save}" class="create-role" method="post"
+                  th:object="${model}" enctype="multipart/form-data">
+                <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="name" style="font-weight: bold"><span>[[#{name}]] <span
+                                style="color: red;">*</span></span></label>
+                        <input type="text" id="name" name="name" th:field=*{name}
+                               class="form-control" required maxlength="45">
+                    </div>
+                </div>
+                <div class="col d-flex align-items-end justify-content-center pt-3"
+                     style="padding-left: 0 !important;">
+                    <button id="submitButton" type="submit" class="btn btn-primary me-md-2"
+                            th:text="#{save}"
+                            style="width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" layout:fragment="content_page_script">
+document.getElementById('form').addEventListener('submit', function (event) {
+    var submitButton = document.getElementById('submitButton');
+    submitButton.disabled = true;
+    setTimeout(function () {
+        submitButton.disabled = false;
+    }, 5000);
+});
+</script>
+</html>

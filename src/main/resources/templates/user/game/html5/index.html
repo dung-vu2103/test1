@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/game/html5/search}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="gameHtml5Name" style="font-weight: bold" th:text="#{gameHtml5Name}"></label>
+                            <input type="text" id="gameHtml5Name" th:value="${gameHtml5Name}?${gameHtml5Name}" name="gameHtml5Name"
+                                   class="form-control" th:placeholder="#{search}"
+                                   aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="gameHtml5Font" style="font-weight: bold" th:text="#{gameHtml5Font}"></label>
+                            <input type="text" id="gameHtml5Font" th:value="${gameHtml5Font}?${gameHtml5Font}" name="gameHtml5Font"
+                                   class="form-control" th:placeholder="#{search}" aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="gameHtml5Visible" style="font-weight: bold" th:text="#{gameHtml5Visible}"></label>
+                            <input type="number" id="gameHtml5Visible" th:value="${gameHtml5Visible}?${gameHtml5Visible}" name="gameHtml5Visible"
+                                   class="form-control" th:placeholder="#{search}" aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="gameHtml5Order" style="font-weight: bold" th:text="#{gameHtml5Order}"></label>
+                            <input type="number" id="gameHtml5Order" th:value="${gameHtml5Order}?${gameHtml5Order}" name="gameHtml5Order"
+                                   class="form-control" th:placeholder="#{search}" aria-label="Rule Name">
+                        </div>
+
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}"
+                               class="form-control" hidden>
+
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+
+                            <a th:href="@{/user/game/html5/create}" style="cursor: pointer;" class="btn btn-success mr-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{gameHtml5Name}"></th>
+                            <th class="text-center" scope="col" th:text="#{gameHtml5Font}"></th>
+                            <th class="text-center" scope="col" th:text="#{gameHtml5Order}"></th>
+                            <th class="text-center" scope="col" th:text="#{gameHtml5Visible}"></th>
+                            <th class="text-center" scope="col" th:text="#{createdAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model ,item:${models}">
+                            <th class="text-center" scope="row" style="font-weight: normal; color: #000000;"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
+                            </th>
+                            <td class="text-center">
+                                <a th:attr="onclick=|viewDetail('${model.id}')|" title="Detail">
+                                    <span th:text="${model.name}" style="color: #00709E; cursor: pointer;"></span>
+                                </a>
+                            </td>
+                            <td th:text="${model.link}"></td>
+                            <td class="text-center" th:text="${model.order}"></td>
+                            <td class="text-center" th:text="${model.visible}"></td>
+                            <td class="text-center" th:text="${model.createdDate}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:href="@{'/user/game/html5/update/' + ${model.id}}" class="btn" title="Update">
+                                        <i class="far fa-edit" style="color: #00709e;"></i>
+                                    </a>
+                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}')|"
+                                       style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-delete" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.delete.gameHTML5}"></p>
+                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup-active" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.active.iconPrize}"></p>
+                    <button class="btn btn-primary m-2" id="confirmActive" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeActive" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameHtml5-modal-xl" class="modal fade" th:fragment="gameHtml5_view">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" th:if="${model != null}">
+                <div class="text-center p-3" id="outPopup">
+                    <h3 style="color: #00709E;" th:text="#{title.game.html5.detail}"></h3>
+                    <div>
+                        <table class="table table-striped table-bordered detail-view">
+                            <tbody id="detail_author">
+                            <tr>
+                                <th style="text-align: left;" th:text="#{id}"></th>
+                                <td style="text-align: left;" th:text="${id}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{name}"></th>
+                                <td style="text-align: left;" th:text="${model.name}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{link}"></th>
+                                <td style="text-align: left;" th:text="${model.link}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{description}"></th>
+                                <td style="text-align: left;" th:text="${model.description}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{recommend}"></th>
+                                <td style="text-align: left;" th:text="${model.recommend}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{visible}"></th>
+                                <td style="text-align: left;" th:text="${model.visible}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{order}"></th>
+                                <td style="text-align: left;" th:text="${model.order}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{font}"></th>
+                                <td style="text-align: left;" >
+                                    <span th:if="${model.font != null}" th:text="${model.font}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconImage}"></th>
+                                <td style="text-align: left;">
+                                    <img th:if="${model.icon != null}" style="height: 300px;width: 500px" th:src="${@environment.getProperty('domain.nginx')} + ${model.icon}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{Banner}"></th>
+                                <td style="text-align: left;">
+                                    <img th:if="${model.banner != null}" style="height: 300px;width: 500px" th:src="${@environment.getProperty('domain.nginx')} + ${model.banner}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{createdAt}"></th>
+                                <td style="text-align: left;" th:text="${model.createdDate}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{updatedAt}"></th>
+                                <td style="text-align: left;" th:text="${model.uploadedDate}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+    $(document).ready(function() {});
+
+    //pagination
+    function linkpage(page){
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for(let i = 0; i < urlPage.length-1; i++){
+            if(urlPage.charAt(i) =='?'){
+                start = i;
+                break;
+            }
+        }
+        if(start > 0){
+            utlBase = urlPage.substring(0,start);
+            urlParram = urlPage.substring(start,urlPage.length);
+        }else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for(let i = urlPage.length-1; i > 0; i--){
+            if(urlPage.charAt(i) =='/'){
+                start = i;
+                break;
+            }
+        }
+        if(isNaN(utlBase.substring(start+1,utlBase.length))){
+            utlBase += '/'+ page;
+        }
+        else{
+            utlBase = utlBase.substring(0, start + 1)+ page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        urlSearchParams.set('gameHtml5Name', `[[${gameHtml5Name}]]`);
+        urlSearchParams.set('gameHtml5Font', `[[${gameHtml5Font}]]`);
+        urlSearchParams.set('gameHtml5Visible', `[[${gameHtml5Visible}]]`);
+        urlSearchParams.set('gameHtml5Order', `[[${gameHtml5Order}]]`);
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function(value, key) {
+            if(dem==1){
+                urlParram += '?'+key+'='+value;
+            }
+            else if(dem>1){
+                urlParram += '&'+key+'='+value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+
+    function deleteIcon(id, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#popup-delete").modal('show');
+
+        $("#confirmDel").click(function() {
+            $("#popup-delete").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/user/game/html5/delete/${page}?id=${id}&pageSize=${pageSize}`;
+        });
+
+        $("#closeDel").click(function() {
+            $("#popup-delete").modal('hide');
+        });
+    }
+
+    //reset value search
+    var reset = document.querySelector('#reset')
+    reset.onclick = function(e){
+        e.preventDefault();
+        document.querySelector('#gameHtml5Name').value = '';
+        document.querySelector('#gameHtml5Font').value = '';
+        document.querySelector('#gameHtml5Visible').value = '';
+        document.querySelector('#gameHtml5Order').value = '';
+    }
+
+    //View detail
+    function viewDetail(id){
+        console.log("Open Popup Detail: " + id);
+        $.get("[[@{/user/game/html5/detail/}]]" + id,
+            function(data, status) {
+                console.log(data);
+                $("#gameHtml5-modal-xl").replaceWith(data);
+                $("#gameHtml5-modal-xl").modal('show');
+            }
+        );
+    }
+</script>
+</body>
+</html>

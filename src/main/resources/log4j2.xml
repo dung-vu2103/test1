@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="trace">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n" />
+
+        </Console>
+
+        <RollingFile name="INFO" filename="logs/cms.log"   filepattern="logs/cms.%d{YYYY-MM-dd}.log.gz">
+            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="7" />
+        </RollingFile>
+        <RollingFile name="ERROR" filename="logs/cms-error.log"   filepattern="logs/cms-error.%d{YYYY-MM-dd}.log.gz">
+            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="300 MB" />
+            </Policies>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <DefaultRolloverStrategy max="2" />
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="INFO" />
+            <AppenderRef ref="ERROR" />
+        </Root>
+    </Loggers>
+</Configuration>
+

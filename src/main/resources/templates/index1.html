@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+
+    <style>
+        .cha {
+            border: 1px solid black;
+            border-collapse: collapse;
+        margin-left: auto;
+               }
+
+    </style>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <table class="table custom-table table-bordered">
+        <thead class="thead-light">
+        <tr>
+
+            <th class="text-center" scope="col" th:text="#{no}"></th>
+            <th class="text-center" scope="col" th:text="#{name}"></th>
+            <th class="text-center" scope="col" th:text="#{action}"></th>
+
+        </tr>
+        <tr th:each="admin,item : ${admins}">
+            <th class="text-center" scope="row" style="font-weight: normal; color: #000000;"
+                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
+            </th>
+            <td th:text="${admin.name}"></td>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    function linkpage(page) {
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for (let i = 0; i < urlPage.length - 1; i++) {
+            if (urlPage.charAt(i) == '?') {
+                start = i;
+                break;
+            }
+        }
+        if (start > 0) {
+            utlBase = urlPage.substring(0, start);
+            urlParram = urlPage.substring(start, urlPage.length);
+        } else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for (let i = urlPage.length - 1; i > 0; i--) {
+            if (urlPage.charAt(i) == '/') {
+                start = i;
+                break;
+            }
+        }
+        if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+            utlBase += '/' + page;
+        } else {
+            utlBase = utlBase.substring(0, start + 1) + page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        urlSearchParams.set('name', `[[${name}]]`);
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function (value, key) {
+            if (dem == 1) {
+                urlParram += '?' + key + '=' + value;
+            } else if (dem > 1) {
+                urlParram += '&' + key + '=' + value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+</script>
+</body>
+</html>

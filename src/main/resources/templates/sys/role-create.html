@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  PAGE CSS SECTION  -->
+    <!--  PAGE SCRIPT SECTION  -->
+</head>
+<body>
+    <!-- Main content -->
+    <div class="content" layout:fragment="page_content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-body">
+                    <form id="form-create-role" th:action = "@{/sys/role/update}" onsubmit="" method="post" th:object = ${role}>
+                        <input type="text" id="id" readonly hidden th:field =*{id} name="id">
+
+                        <div class="row mb-3">
+                            <div class='col-12 col-md-6 mb-3'>
+                                <label for="name" style="font-weight: bold" > [[#{perName}]] <span style="color:red"> *</span></label>
+                                <input type="text" id="name" th:field =*{roleName} name="roleName" class="form-control" th:placeholder="#{name}" aria-label="Name" required>
+                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('roleName')}" th:errors="*{roleName}"></p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class='col-12 col-md-6 mb-3'>
+                                <label for="Description" style="font-weight: bold" th:text="#{des}">[[#{des}]]</label>
+                                <input type="text" id="Description" th:field =*{description} name="des" class="form-control" th:placeholder="#{des}" aria-label="Description">
+                            </div>
+                        </div>
+
+                       <div class="row mb-3">
+                           <div class='col-6 col-md-6 d-flex justify-content-center'>
+                               <button type="submit" class="btn btn-primary" th:text="#{save}"></button>
+                           </div>
+                       </div>
+                    </form>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- PAGE JAVASCRIPT CODE -->
+    <script layout:fragment="content_page_script"></script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/game/icon-prize/search}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="iconName" style="font-weight: bold" th:text="#{iconName}"></label>
+                            <input type="text" id="iconName" th:value="${iconName}?${iconName}" name="iconName"
+                                   class="form-control" th:placeholder="#{search}"
+                                   aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="iconCode" style="font-weight: bold" th:text="#{iconCode}"></label>
+                            <input type="text" id="iconCode" th:value="${iconCode}?${iconCode}" name="iconCode"
+                                   class="form-control" th:placeholder="#{search}"
+                                   aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="iconActive" style=" font-weight: bold" th:text="#{iconActive}"></label>
+                            <select class="form-control" type="text" id="iconActive" name="iconActive" th:placeholder="#{all}">
+                                <option value='' th:text="#{all}" th:selected="${iconActive == ''}"></option>
+                                <option value='1' th:text="#{active}" th:selected="${iconActive == 1}"></option>
+                                <option value='0' th:text="#{unactive}" th:selected="${iconActive == 0}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-3 my-2">
+                            <label for="iconType" style=" font-weight: bold" th:text="#{iconType}"></label>
+                            <select class="form-control" type="text" id="iconType" name="iconType" th:placeholder="#{all}">
+                                <option value='' th:text="#{all}" th:selected="${iconType == ''}"></option>
+                                <option value="Data" th:text="#{data}" th:selected="${iconType == 'Data'}"></option>
+                                <option value="Money" th:text="#{money}" th:selected="${iconType == 'Money'}"></option>
+                                <option value="Icon" th:text="#{icon}" th:selected="${iconType == 'Icon'}"></option>
+                            </select>
+                        </div>
+
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}"
+                               class="form-control" hidden>
+
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+
+                            <a th:href="@{/user/game/icon-prize/create}" style="cursor: pointer;" class="btn btn-success mr-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{iconImage}"></th>
+                            <th class="text-center" scope="col" th:text="#{iconCode}"></th>
+                            <th class="text-center" scope="col" th:text="#{iconName}"></th>
+                            <th class="text-center" scope="col" th:text="#{iconActive}"></th>
+                            <th class="text-center" scope="col" th:text="#{iconType}"></th>
+                            <th class="text-center" scope="col" th:text="#{createdAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model ,item:${models}">
+                            <th class="text-center" scope="row" style="font-weight: normal; color: #000000;"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
+                            </th>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <img class="dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                         style="height: 35px; width:35px" th:src="${@environment.getProperty('domain.cms')} + ${model.link_icon}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img style="height: 200px; width:200px" th:src="${@environment.getProperty('domain.cms')} + ${model.link_icon}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <a th:attr="onclick=|viewDetail('${model.id}')|" title="Detail">
+                                    <span th:text="${model.code}" style="color: #00709E; cursor: pointer;"></span>
+                                </a>
+                            </td>
+                            <td th:text="${model.name}"></td>
+                            <td class="text-center">
+                                <span th:if="${model.active == 1}" th:title="#{active}"><i class="far fa-check-circle" style="color: green;"></i></span>
+                                <span th:if="${model.active == 0}" th:title="#{unactive}"><i class="fas fa-circle" style="color: red;"></i></span>
+                            </td>
+                            <td class="text-center" th:text="${model.type}"></td>
+                            <td class="text-center" th:text="${#dates.format(model.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:href="@{'/user/game/icon-prize/update/' + ${model.id}}" class="btn" title="Update">
+                                        <i class="far fa-edit" style="color: #00709e;"></i>
+                                    </a>
+                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}')|"
+                                       style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </a>
+
+                                    <a th:attr="onclick=|activeIcon('${model.id}','${model.active}', '${currentPage}', '${pageSize}')|" style="cursor: pointer;" class="btn">
+                                        <span th:if="${model.active == 1}" title="Block"><i class="fas fa-toggle-off" style="font-size: 20px;  color: red;"></i></span>
+                                        <span th:if="${model.active == 0}" title="Active"><i class="fas fa-toggle-on" style="font-size: 20px; color: green;"></i></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-delete" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.delete.iconPrize}"></p>
+                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup-active" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.active.iconPrize}"></p>
+                    <button class="btn btn-primary m-2" id="confirmActive" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeActive" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="iconPrize-modal-xl" class="modal fade" th:fragment="iconPrize_view">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" th:if="${model  != null}">
+                <div class="text-center p-3" id="outPopup">
+                    <h3 style="color: #00709E;" th:text="#{title.game.icon-prize.detail}"></h3>
+                    <div>
+                        <table class="table table-striped table-bordered detail-view">
+                            <tbody id="detail_author">
+                            <tr>
+                                <th style="text-align: left;" th:text="#{id}"></th>
+                                <td style="text-align: left;" th:text="${id}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconName}"></th>
+                                <td style="text-align: left;" th:text="${model.name}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconCode}"></th>
+                                <td style="text-align: left;" th:text="${model.code}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconActive}"></th>
+                                <td style="text-align: left;">
+                                    <span th:if="${model.active == 0}" th:text="#{unactive}"></span>
+                                    <span th:if="${model.active == 1}" th:text="#{active}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconType}"></th>
+                                <td style="text-align: left;" th:text="${model.type}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{iconImage}"></th>
+                                <td style="text-align: left;">
+                                    <img th:if="${model.link_icon != null}" style="height: 300px;width: 300px" th:src="${@environment.getProperty('domain.nginx')} + ${model.link_icon}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{createdAt}"></th>
+                                <td style="text-align: left;" th:text="${#dates.format(model.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{updatedAt}"></th>
+                                <td style="text-align: left;" th:text="${#dates.format(model.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    //CUSTOM SCRIPT
+    $(document).ready(function() {});
+
+    //pagination
+    function linkpage(page){
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for(let i = 0; i < urlPage.length-1; i++){
+            if(urlPage.charAt(i) =='?'){
+                start = i;
+                break;
+            }
+        }
+        if(start > 0){
+            utlBase = urlPage.substring(0,start);
+            urlParram = urlPage.substring(start,urlPage.length);
+        }else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for(let i = urlPage.length-1; i > 0; i--){
+            if(urlPage.charAt(i) =='/'){
+                start = i;
+                break;
+            }
+        }
+        if(isNaN(utlBase.substring(start+1,utlBase.length))){
+            utlBase += '/'+ page;
+        }
+        else{
+            utlBase = utlBase.substring(0, start + 1)+ page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        urlSearchParams.set('iconName', `[[${iconName}]]`);
+        urlSearchParams.set('iconCode', `[[${iconCode}]]`);
+        urlSearchParams.set('iconActive', `[[${iconActive}]]`);
+        urlSearchParams.set('iconType', `[[${iconType}]]`);
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function(value, key) {
+            if(dem==1){
+                urlParram += '?'+key+'='+value;
+            }
+            else if(dem>1){
+                urlParram += '&'+key+'='+value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+
+    function deleteIcon(id, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#popup-delete").modal('show');
+
+        $("#confirmDel").click(function() {
+            $("#popup-delete").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/user/game/icon-prize/delete/${page}?id=${id}&pageSize=${pageSize}`;
+        });
+
+        $("#closeDel").click(function() {
+            $("#popup-delete").modal('hide');
+        });
+    }
+
+    function activeIcon(id, status, page, pageSize) {
+        if(page == null || page == "" || page == "null")
+            page = 1;
+        if(pageSize == null || pageSize == "" || pageSize == "null")
+            pageSize = 10;
+
+        $("#popup-active").modal('show');
+
+        $("#confirmActive").click(function() {
+            $("#popup-active").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/user/game/icon-prize/active-block/${page}?status=${status}&id=${id}&pageSize=${pageSize}`;
+        });
+
+        $("#closeActive").click(function() {
+            $("#popup-active").modal('hide');
+        });
+    }
+
+    //reset value search
+    var reset = document.querySelector('#reset')
+    reset.onclick = function(e){
+        e.preventDefault();
+        document.querySelector('#iconName').value = '';
+        document.querySelector('#iconCode').value = '';
+        document.querySelector('#iconActive').value = '';
+        document.querySelector('#iconType').value = '';
+    }
+
+    //View detail
+    function viewDetail(id){
+        console.log("Open Popup Detail: " + id);
+        $.get("[[@{/user/game/icon-prize/detail/}]]" + id,
+            function(data, status) {
+                console.log(data);
+                $("#iconPrize-modal-xl").replaceWith(data);
+                $("#iconPrize-modal-xl").modal('show');
+            }
+        );
+    }
+</script>
+</body>
+</html>

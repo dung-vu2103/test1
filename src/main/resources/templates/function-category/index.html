@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/function-category/index}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="titleCate" style="font-weight: bold" th:text="#{title}"></label>
+                            <input type="text" id="titleCate" th:value="${titleCate}?${titleCate}" name="titleCate"
+                                   class="form-control" aria-label="Rule Name">
+                        </div>
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="deeplink" style="font-weight: bold" th:text="#{deeplink}"></label>
+                            <input type="text" id="deeplink" th:value="${deeplink}?${deeplink}" name="deeplink"
+                                   class="form-control" aria-label="Rule Name">
+                        </div>
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="enable" style=" font-weight: bold" th:text="#{enable}"></label>
+                            <select class="form-control" type="text" id="enable" name="enable">
+                                <option value='' th:text="#{all}"></option>
+                                <option value='0' th:selected="${enable == 0}">Off</option>
+                                <option value='1' th:selected="${enable == 1}">On</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="type" style=" font-weight: bold" th:text="#{type}"></label>
+                            <select class="form-control" type="text" id="type" name="type">
+                                <option value='' th:text="#{all}"></option>
+                                <option value='0' th:selected="${type == 0}">In webview</option>
+                                <option value='1' th:selected="${type == 1}">In app</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+
+                            <a th:href="@{/function-category/create}" style="cursor: pointer;" class="btn btn-success m-2">
+                                <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{priority}"></th>
+                            <th class="text-center" scope="col" th:text="#{icon}"></th>
+                            <th class="text-center" scope="col" th:text="#{title}"></th>
+                            <th class="text-center" scope="col" th:text="#{enable}"></th>
+                            <th class="text-center" scope="col" th:text="#{type}"></th>
+                            <th class="text-center" scope="col" th:text="#{deeplink}"></th>
+                            <th class="text-center" scope="col" th:text="#{createdAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{updatedAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model, item:${models}">
+                            <td th:text="${model.priority}"></td>
+                            <td>
+                                <div class="dropdown" th:if="${model.icon != null && model.icon != ''}">
+                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                         style="height: 35px" th:src="${model.icon}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img style="height: 200px" th:src="${model.icon}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td th:text="${model.title}"></td>
+                            <td class="text-center">
+                                <span th:if="${model.enable == 0}">Off</span>
+                                <span th:if="${model.enable == 1}">On</span>
+                            </td>
+                            <td class="text-center">
+                                <span th:if="${model.type == 0}">In webview</span>
+                                <span th:if="${model.type == 1}">In app</span>
+                            </td>
+                            <td th:text="${model.deeplink}"></td>
+                            <td class="text-center" th:text="${#dates.format(model.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center" th:text="${#dates.format(model.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:href="@{'/function-category/update/' + ${model.id}}" class="btn" title="Update">
+                                        <i class="far fa-edit" style="color: #00709e;"></i>
+                                    </a>
+                                    <a th:attr="onclick=|deleteIcon('${model.id}')|"
+                                       style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-delete" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p th:text="#{popup.delete}"></p>
+                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    function deleteIcon(id) {
+        $("#popup-delete").modal('show');
+
+        $("#confirmDel").click(function() {
+            $("#popup-delete").modal('hide');
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/function-category/delete?id=${id}`;
+        });
+
+        $("#closeDel").click(function() {
+            $("#popup-delete").modal('hide');
+        });
+    }
+
+    //reset value search
+    var reset = document.querySelector('#reset')
+    reset.onclick = function(e){
+        e.preventDefault();
+        $('#titleCate').val('');
+        $('#deeplink').val('');
+        $('#enable').val('');
+        $('#type').val('');
+    }
+</script>
+</body>
+</html>

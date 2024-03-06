@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4" style="display: flex;justify-content: center;">
+                        <img style="max-width:100px;" th:src="@{/img/hdsdhome.jpeg}" alt="Home">
+                    </div>
+                    <div class="col-md-8" style="text-align: center;">
+                        <h4>Title: Change the display position of boxes in Home</h4>
+                        <h5>Content: Change the position of Livestream, Video, Game, Movie, Music boxes in Home.</h5>
+                        <p>Example: You can change the Game to display first, middle or last.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{priority}"></th>
+                            <th class="text-center" scope="col" th:text="#{category}"></th>
+                            <th class="text-center" scope="col" th:text="#{createdDate}"></th>
+                            <th class="text-center" scope="col" th:text="#{modified}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model ,item:${models}">
+                            <td class="text-center" th:text="${model.priority}"></td>
+                            <td class="text-center" th:text="${model.category}"></td>
+                            <td class="text-center" th:text="${#dates.format(model.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center" th:text="${#dates.format(model.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center">
+                                <div>
+                                    <a id="priority" class="btn" title="Priority"
+                                       th:onclick="'priority(\'' + ${model.id} + '\', \'' + ${model.priority} + '\')'">
+                                        <i class="far fa-edit" style="color: #00709e;"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+    <div id="popup-priority" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="text-center">
+                    <p style="font-weight: bold">[[#{priority}]]<span style="color:red"> *</span></p>
+                    <form th:action="@{/home-category/priority}" method="post">
+                        <input type="hidden" id="id-popup" name="id">
+                        <input type="hidden" id="priority-old" name="priority-old">
+                        <div class="row">
+                            <div class="col-12 px-5">
+                                <input type="number" name="priority-new" id="priority-new"
+                                       min="1" max="${max}" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary m-2" id="confirmDel" th:text="#{apply}">Apply</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED SCRIPTS -->
+<script layout:fragment="content_page_script" >
+    function priority(id, priority) {
+        $("#popup-priority").modal('show');
+        $("#id-popup").val(id);
+        $("#priority-new").val(priority);
+        $("#priority-old").val(priority);
+    }
+</script>
+</body>
+</html>

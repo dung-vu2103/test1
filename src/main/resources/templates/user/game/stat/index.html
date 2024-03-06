@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- header from the content page-->
+    <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    <style>
+        /*css cho select2 resposive*/
+        span.select2-container {
+            width: unset !important;
+        }
+    </style>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
+</head>
+
+<body id="page-top">
+<div class="router_inner" layout:fragment="page_content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/user/game/stat/search}" method="get">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3 form-group">
+                            <label for="gameId"><span>[[#{GameName}]]</span></label>
+                            <select id="gameId" name="gameId" class="form-control select2bs4">
+                                <option th:value="${gameId}" th:text="${gameName}" th:selected="${gameId}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 col-md-6 mb-3">
+                            <label for="reservation" th:text="#{date}"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                  </span>
+                                </div>
+                                <input type="text" class="form-control float-right" id="reservation" name="publishedTime">
+                            </div>
+                        </div>
+
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}" class="form-control" hidden>
+
+                        <div class="col-12 text-center col-md-12 my-3">
+                            <button type="submit" class="btn btn-success  m-2">
+                                <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
+                            </button>
+
+                            <button id="reset" type="reset" value="Reset" class="btn btn-success m-2">
+                                <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
+                            </button>
+
+                            <a href="#" id="export" style="cursor: pointer;" class="btn btn-success m-2" onclick="exportExcel()">
+                                <i class="fa-solid fa-file-export"></i><span class="px-2" th:text="#{export}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table class="table custom-table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{game}"></th>
+                            <th class="text-center" scope="col" th:text="#{getScore}"></th>
+                            <th class="text-center" scope="col" th:text="#{submit}"></th>
+                            <th class="text-center" scope="col" th:text="#{userNumber}"></th>
+                            <th class="text-center" scope="col" th:text="#{date}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model, item:${models}">
+                            <td class="text-center" scope="row"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
+                            </td>
+                            <td th:text="${model.gameHtml5.name}"></td>
+                            <td class="text-center" th:text="${model.getScore}"></td>
+                            <td class="text-center" th:text="${model.submit}"></td>
+                            <td class="text-center" th:text="${model.userNumber}"></td>
+                            <td class="text-center" th:text="${model.date}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup Start-->
+</div>
+</body>
+
+<!-- REQUIRED SCRIPTS -->
+
+<script layout:fragment="content_page_script" th:inline="javascript">
+    //CUSTOM SCRIPT
+    $(document).ready(function() {
+        var reset = document.querySelector('#reset')
+        reset.onclick = function(e){
+            e.preventDefault();
+            var selectGameIdElement = document.querySelector('#gameId');
+            while (selectGameIdElement.firstChild) {
+                selectGameIdElement.removeChild(selectGameIdElement.firstChild);
+            }
+            $('#reservation').val('');
+        }
+
+        $('#gameId').select2({
+            ajax: {
+                type: 'GET',
+                url: 'gameId-ajax-search',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        input_: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            placeholder: [[#{select2.gameId}]],
+            minimumInputLength: 0,
+            allowClear: true
+        });
+
+        if ([[${publishedTime}]] == null || [[${publishedTime}]] == '') {
+            $('#reservation').val('');
+        } else {
+            $('#reservation').val([[${publishedTime}]]);
+        }
+    });
+
+    function linkpage(page){
+        console.log(page);
+        var urlPage = window.location.href;
+        var utlBase = '';
+        var urlParram = '';
+        let start = 0;
+        for(let i = 0; i < urlPage.length-1; i++){
+            if(urlPage.charAt(i) =='?'){
+                start = i;
+                break;
+            }
+        }
+        if(start > 0){
+            utlBase = urlPage.substring(0,start);
+            urlParram = urlPage.substring(start,urlPage.length);
+        }else {
+            utlBase = urlPage;
+        }
+        console.log(page);
+        start = 0;
+        for(let i = urlPage.length-1; i > 0; i--){
+            if(urlPage.charAt(i) =='/'){
+                start = i;
+                break;
+            }
+        }
+        if(isNaN(utlBase.substring(start+1,utlBase.length))){
+            utlBase += '/'+ page;
+        }
+        else{
+            utlBase = utlBase.substring(0, start + 1)+ page;
+        }
+        var pageSize = document.getElementById('pageSizeInput').value;
+        var urlSearchParams = new URLSearchParams(urlPage);
+        // Thay đổi giá trị của tham số pageSize
+        urlSearchParams.set('pageSize', pageSize);
+        if ([[${gameId}]] == null) {
+            var gameIdText = '';
+            urlSearchParams.set('gameId', gameIdText);
+        } else {
+            urlSearchParams.set('gameId', [[${gameId}]]);
+        }
+
+        if ([[${publishedTime}]] == null) {
+            var publishedTimeText = '';
+            urlSearchParams.set('publishedTime', publishedTimeText);
+        } else {
+            urlSearchParams.set('publishedTime', [[${publishedTime}]]);
+        }
+        var dem = 0;
+        urlParram = '';
+        urlSearchParams.forEach(function(value, key) {
+            if(dem==1){
+                urlParram += '?'+key+'='+value;
+            }
+            else if(dem>1){
+                urlParram += '&'+key+'='+value;
+            }
+            dem++;
+        });
+        console.log(urlParram);
+        var newUrl = utlBase + urlParram;
+        window.location.href = newUrl;
+    }
+
+    var tabPressed = false; // Biến để kiểm tra xem bạn đã bấm tab ra ngoài chưa
+    $('#reservation').daterangepicker()
+        .on('apply.daterangepicker', function(ev, picker) {
+            var startDate = picker.startDate.format('yyyy-MM-DD');
+            var endDate = picker.endDate.format('yyyy-MM-DD');
+
+            // Gán giá trị vào trường nhập liệu sau khi người dùng đã chọn phạm vi ngày
+            $('#reservation').val(startDate + ' - ' + endDate);
+        })
+        .on('cancel.daterangepicker', function() {
+            $('#reservation').val('');
+        })
+        .on('keydown.daterangepicker', function(e) {
+            if (e.key === 'Tab') {
+                tabPressed = true;
+                $('#reservation').val('');
+            }
+        })
+        .on('hide.daterangepicker', function() {
+            if (!tabPressed) {
+                $('#reservation').val('');
+            }
+            tabPressed = false;
+        });
+
+    function exportExcel() {
+        var gameId = document.getElementById("gameId").value;
+        var dateRanger = document.getElementById("reservation").value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', [[${@environment.getProperty('server.servlet.context-path')}]] + '/user/game/stat/export', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'blob';
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var blob = xhr.response;
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'exported-file.xlsx'; // Tên tệp Excel tải xuống
+                link.click();
+            }
+        };
+        var data = 'gameId=' + encodeURIComponent(gameId) +
+            '&dateRanger=' + encodeURIComponent(dateRanger);
+        xhr.send(data);
+    }
+
+</script>
+</body>
+</html>

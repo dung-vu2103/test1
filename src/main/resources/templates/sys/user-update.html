@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Main Content -->
+        <div id="content" layout:fragment="page_content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid" >
+
+                <div class="router">
+                    <div class="router_inner">
+                        <div class="container-fluid" >
+                            <div class="card card-default">
+                                <div class="card-body">
+                                    <form id="form-create-user" th:action="@{/sys/user/update}" class="create-role"
+                                          method="post" th:object="${user}">
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-md-4 mb-3">
+                                                <label for="email" style="font-weight: bold">Email <span style="color:red"> *</span></label>
+                                                <input type="text" id="email" th:field=*{email} name="email"
+                                                       class="form-control" placeholder="email@gmail.com"
+                                                       aria-label="email" required>
+                                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('email')}"
+                                                   th:errors="*{email}"></p>
+                                            </div>
+                                            <div class="col-12 col-md-4 mb-3">
+                                                <input type="text" id="id" th:field=*{id} name="id" hidden
+                                                       class="form-control" aria-label="name">
+                                                <!--                    <label for="name">Họ và tên <span style="color:red">*</span></label>-->
+                                                <label for="name" style="font-weight: bold">[[#{name}]] <span style="color:red"> *</span></label>
+
+                                                <input type="text" id="name" th:field=*{name} name="name"
+                                                       class="form-control" aria-label="name"
+                                                       required>
+                                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('name')}"
+                                                   th:errors="*{name}"></p>
+                                            </div>
+                                            <div class="col-12 col-md-4 mb-3">
+                                                <label for="phone" style="font-weight: bold">[[#{phone}]] <span style="color:red"> *</span></label>
+                                                <input type="text" id="phone" th:field=*{phone} name="phone"
+                                                       class="form-control" placeholder="670xxxxxxxx" aria-label="Fullname"
+                                                       required>
+                                                <p style="color:red;font-size:12px;" th:if="${#fields.hasErrors('phone')}"
+                                                   th:errors="*{phone}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label for="channelId" style="font-weight: bold"><span>[[#{channelName}]] <span style="color: red;">*</span></span></label>
+                                                <select id="channelId" name="channelId" th:field=*{channelId} class="form-control" required>
+                                                    <option th:value="${user.channelId}" th:text="${user.channelId + ' - ' + channelName}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col">
+                                                <label for="username" style="font-weight: bold"><span>Username <span style="color: red;">*</span></span></label>
+                                                <input type="text" id="username" th:field=*{username} name="username"
+                                                       class="form-control" placeholder="username" required aria-label="username">
+                                            </div>
+                                        </div>
+                                        <div class="col d-flex align-items-end justify-content-center pt-3"
+                                             style="padding-left: 0 !important;">
+                                            <!--                                    <button type="submit" class="btn btn-primary me-md-2" th:text="#{save}"></button>-->
+                                            <button type="submit" class="btn btn-primary" th:text="#{save}" style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <script layout:fragment="content_page_script">
+        //CUSTOM SCRIPT
+        $(document).ready(function() {
+            $('#channelId').select2({
+                ajax: {
+                    type: 'POST',
+                    url: '[[${@environment.getProperty('server.servlet.context-path')}]]/sys/user/ajax-search-province',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            input_province: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: `[[#{select2.channel}]]`,
+                minimumInputLength: 1,
+                allowClear: true
+            });
+        });
+    </script>
+</body>
+</html>

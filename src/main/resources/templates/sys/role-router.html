@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{kakoak_layout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  PAGE CSS SECTION  -->
+    <!--  PAGE SCRIPT SECTION  -->
+</head>
+<body>
+    <!-- Main content -->
+    <div class="content" layout:fragment="page_content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td style="font-weight: bold;" th:text="#{name}">Name</td>
+                                <td colspan="2" th:text="${role.roleName}">agent</td>
+                            </tr>
+
+                            <tr>
+                                <td style="font-weight: bold;" th:text="#{des}">Description</td>
+                                <td colspan="2" th:text="${role.description}?:'Not set'"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex flex-row ">
+                        <div class="d-flex flex-column col-5 text-center">
+                            <div class="table_router_left">
+                                <input type="text" id="myInput1" onkeyup="searchFunction1()"
+                                       th:placeholder="#{searchForAvailable}" class="form-control">
+                                <br>
+                                <form th:action="@{/sys/router-role/create}" method="post" id="formActive">
+                                    <input name="id" th:field=${role.id} hidden readonly>
+                                    <select id="mySelect1" size="20" name="router1" multiple required class="form-control">
+                                        <option th:each="router,istat:${routers}" th:value="${router.id}"
+                                                th:text="${router.description+': '+router.router_link}"></option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column col-2 text-center align-self-center">
+                            <button type="submit" id="arrow_forward" th:attr="onclick=|submit1()|">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <br>
+                            <button type="submit" id="arrow_back" th:attr="onclick=|submit2()|">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex flex-column col-5">
+                            <div class="table_router_right">
+                                <input type="text" id="myInput2" onkeyup="searchFunction2()" class="form-control"
+                                       th:placeholder="#{searchForAssigned}">
+                                <br>
+                                <form th:action="@{/sys/router-role/delete}" method="post" id="formUnActive">
+                                    <input name="id" th:field=${role.id} hidden readonly>
+                                    <select id="mySelect2" name="router2" size="20" multiple required class="form-control">
+                                        <option th:each="routerRole,istat:${routerRoles}"
+                                                th:value="${routerRole.id}"
+                                                th:text="${routerRole.router.description +': '+ routerRole.router.router_link}"></option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- PAGE JAVASCRIPT CODE -->
+    <script layout:fragment="content_page_script">
+        function openModalActive() {
+            $('#modalActive').modal('show');
+        }
+
+        function openModalBlock() {
+            $('#modalBlock').modal('show');
+        }
+
+        function submit1() {
+            var form = document.getElementById("formActive");
+            document.getElementById("arrow_forward").disabled = true;
+            form.submit();
+        }
+
+        function submit2() {
+            var form = document.getElementById("formUnActive");
+            document.getElementById("arrow_back").disabled = true;
+            form.submit();
+        }
+
+        function delete1(id) {
+            //var result = confirm("Bạn có thực sự muốn xóa không?");
+            var confirmationDelete = document.getElementById('langVars').getAttribute('data-confirmation-delete');
+            var result = confirm(confirmationDelete);
+
+            if (result) {
+                //Logic to delete the item
+                window.location.href = '/' + window.location.pathname.split('/')[1] + `/role/delete/${id}`;
+            }
+        }
+
+        function createrole() {
+            //Logic to delete the item
+            window.location.href = '/' + window.location.pathname.split('/')[1] + `/role/create`;
+        }
+
+        function update(id) {
+            //Logic to delete the item
+            window.location.href = '/' + window.location.pathname.split('/')[1] + `/role/update/${id}`;
+        }
+
+        function searchFunction1() {
+            // Lấy giá trị của input text và chuyển đổi thành chữ thường
+            var input, filter, select, options, i, txtValue;
+            input = document.getElementById("myInput1");
+            filter = input.value.toLowerCase();
+            // Lấy Select option
+            select = document.getElementById("mySelect1");
+            // Lấy tất cả các option
+            options = select.getElementsByTagName("option");
+            // Duyệt qua từng option và ẩn hoặc hiện tùy thuộc vào kết quả tìm kiếm
+            for (i = 0; i < options.length; i++) {
+                txtValue = options[i].text;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+
+        function searchFunction2() {
+            // Lấy giá trị của input text và chuyển đổi thành chữ thường
+            var input, filter, select, options, i, txtValue;
+            input = document.getElementById("myInput2");
+            filter = input.value.toLowerCase();
+            // Lấy Select option
+            select = document.getElementById("mySelect2");
+            // Lấy tất cả các option
+            options = select.getElementsByTagName("option");
+            // Duyệt qua từng option và ẩn hoặc hiện tùy thuộc vào kết quả tìm kiếm
+            for (i = 0; i < options.length; i++) {
+                txtValue = options[i].text;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+
+        function openModalReset() {
+            $('#resetpassword').modal('show');
+        }
+
+        function disableResetPassword() {
+            document.getElementById("resetpasswordform").submit();
+            document.getElementById("resetpasswordform").querySelector("button[type='submit']").disabled = true;
+        }
+    </script>
+</body>
+</html>

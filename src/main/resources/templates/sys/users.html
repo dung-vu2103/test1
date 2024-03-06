@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{kakoak_layout.html}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  PAGE CSS SECTION  -->
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    <!--  PAGE SCRIPT SECTION  -->
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+</head>
+<body id="page-top">
+    <div class="content" layout:fragment="page_content">
+    <div class="container-fluid" >
+        <div class="card card-default">
+            <div class="card-body">
+                <form th:action="@{/sys/user/search}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-4 my-2">
+                            <label for="username" style="font-weight: bold">Email</label>
+                            <input type="text" id="username" th:value="${email}?${email}" name="email"
+                                   class="form-control" placeholder="email@gmail.com"
+                                   aria-label="Rule Name">
+                        </div>
+
+                        <div class="col-12 col-md-4 my-2">
+                            <label for="name" style="font-weight: bold" th:text="#{name}"></label>
+                            <input type="text" id="name" name="name" th:value="${name}?${name}"
+                                   class="form-control" th:placeholder="#{name}" aria-label="Rule Name">
+                        </div>
+
+                        <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}" class="form-control" hidden>
+
+                        <div class="col-12 col-md-4 my-2">
+                            <label for="sdt" style="font-weight: bold" th:text="#{phone}"></label>
+                            <input type="text" id="sdt" name="phone-number" th:value="${phone}?${phone}"
+                                   class="form-control" th:placeholder="#{phone}">
+                        </div>
+
+                        <div class="col-12 text-center pt-3">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-primary m-2">
+                                <i class="fas fa-search"></i>
+                                <span class="px-2" th:text="#{search}"></span>
+                            </button>
+                            <a th:href="@{/sys/user/create}" style="cursor: pointer;" class="m-2 btn btn-primary" th:unless="${checkAddNewUser}">
+                                <i class="fas fa-plus"></i>
+                                <span class="px-2" th:text="#{addNew}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" >
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="table_router">
+                    <table id="contentTableData" class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col" th:text="#{no}"></th>
+                            <th class="text-center" scope="col" th:text="#{name}"></th>
+                            <th class="text-center" scope="col">Email</th>
+                            <th class="text-center" scope="col" th:text="#{phone}"></th>
+                            <th class="text-center" scope="col" th:text="#{per}"></th>
+                            <th class="text-center" scope="col" th:text="#{crAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{upAt}"></th>
+                            <th class="text-center" scope="col" th:text="#{action}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user,item:${users}">
+                            <td class="text-center"
+                                th:text="${item.index + pageSize*currentPage - (pageSize-1)}">
+                            </td>
+                            <td>
+                                <div th:unless="${user.phone == 'Not set'}">
+                                    <a th:href="@{'/sys/user/view/'+${user.id}}">
+                                        <span th:text="${user.name}"></span>
+                                    </a>
+                                </div>
+                            </td>
+                            <td th:text="${user.email}">Mark</td>
+                            <td class="text-center" th:text="${user.phone}">Otto</td>
+                            <td class="text-center" th:text="${accountType.get(item.index)}"></td>
+                            <td class="text-center">
+                                <span th:text="${#dates.format(user.createdDate, 'dd-MM-yyyy')}"></span>
+                                <br/>
+                                <span th:text="${#dates.format(user.createdDate, 'HH:mm:ss')}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span th:text="${#dates.format(user.modifiedDate, 'dd-MM-yyyy')}"></span>
+                                <br/>
+                                <span th:text="${#dates.format(user.modifiedDate, 'HH:mm:ss')}"></span>
+                            </td>
+                            <td class="text-center">
+                                <div>
+                                    <a th:attr="onclick='resetpassword1(\'' + ${user.id} + '\', \'' + ${user.name} + '\')'" title="Change password" class="btn">
+                                        <i class="fa fa-key" style="cursor: pointer; color: #00709e;"></i>
+                                    </a>
+                                    <a th:href="@{'/sys/user/update/' + ${user.id}}" title="Update" class="btn">
+                                        <i class="far fa-edit" style="color: #00709e;"></i>
+                                    </a>
+                                    <button th:attr="onclick=|delete1('${user.id}', '${currentPage}', '${pageSize}')|" style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:replace="common :: table_paging2"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resetpassword" tabindex="-1"  role="dialog"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content p-4">
+                <div class="modal-header p-0">
+                    <div class="router_title my-0">
+                        <h3 th:text="#{upPass}">Đổi mật khẩu</h3>
+                    </div>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="alert-danger" role="alert" th:text="${errorpass}" th:if="${errorpass}"></div>
+                    <div class="col px-0 mt-3">
+                        <h4 style="font-weight: bold;color: #00709E;" id = "nameModal"></h4>
+                    </div>
+                    <form th:action="@{/sys/user/resetpassword}" id="resetpasswordform" method="POST">
+                        <input type="text" hidden name="userId" id="userId">
+                        <div class="col px-0 mb-3 pt-4">
+                            <label for="passnew" th:text="#{newPass}" style="font-weight: bold">Mật khẩu mới <span style="color:red"> *</span></label>
+                            <input type="password" id="passnew" name="passwordnew" class="form-control" placeholder="Mật khẩu" aria-label="Rule Name" required>
+                        </div>
+                        <div class="col px-0 mb-3 pt-4">
+                            <label for="retail" th:text="#{cfPass}" style="font-weight: bold">Xác nhận mật khẩu <span style="color:red"> *</span></label>
+                            <input type="password" id="retail" name="passwordnew2" class="form-control"  aria-label="Rule Name" required>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="submit" th:attr="onclick=|disableResetPassword()|" class="btn btn-primary" th:value="#{save}">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog modal-sm-2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm deletion</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmText" th:text="#{confirmDeletePop}">One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary m-2" id="confirmButtonDel" th:text="#{ok}">OK</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="delete-modal-sm">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" th:text="#{action.todo}"></h4>
+                    <!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                    <!--                        <span aria-hidden="true">&times;</span>-->
+                    <!--                    </button>-->
+                </div>
+                <div class="modal-body">
+                    <p th:text="#{apply.delete}"></p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="apply" type="button" class="btn btn-primary" th:text="#{apply}"></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+    <!-- REQUIRED SCRIPTS -->
+    <script layout:fragment="content_page_script">
+        //CUSTOM SCRIPT
+        function linkpage(page) {
+            console.log(page);
+            var urlPage = window.location.href;
+            var utlBase = '';
+            var urlParram = '';
+            let start = 0;
+            for (let i = 0; i < urlPage.length - 1; i++) {
+                if (urlPage.charAt(i) == '?') {
+                    start = i;
+                    break;
+                }
+            }
+            if (start > 0) {
+                utlBase = urlPage.substring(0, start);
+                urlParram = urlPage.substring(start, urlPage.length);
+            } else {
+                utlBase = urlPage;
+            }
+            console.log(page);
+            start = 0;
+            for (let i = urlPage.length - 1; i > 0; i--) {
+                if (urlPage.charAt(i) == '/') {
+                    start = i;
+                    break;
+                }
+            }
+            if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+                utlBase += '/' + page;
+            } else {
+                utlBase = utlBase.substring(0, start + 1) + page;
+            }
+            var pageSize = document.getElementById('pageSizeInput').value;
+            var urlSearchParams = new URLSearchParams(urlPage);
+            // Thay đổi giá trị của tham số pageSize
+            urlSearchParams.set('pageSize', pageSize);
+            urlSearchParams.set('name', `[[${name}]]`);
+            urlSearchParams.set('email', `[[${email}]]`);
+            urlSearchParams.set('phone-number', `[[${phone}]]`);
+            var dem = 0;
+            urlParram = '';
+            urlSearchParams.forEach(function(value, key) {
+                if (dem == 1) {
+                    urlParram += '?' + key + '=' + value;
+                } else if (dem > 1) {
+                    urlParram += '&' + key + '=' + value;
+                }
+                dem++;
+            });
+            console.log(urlParram);
+            var newUrl = utlBase + urlParram;
+            window.location.href = newUrl;
+        }
+        $(function(){
+            $('#contentTableData').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": false,
+                "autoWidth": false,
+                "responsive": true,
+            });
+
+        });
+        function resetpassword1(userId, userName) {
+            $("#nameModal").text(userName);
+            $("#idUser").val(userId);
+            $("#resetpassword").modal('show');
+        }
+
+        function delete1(id, page, pageSize) {
+            if(page == null || page == "" || page == "null")
+                page = 1;
+            if(pageSize == null || pageSize == "" || pageSize == "null")
+                pageSize = 10;
+            $("#delete-modal-sm").modal('show');
+            $("#apply").click(function() {
+                window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/sys/user/delete/${page}?id=${id}&pageSize=${pageSize}`;
+                $('#delete-modal-sm').modal('hide');
+            });
+        }
+        function openModalReset() {
+            $('#resetpassword').modal('show');
+        }
+
+        function disableResetPassword() {
+            document.getElementById("resetpasswordform").submit();
+            document.getElementById("resetpasswordform").querySelector("button[type='submit']").disabled = true;
+        }
+    </script>
+</body>
+</html>

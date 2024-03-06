@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/img/logo-t.png}">
+    <title>CMS Livestream Ringme</title>
+    <link rel="stylesheet" th:href="@{/css/subcss.css}">
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/3.3.6/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/ajax/libs/select2/4.0.2/css/select2.min.css}">
+    <link rel="stylesheet" th:href="@{/css/libs/admin-lte/2.3.3/css/AdminLTE.min.css}">
+    <link rel="stylesheet" th:href="@{/css/libs/admin-lte/2.3.3/css/skins/_all-skins.min.css}">
+    <link rel="stylesheet" th:href="@{/css/ionicons/2.0.1/css/ionicons.min.css}">
+    <!-- cdnjs : use a specific version of Video.js (change the version numbers as necessary) -->
+    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.3.0/video-js.min.css" rel="stylesheet">-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.3.0/video.min.js"></script>-->
+    <style>
+        th {
+            font-size: 16px;
+        }
+
+        td {
+            font-size: 16px;
+        }
+
+        .p-1 {
+            padding: 1px;
+        }
+
+        .float-right {
+            float: right;
+        }
+
+        .mx-1 {
+            margin: 0 2px;
+        }
+    </style>
+    <style>
+        .box_table {
+            padding: 15px;
+            background: #EFF1F3;
+            margin: -2px 0px;
+        }
+
+        .box_table .table {
+            background: #ffffff;
+        }
+
+        .number {
+            display: flex;
+        }
+
+        .number_view {
+            margin: 10px;
+            padding: 0px;
+            text-align: center;
+        }
+
+        .number_view p {
+            font-size: 14px;
+        }
+
+        .box_detail_live {
+            background: #EFF1F3;
+            margin-top: 15px;
+            height: 500px;
+            padding-top: 15px;
+            border-radius: 15px;
+        }
+
+        .box_detail_live_no_height {
+            background: #EFF1F3;
+            margin-top: 15px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-radius: 15px;
+        }
+
+        .bg-pd-15 {
+            background: #EFF1F3;
+            padding: 15px;
+        }
+
+        .box_video_live {
+            background: #EFF1F3;
+            margin-top: 15px;
+            height: 323px;
+            padding: 15px;
+            border-radius: 15px;
+            display: inline-block;
+            width: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #live_status {
+            background: #EFF1F3;
+            padding: 15px;
+        }
+
+        #live_block {
+            background: #EFF1F3;
+            padding: 15px;
+        }
+
+        .box_data {
+            border-right: 1px solid #BDBCCC;
+            height: 270px;
+            padding: 10px;
+        }
+
+        .display_box {
+            display: flex;
+        }
+    </style>
+
+    <style>
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #B30C20;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #B30C20;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .live_chart {
+            background: #F5F7FB;
+            box-shadow: 0px -4px 4px rgba(216, 216, 216, 0.1), 0px 4px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .content_live_chart {
+            position: relative;
+            padding: 16px 16px 0;
+        }
+
+        .hello_live {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            padding: 16px;
+            background: #F2F5FA;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px -4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+        }
+
+        .time_current {
+            height: 35px;
+        }
+
+        .message_bot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content_mb {
+            background: #F2F4F5;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0px 5px;
+            /* width: 200px; */
+        }
+
+        .message_my {
+            /*justify-content: right;*/
+            /*float: right;*/
+
+        }
+
+        .text_mess_my {
+            width: 214px;
+            height: 56px;
+            background: #0070F0;
+            border-radius: 24px 24px 0px 24px;
+            padding: 20px;
+            color: #ffffff;
+            margin-left: 25px;
+            margin-right: 0px;
+            cursor: pointer;
+        }
+
+        .mess_send {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 5px 16px 15px 16px;
+        }
+
+        .input_mess_send {
+            padding-right: 16px;
+            position: relative;
+            width: 85%;
+        }
+
+        #text_mess_send {
+            width: 100%;
+            border-radius: 16px;
+            height: 44px;
+            padding: 0px 15px;
+            line-height: 24px;
+            border: 1px solid #979C9E;
+
+        }
+
+        .input_mess_send i {
+            position: absolute;
+            bottom: 14px;
+            right: 37px;
+            font-size: 19px;
+            cursor: pointer;
+            color: orange;
+        }
+
+        .mess_send .img_2 {
+            border-radius: 50%;
+            width: 40px;
+        }
+
+        :focus {
+            outline: none;
+        }
+
+        .user_mess {
+            display: none;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 16px;
+            margin-left: 16px;
+            text-align: left;
+            color: #72777A;
+        }
+
+        .user_mess_my {
+            margin-right: 16px;
+            margin-left: 137px;
+            margin-bottom: 3px;
+        }
+
+        .bg_action_mess {
+            position: absolute;
+            background: #000000;
+            opacity: 0.5;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+        }
+
+        .box_action {
+            position: absolute;
+            background: #ffffff;
+            width: 213px;
+            right: 36px;
+            bottom: 4px;
+            border-radius: 10px;
+            /*padding: 10px;*/
+        }
+
+        .notify_acttion_mess {
+            padding: 10px;
+            margin: 0;
+            height: 47px;
+            line-height: 24px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .notify_acttion_mess.active {
+            background: #c8cacc;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+
+        }
+
+        .modal_action_mess {
+            cursor: pointer;
+            display: none;
+        }
+
+        .delete_mess {
+
+            color: red;
+        }
+
+        .delete_mess i {
+            color: red;
+        }
+
+        .show_mess_action {
+            position: absolute;
+            top: 51px;
+            z-index: 1;
+        }
+
+        .live_chart {
+            border: none;
+            cursor: pointer;
+            position: fixed;
+            bottom: 2px;
+            right: 15px;
+        }
+
+        .zoom_live {
+            position: absolute;
+            right: 14px;
+            bottom: 12px;
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        .btn_stop_live {
+            display: none;
+        }
+
+        .info_stop_live {
+            display: none;
+        }
+
+        .box_data_live_status {
+            /* height: 296px; */
+            overflow: auto;
+        }
+
+        .box_data_live_status::-webkit-scrollbar {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        .box_data_live_status::-webkit-scrollbar-thumb {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        .box_data_live_status::-webkit-scrollbar-track {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        #use_comment {
+            display: none;
+            background-color: #e8edef;
+            margin-bottom: 20px;
+            margin-top: -27px;
+            width: 100%;
+            height: 350px;
+            overflow: auto;
+            overflow-x: hidden;
+
+        }
+
+        #use_comment::-webkit-scrollbar {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        #use_comment::-webkit-scrollbar-thumb {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        #use_comment::-webkit-scrollbar-track {
+            width: 6px;
+            background-color: #666666;
+            border-radius: 3px;
+        }
+
+        .rounded-circle {
+            height: 32px;
+            width: 32px;
+            margin-top: 10px;
+            border-radius: 50% !important;
+        }
+
+        .avarta {
+            float: left;
+            width: 6%;
+            margin-left: 20px;
+        }
+
+        .comment {
+            margin-top: 10px;
+            float: left;
+            width: 86%;
+            align-items: center;
+            /*display: flex;*/
+        }
+
+        .name-avatar-comment {
+            color: rgba(17, 17, 17, 0.6);
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 5px;
+            margin-bottom: 0;
+        }
+
+        .camxuc-content {
+            font-size: 14px;
+            line-height: 18px;
+            margin-right: 15px;
+            margin-bottom: 1px;
+            margin-top: 0px;
+            margin-left: 12px;
+        }
+
+        .time-content {
+            margin-left: 5px;
+            font-size: 10px;
+            color: rgba(107, 109, 111, 0.73);
+        }
+
+        .content_cmt {
+            width: 100%;
+            height: auto;
+            display: inline-flex;
+            align-items: center;
+            background: #F5F7FB;
+        }
+
+        .enable_dvr {
+            display: flex;
+        }
+
+        .toggler-wrapper {
+            display: block;
+            width: 45px;
+            height: 25px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .toggler-wrapper input[type="checkbox"] {
+            display: none;
+        }
+
+        .toggler-wrapper input[type="checkbox"]:checked + .toggler-slider {
+            background-color: #44cc66;
+        }
+
+        .toggler-wrapper .toggler-slider {
+            background-color: #ccc;
+            position: absolute;
+            border-radius: 100px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-transition: all 300ms ease;
+            transition: all 300ms ease;
+        }
+
+        .toggler-wrapper .toggler-knob {
+            position: absolute;
+            -webkit-transition: all 300ms ease;
+            transition: all 300ms ease;
+        }
+
+        .toggler-wrapper.style-22 input[type="checkbox"]:checked + .toggler-slider .toggler-knob {
+            left: calc(100% - 19px - 3px);
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        .toggler-wrapper.style-22 .toggler-slider {
+            background-color: #eb4f37;
+        }
+
+        .toggler-wrapper.style-22 .toggler-knob {
+            width: calc(25px - 6px);
+            height: calc(25px - 6px);
+            border-radius: 50%;
+            left: 3px;
+            top: 3px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            background-color: white;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+
+        .analysis_status_tab > a {
+            color: #111;
+        }
+
+        .copy-link .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 150%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-link .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .copy-link:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+<div>
+    <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow border-bottom"
+         th:replace="header :: header">
+    </nav>
+</div>
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav shadow-lg sidebar sidebar-dark accordion" id="accordionSidebar" th:replace="header :: menu">
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="router">
+                    <div class="router_inner">
+                        <div class="d-flex flex-row align-items-center">
+                            <a href="javascript:history.back()" class="btn btn-primary btn-sm mx-2"
+                               style="line-height:11px;margin-bottom: 8px;"><i class="fa fa-arrow-left"></i></a>
+                            <h3 class="mt-1" style="font-weight: bold; color: #00709E;"
+                                th:text="${liveStream.type == 1}?#{LivestreamNow}:(${liveStream.type == 2}?#{LivestreamFuture}:(${liveStream.type == 3}?#{VideoNow}:(${liveStream.type == 4}?#{VideoFuture}:#{Other})))"></h3>
+                        </div>
+                        <div class="d-flex flex-column shadow-lg p-3 mb-5 bg-body rounded">
+                            <div class="alert-primary" role="alert" th:if="${success}">
+                                <span th:text="${success}" th:if="${success}" style="white-space: pre-line;"></span>
+                            </div>
+
+                            <div class="alert-danger" role="alert" th:if="${error}">
+                                <span th:text="${error}" th:if="${error}" style="white-space: pre-line;"></span>
+                            </div>
+
+                            <div class="container-fluid" style="padding-left: 0.75rem;">
+                                <div class="row">
+                                    <!--                                    connectWebSocket-->
+                                    <div id="connectWebSocket">
+                                        <input type="number" class="hidden" id="id_live" name="id_live"
+                                               th:value="${liveStream.id}">
+                                        <input type="text" class="hidden" id="hls_play_link" name="hls_play_link"
+                                               th:value="${liveStream.hls_play_link}">
+                                        <input type="number" class="hidden" id="streamer_id" name="streamer_id"
+                                               th:value="${streamer.id}">
+                                    </div>
+
+                                    <div class="col-md-4" id="divvideo" th:fragment = "video">
+                                        <video th:if="${liveStream.type == 1}" id="video_js2"
+                                               style="width: 100%;border-radius: 2px"
+                                               class="video-js vjs-default-skin box_video_live" controls muted="muted">
+                                            <source id="srcSource" th:src="*{liveStream.hls_play_link}"
+                                                    type="application/x-mpegURL">
+                                        </video>
+                                        <video th:if="${liveStream.type == 2}" id="video_js2"
+                                               style="width: 100%;border-radius: 2px"
+                                               class="video-js vjs-default-skin box_video_live" controls muted="muted">
+                                            <source id="srcSource" th:src="*{liveStream.hls_play_link}"
+                                                    type="application/x-mpegURL">
+                                        </video>
+                                        <video th:if="${liveStream.type == 3}" id="video_js2"
+                                               style="width: 100%;border-radius: 2px"
+                                               class="video-js vjs-default-skin box_video_live" controls muted="muted">
+                                            <source id="srcSource" th:src="*{liveStream.video_src}" type="">
+                                        </video>
+                                        <video th:if="${liveStream.type == 4}" id="video_js2"
+                                               style="width: 100%;border-radius: 2px"
+                                               class="video-js vjs-default-skin box_video_live" controls muted="muted">
+                                            <source id="srcSource" th:src="*{liveStream.video_src}" type="">
+                                        </video>
+                                        <div id="msg-not-live" style="margin-top: 10px;padding: 10px">
+                                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="7" cy="7" r="7" fill="#b7b7b7"></circle>
+                                            </svg>
+
+                                            <span style="position: absolute; padding-left: 10px"
+                                                  th:text="#{livestream.schedule.detail_mess}">
+                                            </span>
+                                        </div>
+
+                                        <div class="box_detail_live">
+                                            <label class="container" for="stream_key"
+                                                   style="margin-left: 15px; margin-bottom: 15px; font-size:18px;"
+                                                   th:text="#{livestream.setup}"></label>
+                                            <div class="form-group col-md-12" id="streamKey">
+                                                <p>
+                                                    <label for="stream_key" th:text="#{streamkey}"></label>
+                                                    <input type="password" id="stream_key"
+                                                           th:value="${liveStream.stream_key}" disabled=""
+                                                           class="form-control valid">
+                                                    <i style="position: absolute;top: 35px; right: 50px"
+                                                       class="fa fa-eye-slash" id="toggleStreamKey"></i>
+                                                    <a style="position: absolute;top: 32px; right: 22px; cursor: pointer"
+                                                       class="copy-link pointer"
+                                                       th:onclick="setClipboard('[[${liveStream.stream_key}]]',1)"
+                                                       onmouseout="outFunc(1)" data-toggle="tooltip">
+                                                        <span class="tooltiptext" id="myTooltip"
+                                                              th:text="#{Copytoclipboard}"></span>
+                                                        <svg width="15" height="18" viewBox="0 0 17 20" fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M12 18H2V5C2 4.45 1.55 4 1 4C0.45 4 0 4.45 0 5V18C0 19.1 0.9 20 2 20H12C12.55 20 13 19.55 13 19C13 18.45 12.55 18 12 18ZM17 14V2C17 0.9 16.1 0 15 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H15C16.1 16 17 15.1 17 14ZM15 14H6V2H15V14Z"
+                                                                  fill="#5B5E71"></path>
+                                                        </svg>
+                                                    </a>
+                                                </p>
+                                            </div>
+
+                                            <div class="form-group col-md-12" id="urlOfLivestream">
+                                                <label for="stream_url" th:text="#{URLofLivestream}"></label>
+                                                <input type="text" id="stream_url" th:value="${liveStream.rtmp_push}"
+                                                       disabled="" class="form-control valid">
+                                                <a style="position: absolute;top: 32px; right: 22px; cursor: pointer"
+                                                   class="copy-link pointer"
+                                                   th:onclick="setClipboard(`[[${liveStream.rtmp_push}]]`,2)"
+                                                   onmouseout="outFunc(2)" data-toggle="tooltip">
+                                                    <span class="tooltiptext" id="myTooltip2"
+                                                          th:text="#{Copytoclipboard}"></span>
+                                                    <svg width="15" height="18" viewBox="0 0 17 20" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M12 18H2V5C2 4.45 1.55 4 1 4C0.45 4 0 4.45 0 5V18C0 19.1 0.9 20 2 20H12C12.55 20 13 19.55 13 19C13 18.45 12.55 18 12 18ZM17 14V2C17 0.9 16.1 0 15 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H15C16.1 16 17 15.1 17 14ZM15 14H6V2H15V14Z"
+                                                              fill="#5B5E71"></path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label for="id" th:text="#{IDofLivestream}"></label>
+                                                <input type="text" id="id" th:value="${streamer.id}" disabled=""
+                                                       class="form-control valid">
+                                                <!--                                                <a style="position: absolute;top: 32px; right: 22px; cursor: pointer" class="copy-link pointer" th:onclick="setClipboard(`[[${streamer.id}]]`,3)" onmouseout="outFunc(3)" data-toggle="tooltip">-->
+                                                <!--                                                    <span class="tooltiptext" id="myTooltip3">Copy to clipboard</span>-->
+                                                <!--                                                    <svg width="15" height="18" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+                                                <!--                                                        <path d="M12 18H2V5C2 4.45 1.55 4 1 4C0.45 4 0 4.45 0 5V18C0 19.1 0.9 20 2 20H12C12.55 20 13 19.55 13 19C13 18.45 12.55 18 12 18ZM17 14V2C17 0.9 16.1 0 15 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H15C16.1 16 17 15.1 17 14ZM15 14H6V2H15V14Z" fill="#5B5E71"></path>-->
+                                                <!--                                                    </svg>-->
+                                                <!--                                                </a>-->
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label th:text="#{Latency}"></label>
+                                                <span style="color:#666666;" data-toggle="tooltip" data-html="true"
+                                                      th:title="Latency.title"
+                                                      class="glyphicon glyphicon-question-sign"></span>
+                                                <select class="form-control s_search" name="stream_latency"
+                                                        id="stream_latency">
+                                                    <option value="1" selected="" th:text="#{Normal}"></option>
+                                                    <option value="2" th:text="#{Low}"></option>
+                                                    <option value="3" th:text="#{VeryLow}"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-12 enable_dvr" id="EnableDVR">
+                                                <span style="padding-right: 15px">
+                                                    <label th:text="#{EnableDVR}"></label>
+                                                    <span style="color:#666666;" data-toggle="tooltip" data-html="true"
+                                                          title="When the timeshift mode is on, you can choose to replay the previous time while the livestream is playing"
+                                                          class="glyphicon glyphicon-question-sign"></span>
+                                                </span>
+
+                                                <label class="toggler-wrapper style-22">
+                                                    <input type="checkbox" id="enable_dvr" name="enable_dvr" checked=""
+                                                           value="">
+                                                    <div class="toggler-slider">
+                                                        <div class="toggler-knob"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            if (videojs('video_js2')) {
+                                                var player = videojs('video_js2');
+                                            } else if (videojs('video_js3')) {
+                                                var player = videojs('video_js3');
+                                            } else if (videojs('video_js4')) {
+                                                var player = videojs('video_js4');
+                                            } else if (videojs('video_js5')) {
+                                                var player = videojs('video_js5');
+                                            }
+
+                                            player.ready(function () {
+                                                setTimeout(function () {
+                                                    player.autoplay('muted');
+                                                    player.fluid('true')
+                                                }, 1000);
+
+                                                player.hlsQualitySelector({
+                                                    displayCurrentQuality: true,
+                                                });
+                                            });
+
+
+                                            // var video = $("video").get(2);
+                                            // video.load();
+                                            // video.play();
+                                            // if (video.paused) {
+                                            //     location.reload(true);
+                                            // }
+                                        </script>
+                                    </div>
+
+                                    <div class="col-md-8" style="background-color: #EFF1F3;">
+                                        <h3 style="text-align: center; margin-bottom: 30px;">LIVESTREAM</h3>
+                                        <div class="table-responsive box_table" style="margin-bottom: 35px;">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center" th:text="#{title}"></th>
+                                                    <th class="text-center" th:text="#{Privacy}"></th>
+                                                    <th class="text-center" th:text="#{totalViews}"></th>
+                                                    <th class="text-center" th:text="#{totalLikes}"></th>
+                                                    <th class="text-center" colspan="3" th:text="#{action}"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="text-center" th:text="${liveStream.title}"></td>
+                                                    <td class="text-center"
+                                                        th:text="${liveStream.Privacy == 0}?#{Public}:#{Private}"></td>
+                                                    <!--                                                        <td id="total_view" th:text="${liveStream.total_view}"></td>-->
+                                                    <!--                                                        <td id="total_like" th:text="${liveStream.total_like}"></td>-->
+                                                    <td class="text-center" id="total_view">0</td>
+                                                    <td class="text-center" id="total_like">0</td>
+                                                    <td class="text-center">
+                                                        <div>
+                                                            <a th:href="@{'/streamer/schedule/update/' + ${liveStream.id}}"
+                                                               class="btn">
+                                                                <span class="material-symbols-outlined"
+                                                                      style="font-size: 22px;">edit</span>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="">
+                                                <a href="" class="btn btn-primary m-2 pull-right btn_stop_live"
+                                                   data-toggle="modal" th:text="#{stoplivestream}">STOP LIVESTREAM</a>
+                                                <a href="" class="btn btn-primary m-2 pull-right info_stop_live"
+                                                   th:text="#{notifylivestream}">NOTIFY LIVESTREAM</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="analysis_status">
+                                            <ul class="nav nav-tabs">
+                                                <li style="font-size:16px;" class="active analysis_status_tab"><a
+                                                        data-toggle="tab" href="#live_anal" class="active"
+                                                        th:text="#{Analysis}">Analysis</a></li>
+                                                <li style="font-size:16px;" class="analysis_status_tab"><a
+                                                        data-toggle="tab" href="#live_status"
+                                                        th:text="#{status}">Status</a></li>
+                                                <li style="font-size:16px;" id="block_user_tab"
+                                                    class="analysis_status_tab"><a data-toggle="tab" href="#live_block"
+                                                                                   th:text="#{Userblock}">User block</a>
+                                                </li>
+                                                <!--                                                <li style="font-size:16px;" id="donate_tab" class="analysis_status_tab"><a data-toggle="tab" href="#donate">Donate</a></li>-->
+                                            </ul>
+
+                                            <div class="tab-content">
+                                                <div id="live_anal" class="tab-pane fade in active">
+                                                    <div class="number">
+                                                        <div class="number_view">
+                                                            <p style="font-size:16px;" th:text="#{Concurrentviewers}">
+                                                                Concurrent viewers</p>
+                                                            <p style="font-size:40px;" id="number_view_simul">-</p>
+                                                        </div>
+
+                                                        <div class="number_view">
+                                                            <p style="font-size:16px;" th:text="#{Totalchats}">Total
+                                                                chats</p>
+                                                            <p style="font-size:40px;" id="chat_ratio">-</p>
+                                                        </div>
+
+                                                        <div class="number_view">
+                                                            <p style="font-size:16px;" th:text="#{TotalViews}">Total
+                                                                views</p>
+                                                            <p style="font-size:40px;" id="transmitters">-</p>
+                                                        </div>
+
+                                                        <div class="number_view">
+                                                            <p style="font-size:16px;" th:text="#{Avgtime}">Avg time</p>
+                                                            <p style="font-size:40px;" id="average_view">-</p>
+                                                        </div>
+
+                                                        <div class="form-group" style="right: 0px; margin-top:5px;">
+                                                            <select class="form-control" id="cars_number_view">
+                                                                <option value="1" selected=""
+                                                                        th:text="#{Concurrentviewers}">Concurrent
+                                                                    viewers
+                                                                </option>
+                                                                <option value="2" th:text="#{Totalchats}">Total chats
+                                                                </option>
+                                                                <option value="3" th:text="#{TotalViews}">Total views
+                                                                </option>
+                                                                <option value="4" th:text="#{Avgtime}">Avg time</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <div class="chartjs-size-monitor">
+                                                            <div class="chartjs-size-monitor-expand">
+                                                                <div class=""></div>
+                                                            </div>
+                                                            <div class="chartjs-size-monitor-shrink">
+                                                                <div class=""></div>
+                                                            </div>
+                                                        </div>
+                                                        <canvas id="lineChart"
+                                                                style="display: block; height: 352px; width: 705px;"
+                                                                width="1410" height="704"
+                                                                class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+
+                                                <div id="live_status" class="tab-pane fade">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <p th:text="#{Statusofthelivestream}">Status of the
+                                                                livestream</p>
+                                                            <div class="box_data" style="height: 500px;">
+                                                                <svg width="14" height="14" viewBox="0 0 14 14"
+                                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <circle cx="7" cy="7" r="7" fill="#b7b7b7"></circle>
+                                                                </svg>
+                                                                <span class="tin_hieu_live"
+                                                                      style="position: absolute; padding-left: 10px"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-8 box_data_live_status"
+                                                             style="padding-top: 40px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="live_block" class="tab-pane fade">
+                                                    <div class="row">
+                                                        <div>
+                                                            <p th:text="#{Listuserblock}">List user block</p>
+                                                            <div id="list_user_block"
+                                                                 style="height: 500px;overflow-y:scroll;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="live_chart" style="float: right;width: 450px; display: block">
+                                                <div style="position: relative">
+                                                    <img class="img-responsive show_chat" style="width: 100%;"
+                                                         th:src="@{/img/Group_2323955.png}" alt="">
+                                                </div>
+
+                                                <div class="content_live_chart" style="display: none">
+                                                    <div class="hello_live">
+                                                        <p th:text="#{Welcomechats}">Welcome to the live chat! Remember
+                                                            to protect your privacy and follow our community
+                                                            guidelines.</p>
+                                                    </div>
+                                                    <p class="time_current"></p>
+
+                                                    <div class="comment_admin"></div>
+
+                                                    <div class="modal_action_mess">
+                                                        <div class="bg_action_mess"></div>
+
+                                                        <div class="box_action">
+                                                            <p class="notify_acttion_mess gim_mess"
+                                                               th:text="#{MessagePin}">
+                                                                Message Pin <span style="float: right"><i
+                                                                    class="fa fa-thumb-tack"
+                                                                    aria-hidden="true"></i></span>
+                                                            </p>
+
+                                                            <p class="notify_acttion_mess delete_mess"
+                                                               th:text="#{delete}">
+                                                                Delete <span style="float: right"><i
+                                                                    style="text-align: right" class="fa fa-trash"
+                                                                    aria-hidden="true"></i></span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="" id="use_comment">
+                                                </div>
+
+                                                <div class="mess_send" style="display: none">
+                                                    <div class="input_mess_send">
+                                                        <input type="text" id="text_mess_send"
+                                                               th:placeholder="#{Entermessage}" name="text_mess_send">
+                                                        <i class="fa fa-paper-plane" id="send" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+<!-- Modal -->
+
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true" th:replace="header :: modalLogout">
+</div>
+<div id="langVars" th:attr="data-confirmation-delete=#{confirmation.delete}"></div>
+
+<script th:src="@{/js/lang/lang.en.js}"></script>
+<script th:src="@{/js/lang/lang.fr.js}"></script>
+<script th:src="@{/js/lang/lang.vi.js}"></script>
+
+<script th:src="@{/js/live/my-constant.js}"></script>
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!--    <script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>-->
+<!--    <script th:src="@{/js/moment.min.js}"></script>-->
+<!--    <script th:src="@{/vendor/bootstrap/js/bootstrap-datetimepicker.min.js}"></script>-->
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<script>
+    var domainUrl = 'http://uattimorlive.ringme.vn/LivestreamAPI/v1';
+    // var domainUrl = 'http://liveapi.tls.tl/LivestreamAPI/v1';
+    var socketUrl = 'http://uattimorlive.ringme.vn/LiveEvent/live/event';
+    var urlGetNumberSameTime = 'http://uattimorlive.ringme.vn/livestream-getNumberSameTime';
+    var urlGetNumberViewer = 'http://uattimorlive.ringme.vn/livestream-urlGetNumberViewer';
+    var urlStreamLatency = 'http://uattimorlive.ringme.vn/livestream-streamLatency';
+
+    // var domainUrl = '{{env('LIVESTREAM_API')}}';
+    // var socketUrl = '{{env('LIVESTREAM_SOCKET')}}';
+    // var urlGetNumberSameTime = '{{route('livestream.getNumberSameTime')}}';
+    // var urlGetNumberViewer = '{{route('livestream.urlGetNumberViewer')}}';
+    // var urlStreamLatency = '{{route('livestream.urlStreamLatency')}}';
+</script>
+
+<script th:src="@{/js/video/7.20.3/video.min.js}"></script>
+<link th:href="@{/css/video-js.css}" rel="stylesheet">
+<script th:src="@{/js/video/videojs-contrib-quality-levels.min.js}"></script>
+<script th:src="@{/js/video/videojs-hls-quality-selector.min.js}"></script>
+
+<!--<script th:src="@{/js/live/stomp.js}"></script>-->
+<!--<script th:src="@{/js/live/sockjs-client.js}"></script>-->
+<script th:src="@{/js/live/getDataSocket.js}"></script>
+
+<script th:src="@{/js/live/latency.js}"></script>
+
+<script th:src="@{/js/live/chart.js}"></script>
+<script th:src="@{/js/live/getNumberViewer.js}"></script>
+
+<!--<script>-->
+<!--    var player = videojs('video_js2');-->
+<!--    player.ready(function() {-->
+<!--        setTimeout(function() {-->
+<!--            player.autoplay('muted');-->
+<!--            player.fluid('true')-->
+<!--        }, 1000);-->
+
+<!--        player.hlsQualitySelector({-->
+<!--            displayCurrentQuality: true,-->
+<!--        });-->
+<!--    });-->
+
+
+<!--    // var video = $("video").get(2);-->
+<!--    // video.load();-->
+<!--    // video.play();-->
+<!--    // if (video.paused) {-->
+<!--    //     location.reload(true);-->
+<!--    // }-->
+<!--</script>-->
+<!--<script>-->
+<!--    function setClipboard(value , type) {-->
+<!--        var tempInput = document.createElement("input");-->
+<!--        tempInput.style = "position: absolute; left: -1000px; top: -1000px";-->
+<!--        tempInput.value = value;-->
+<!--        document.body.appendChild(tempInput);-->
+<!--        tempInput.select();-->
+<!--        document.execCommand("copy");-->
+<!--        document.body.removeChild(tempInput);-->
+
+<!--        var tooltip = document.getElementById(type == 1 ? "myTooltip" : "myTooltip2");-->
+<!--        tooltip.innerHTML = "Copied";-->
+<!--    }-->
+
+<!--    function outFunc(type) {-->
+<!--        var tooltip = document.getElementById(type == 1 ? "myTooltip" : "myTooltip2");-->
+<!--        tooltip.innerHTML = "Copy to clipboard";-->
+<!--    }-->
+<!--</script>-->
+
+
+<!--<script>-->
+<!--    const toggleStreamKey = document.querySelector('#toggleStreamKey');-->
+<!--    const streamKey = document.querySelector('#stream_key');-->
+<!--    toggleStreamKey.addEventListener('click', function (e) {-->
+<!--        const type = streamKey.getAttribute('type') === 'password' ? 'text' : 'password';-->
+<!--        streamKey.setAttribute('type', type);-->
+<!--        if (type === 'text') {-->
+<!--            this.classList.remove('fa-eye-slash');-->
+<!--            this.classList.add('fa-eye');-->
+<!--        } else {-->
+<!--            this.classList.remove('fa-eye');-->
+<!--            this.classList.add('fa-eye-slash');-->
+<!--        }-->
+
+<!--    });-->
+<!--</script>-->
+<!--<script>-->
+<!--    function myOnclickmodal(id) {-->
+<!--        $("#Video_" + id).css("display", "block");-->
+<!--        var player = videojs('video_js2');-->
+<!--    }-->
+
+<!--    function myOnclick(id) {-->
+<!--        $("#Video_" + id).css("display", "none");-->
+<!--        $("video").each(function () {-->
+<!--            this.pause()-->
+<!--        });-->
+<!--    }-->
+
+<!--    var player = videojs('video_js2');-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    function stopLive(id_live) {-->
+
+<!--        $.ajax({-->
+<!--            url: domainUrl+"/nginx_control/stop",-->
+<!--            method: 'POST',-->
+<!--            data: {-->
+<!--                id: id_live,-->
+<!--            },-->
+<!--            success: function (data) {-->
+<!--                console.log(data);-->
+<!--                // window.location.replace("http://cmslive.ringme.vn:8080/livestream-history");-->
+<!--            },-->
+<!--            error: function () {-->
+<!--                alert("Error stop livestream");-->
+
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    function continue_live() {-->
+<!--        var urlContinueLive = '{{route('livestream.indexLive')}}';-->
+<!--        console.log(urlContinueLive);-->
+<!--        $.ajax({-->
+<!--            url: urlContinueLive,-->
+<!--            method: 'GET',-->
+<!--            success: function (data) {-->
+<!--                location.reload();-->
+<!--            },-->
+<!--            error: function () {-->
+<!--                alert("Error stop livestream");-->
+
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--    var id_live = $('#id_live').val();-->
+<!--    $("#end_live").on('click', function (e) {-->
+<!--        e.preventDefault();-->
+<!--        stopLive(id_live);-->
+<!--    });-->
+
+<!--    $("#continue_live").on('click', function (e) {-->
+<!--        e.preventDefault();-->
+<!--        continue_live();-->
+<!--    });-->
+<!--    $(".info_stop_live").on('click', function (e) {-->
+<!--        var urlGetDataStopLive = '{{route('livestream.getDataStopLive')}}';-->
+<!--        $('#notifyStreamer').modal('show');-->
+<!--        $.ajax({-->
+<!--            url: urlGetDataStopLive,-->
+<!--            method: 'GET',-->
+<!--            data: {-->
+<!--                id: id_live,-->
+<!--            },-->
+<!--            beforeSend: function () {-->
+<!--                $('.box_notify_live').html(' <div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 100%"></div></div>')-->
+<!--            },-->
+<!--            success: function (data) {-->
+<!--                $('.box_notify_live').html(data);-->
+<!--            },-->
+<!--            error: function () {-->
+<!--                alert("Error stop livestream");-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--</script>-->
+
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+
+        error: function (x, status, error) {
+            if (x.status == 403) {
+                alert("Sorry, your session has expired. Please login again to continue");
+                window.location.href = "/dm-signIn";
+            } else {
+                alert("An error occurred: " + status + "nError: " + error);
+            }
+        }
+    });
+</script>
+
+<script>
+    function stopLive(id_live) {
+
+        $.ajax({
+            url: domainUrl + "/nginx_control/stop",
+            method: 'POST',
+            data: {
+                id: id_live,
+            },
+            success: function (data) {
+                console.log(data);
+                // window.location.replace("http://cmslive.ringme.vn:8080/livestream-history");
+            },
+            error: function () {
+                alert("Error stop livestream");
+
+            }
+        });
+    }
+
+    function continue_live() {
+        var urlContinueLive = 'http://livecms.tls.tl/livestream';
+        console.log(urlContinueLive);
+        $.ajax({
+            url: urlContinueLive,
+            method: 'GET',
+            success: function (data) {
+                location.reload();
+            },
+            error: function () {
+                alert("Error stop livestream");
+
+            }
+        });
+    }
+
+    var id_live = $('#id_live').val();
+    $("#end_live").on('click', function (e) {
+        e.preventDefault();
+        stopLive(id_live);
+    });
+
+    $("#continue_live").on('click', function (e) {
+        e.preventDefault();
+        continue_live();
+    });
+    $(".info_stop_live").on('click', function (e) {
+        var urlGetDataStopLive = 'http://livecms.tls.tl/livestream-getDataStopLive';
+        $('#notifyStreamer').modal('show');
+        $.ajax({
+            url: urlGetDataStopLive,
+            method: 'GET',
+            data: {
+                id: id_live,
+            },
+            beforeSend: function () {
+                $('.box_notify_live').html(' <div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 100%"></div></div>')
+            },
+            success: function (data) {
+                $('.box_notify_live').html(data);
+            },
+            error: function () {
+                alert("Error stop livestream");
+            }
+        });
+    });
+
+</script>
+
+<script>
+    function myOnclickmodal(id) {
+        $("#Video_" + id).css("display", "block");
+        var player = videojs('video_js2');
+    }
+
+    function myOnclick(id) {
+        $("#Video_" + id).css("display", "none");
+        $("video").each(function () {
+            this.pause()
+        });
+    }
+
+    if (videojs('video_js2')) {
+        var player = videojs('video_js2');
+    } else if (videojs('video_js3')) {
+        var player = videojs('video_js3');
+    } else if (videojs('video_js4')) {
+        var player = videojs('video_js4');
+    } else if (videojs('video_js5')) {
+        var player = videojs('video_js5');
+    }
+</script>
+
+<script>
+    const toggleStreamKey = document.querySelector('#toggleStreamKey');
+    const streamKey = document.querySelector('#stream_key');
+    toggleStreamKey.addEventListener('click', function (e) {
+        const type = streamKey.getAttribute('type') === 'password' ? 'text' : 'password';
+        streamKey.setAttribute('type', type);
+        if (type === 'text') {
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        } else {
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        }
+
+    });
+</script>
+
+<script>
+    function setClipboard(value, type) {
+        var tempInput = document.createElement("input");
+        tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+        tempInput.value = value;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        var tooltip = document.getElementById(type == 1 ? "myTooltip" : "myTooltip2");
+        tooltip.innerHTML = "Copied";
+    }
+
+    function outFunc(type) {
+        var tooltip = document.getElementById(type == 1 ? "myTooltip" : "myTooltip2");
+        tooltip.innerHTML = "Copy to clipboard";
+    }
+</script>
+
+<script>
+    if (videojs('video_js2')) {
+        var player = videojs('video_js2');
+    } else if (videojs('video_js3')) {
+        var player = videojs('video_js3');
+    } else if (videojs('video_js4')) {
+        var player = videojs('video_js4');
+    } else if (videojs('video_js5')) {
+        var player = videojs('video_js5');
+    }
+
+    player.ready(function () {
+        setTimeout(function () {
+            player.autoplay('muted');
+            player.fluid('true')
+        }, 1000);
+
+        player.hlsQualitySelector({
+            displayCurrentQuality: true,
+        });
+    });
+
+
+    // var video = $("video").get(2);
+    // video.load();
+    // video.play();
+    // if (video.paused) {
+    //     location.reload(true);
+    // }
+</script>
+
+<script>
+    // ẩn dữ view dữ liệu truyền vào .js xử lý kết nối connectWebSocket
+    $('div[id="connectWebSocket"]').closest("div").hide();
+
+    $('div').each(function () {
+        if ([[${liveStream.type}]] == "3" || [[${liveStream.type}]] == "4") {
+            $('div[id="urlOfLivestream"]').closest("div").hide();
+            $('div[id="streamKey"]').closest("div").hide();
+            $('div[id="msg-not-live"]').closest("div").hide();
+            $('div[id="EnableDVR"]').closest("div").hide();
+        }
+    });
+</script>
+<script>
+    var stompClientServer1 = null;
+    var id = '[[${liveStream.id}]]';
+
+    var srcVideo = '[[${liveStream.hls_play_link}]]';
+    // var srcVideo = '212332323232';
+    console.log(id);
+    console.log(srcVideo);
+
+    function connect() {
+        var socket = new SockJS('http://uattimorlive.ringme.vn/uat-livestream-cms/ws');
+        stompClientServer1 = Stomp.over(socket);
+        stompClientServer1.connect({}, function (frame) {
+            stompClientServer1.subscribe('/topic/live/' + id, function (notification) {
+                var content = JSON.parse(notification.body);
+                console.log(content.start);
+                if (content.start) {
+
+                    // var newHLSLink = event.data; // Đây là đường dẫn mới từ thông báo
+                    var videoElement = document.getElementById("video_js2_html5_api");
+                    // let myPlayer = videojs('video_js2', { liveui: true });
+                    // console.log(myPlayer);
+                    var sourceElement = videoElement.querySelector('source');
+                    //
+                    // // Thay đổi đường dẫn của video
+                    sourceElement.setAttribute("src", srcVideo);
+                    //
+                    // // Tải lại video
+                    setTimeout(function() {
+                        videoElement.load();
+                        videoElement.play();
+                    }, 10000);
+
+                    // $(".btn_stop_live").css("display", "block");
+                    // $("#msg-not-live").hide();
+                    //
+                    // let myPlayer = videojs('video_js2', { liveui: true });
+                    // myPlayer.src({
+                    //     type: 'application/x-mpegURL',
+                    //     src: srcVideo
+                    // });
+                    // // myPlayer.load(); // Tải lại nguồn dữ liệu video
+                    // myPlayer.ready(function () {
+                    //     myPlayer.play();
+                    // });
+                    //
+                    // $('#stream_latency').prop('disabled', true);
+                }
+            });
+        });
+
+    }
+
+    connect();
+</script>
+</body>
+</html>

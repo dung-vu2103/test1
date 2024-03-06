@@ -1,0 +1,172 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const uploadForm = document.getElementById("form-create-video-now");
+    const titleInput = document.getElementById("title");
+    const descriptionInput = document.getElementById("description");
+    const enableChat = document.getElementById("enable_chat");
+    const privacy = document.getElementById("privacy");
+    const fileAvatar = document.getElementById("file1");
+    const fileInput = document.getElementById("videoUpload");
+    const submitButton = document.getElementById("submitButton");
+    const progressPopup = document.getElementById("progressPopup");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const sucsessPopup = document.getElementById("sucsessPopup");
+    const errPopup = document.getElementById("errPopup");
+    const close = document.getElementById('close');
+
+    let fileChunks = [];
+    let currentChunkIndex = 0;
+    let uploadId = null;
+    let videoPath = "";
+
+    uploadForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const file = fileInput.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("fileName", file.name);
+        formData.append("fileSize", file.size);
+        formData.append("extension", getFileExtension(file.name));
+
+        openPopup();
+
+        // Step 1: Request uploadId from the /upload API using XMLHttpRequest
+        const xhrUpload = new XMLHttpRequest();
+        xhrUpload.open("POST", "upload", true);
+        xhrUpload.onreadystatechange = function () {
+            if (xhrUpload.readyState === XMLHttpRequest.DONE) {
+                if (xhrUpload.status === 200) {
+                    uploadId = xhrUpload.responseText;
+                    prepareFileChunks(file);
+                    uploadChunks(formData, file);
+                } else {
+                    closePopupErr();
+                    alert("Upload initiation failed.");
+                }
+            }
+        };
+        xhrUpload.send(formData);
+    });
+
+    function getFileExtension(filename) {
+        const parts = filename.split('.');
+        if (parts.length > 1) {
+            return parts.pop();
+        }
+        return "";
+    }
+
+    function openPopup() {
+        progressPopup.style.display = "block";
+        submitButton.style.display = "none";
+    }
+
+    function closePopup() {
+        progressPopup.style.display = "none";
+        sucsessPopup.style.display = "block";
+    }
+
+    function closePopupErr() {
+        progressPopup.style.display = "none";
+        errPopup.style.display = "block";
+
+        close.addEventListener('click', () => {
+            errPopup.style.display = 'none';
+        });
+    }
+
+    function prepareFileChunks(file) {
+        const chunkSize = 10 * 1024 * 1024;
+        let offset = 0;
+
+        while (offset < file.size) {
+            fileChunks.push(file.slice(offset, offset + chunkSize));
+            offset += chunkSize;
+        }
+    }
+
+    function uploadChunks(formData, file) {
+        if (currentChunkIndex >= fileChunks.length) {
+            closePopup();
+            return;
+        }
+
+        const chunk = fileChunks[currentChunkIndex];
+
+        if (!chunk) {
+            closePopup();
+            alert("Chunk is undefined.");
+            return;
+        }
+
+        const chunkFormData = new FormData();
+        chunkFormData.append("uploadId", uploadId);
+        chunkFormData.append("chunkIndex", currentChunkIndex); // Add chunk index here
+        chunkFormData.append("chunkSize", chunk.size);
+        chunkFormData.append("fileSize", file.size);
+        chunkFormData.append("fileChunkUpload", chunk);
+
+        // Step 2: Upload chunk to the /upload-chunk API using XMLHttpRequest
+        const xhrUploadChunk = new XMLHttpRequest();
+        xhrUploadChunk.open("POST", "upload-chunk", true);
+        xhrUploadChunk.onreadystatechange = function () {
+            if (xhrUploadChunk.readyState === XMLHttpRequest.DONE) {
+                if (xhrUploadChunk.status === 200) {
+                    var result = JSON.parse(xhrUploadChunk.response);
+
+                    if (result.status === '0') {
+                        currentChunkIndex++;
+                        const progress = (currentChunkIndex / fileChunks.length) * 100;
+                        progressBar.value = progress;
+                        progressText.textContent = `${progress.toFixed(2)}%`;
+                        uploadChunks(formData, file);
+                    }else if (result.status === '1') {
+                        videoPath = result.value;
+                        uploadFile(videoPath);
+                    } else {
+                        closePopup();
+                        alert("Chunk upload failed.");
+                    }
+                }
+            }
+        };
+        xhrUploadChunk.send(chunkFormData);
+    }
+
+    // Step 3: Send formData to /save-video-feature using XMLHttpRequest
+    function uploadFile(videoPath) {
+
+        const formData = new FormData();
+        formData.append("video_src", videoPath);
+        formData.append("title", titleInput.value);
+        formData.append("description", descriptionInput.value);
+        formData.append("enable_chat", enableChat.value);
+        formData.append("privacy", privacy.value);
+        formData.append("thumbUpload", fileAvatar.value);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "save-video-now", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    closePopup();
+                    const redirectUrl  = xhr.responseText;
+                    if (redirectUrl) {
+                        window.location.href = '/' + window.location.pathname.split('/')[1] + redirectUrl;
+                    } else {
+                        alert("Upload successful!");
+                    }
+                } else {
+                    progressPopup.style.display = "none";
+                    alert("Upload failed.");
+                }
+            }
+        };
+        xhr.send(formData);
+    }
+});
