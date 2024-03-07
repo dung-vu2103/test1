@@ -29,7 +29,8 @@
                                 <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
                             </button>
 
-                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;" class="btn btn-success m-2">
+                            <button id="reset" type="reset" value="Reset" style="cursor: pointer;"
+                                    class="btn btn-success m-2">
                                 <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
                             </button>
 
@@ -69,13 +70,15 @@
                             </th>
                             <td>
                                 <a th:href="@{'/sticker-item/index?stickerId=' + ${model.id}}" class="btn"
-                                   title="Sticker item" style="color: #00709E; background: transparent; white-space: nowrap;">
+                                   title="Sticker item"
+                                   style="color: #00709E; background: transparent; white-space: nowrap;">
                                     <span th:text="${model.name}"></span>
                                 </a>
                             </td>
                             <td>
                                 <div class="dropdown" th:if="${model.iconUrl != null && model.iconUrl != ''}">
-                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                         aria-expanded="false"
                                          style="height: 35px" th:src="${model.iconUrl}">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                         <img style="height: 200px" th:src="${model.iconUrl}">
@@ -84,7 +87,8 @@
                             </td>
                             <td>
                                 <div class="dropdown" th:if="${model.previewUrl != null && model.previewUrl != ''}">
-                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                         aria-expanded="false"
                                          style="height: 35px" th:src="${model.previewUrl}">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                         <img style="height: 200px" th:src="${model.previewUrl}">
@@ -109,7 +113,9 @@
                             </td>
                             <td class="text-center">
                                 <div>
-                                    <a href="javascript:void(0);" class="btn" title="View" th:attr="onclick=|viewDetail('${model.id}')|" style="color: #00709E; background: transparent; white-space: nowrap;">
+                                    <a href="javascript:void(0);" class="btn" title="View"
+                                       th:attr="onclick=|viewDetail('${model.id}')|"
+                                       style="color: #00709E; background: transparent; white-space: nowrap;">
                                         <i class="far fa-eye"></i>
                                     </a>
                                     <a th:href="@{'/sticker/update/' + ${model.id}}" class="btn" title="Update">
@@ -126,7 +132,7 @@
                     </table>
                 </div>
 
-                <div th:replace="common :: table_paging2"> </div>
+                <div th:replace="common :: table_paging2"></div>
             </div>
         </div>
     </div>
@@ -160,7 +166,8 @@
                                 <th style="text-align: left;" th:text="#{icon}"></th>
                                 <td style="text-align: left;">
                                     <div class="dropdown" th:if="${model.iconUrl != null && model.iconUrl != ''}">
-                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                             aria-expanded="false"
                                              style="height: 35px" th:src="${model.iconUrl}">
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                             <img style="height: 200px" th:src="${model.iconUrl}">
@@ -172,7 +179,8 @@
                                 <th style="text-align: left;" th:text="#{preview}"></th>
                                 <td style="text-align: left;">
                                     <div class="dropdown" th:if="${model.previewUrl != null && model.previewUrl != ''}">
-                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                             aria-expanded="false"
                                              style="height: 35px" th:src="${model.previewUrl}">
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                             <img style="height: 200px" th:src="${model.previewUrl}">
@@ -233,39 +241,38 @@
 </div>
 
 <!-- REQUIRED SCRIPTS -->
-<script layout:fragment="content_page_script" >
+<script layout:fragment="content_page_script">
     //pagination
-    function linkpage(page){
+    function linkpage(page) {
         console.log(page);
         var urlPage = window.location.href;
         var utlBase = '';
         var urlParram = '';
         let start = 0;
-        for(let i = 0; i < urlPage.length-1; i++){
-            if(urlPage.charAt(i) =='?'){
+        for (let i = 0; i < urlPage.length - 1; i++) {
+            if (urlPage.charAt(i) == '?') {
                 start = i;
                 break;
             }
         }
-        if(start > 0){
-            utlBase = urlPage.substring(0,start);
-            urlParram = urlPage.substring(start,urlPage.length);
-        }else {
+        if (start > 0) {
+            utlBase = urlPage.substring(0, start);
+            urlParram = urlPage.substring(start, urlPage.length);
+        } else {
             utlBase = urlPage;
         }
         console.log(page);
         start = 0;
-        for(let i = urlPage.length-1; i > 0; i--){
-            if(urlPage.charAt(i) =='/'){
+        for (let i = urlPage.length - 1; i > 0; i--) {
+            if (urlPage.charAt(i) == '/') {
                 start = i;
                 break;
             }
         }
-        if(isNaN(utlBase.substring(start+1,utlBase.length))){
-            utlBase += '/'+ page;
-        }
-        else{
-            utlBase = utlBase.substring(0, start + 1)+ page;
+        if (isNaN(utlBase.substring(start + 1, utlBase.length))) {
+            utlBase += '/' + page;
+        } else {
+            utlBase = utlBase.substring(0, start + 1) + page;
         }
         var pageSize = document.getElementById('pageSizeInput').value;
         var urlSearchParams = new URLSearchParams(urlPage);
@@ -274,12 +281,11 @@
         urlSearchParams.set('name', `[[${name}]]`);
         var dem = 0;
         urlParram = '';
-        urlSearchParams.forEach(function(value, key) {
-            if(dem==1){
-                urlParram += '?'+key+'='+value;
-            }
-            else if(dem>1){
-                urlParram += '&'+key+'='+value;
+        urlSearchParams.forEach(function (value, key) {
+            if (dem == 1) {
+                urlParram += '?' + key + '=' + value;
+            } else if (dem > 1) {
+                urlParram += '&' + key + '=' + value;
             }
             dem++;
         });
@@ -289,35 +295,35 @@
     }
 
     function deleteIcon(id, page, pageSize) {
-        if(page == null || page == "" || page == "null")
+        if (page == null || page == "" || page == "null")
             page = 1;
-        if(pageSize == null || pageSize == "" || pageSize == "null")
+        if (pageSize == null || pageSize == "" || pageSize == "null")
             pageSize = 10;
 
         $("#popup-delete").modal('show');
 
-        $("#confirmDel").click(function() {
+        $("#confirmDel").click(function () {
             $("#popup-delete").modal('hide');
             window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/sticker/delete/${page}?id=${id}&pageSize=${pageSize}`;
         });
 
-        $("#closeDel").click(function() {
+        $("#closeDel").click(function () {
             $("#popup-delete").modal('hide');
         });
     }
 
     //reset value search
     var reset = document.querySelector('#reset')
-    reset.onclick = function(e){
+    reset.onclick = function (e) {
         e.preventDefault();
         $('#name').val('');
     }
 
     //View detail
-    function viewDetail(id){
+    function viewDetail(id) {
         console.log("Open Popup Detail: " + id);
         $.get("[[@{/sticker/view/}]]" + id,
-            function(data) {
+            function (data) {
                 console.log(data);
                 $("#view-modal-xl").replaceWith(data);
                 $("#view-modal-xl").modal('show');

@@ -10,4 +10,7 @@ public interface MinService {
     List<Min> getAll();
     MinDto processSearch(String name);
     Page<Min> get(MinDto dto,int pageNO,int pageSize);
+    Min findById(Integer id);
+    void delete(Integer id);
+    void save(Min min);
 }

@@ -35,4 +35,21 @@ public class MinServiceImp implements MinService {
         Pageable pageable= PageRequest.of(pageNO -1,pageSize);
         return adminRepository.get(dto.getName(), pageable);
     }
+
+    @Override
+    public Min findById(Integer id) {
+      return adminRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        adminRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(Min min) {
+        adminRepository.save(min);
+    }
+
+
 }
