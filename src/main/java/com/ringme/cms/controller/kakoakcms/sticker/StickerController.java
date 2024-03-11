@@ -110,7 +110,6 @@ public class StickerController {
                 object = service.findById(dto.getId());
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
             }
-
             Path fileIcon = uploadFile.createImageFile(iconUpload, "image");
             if (fileIcon != null) {
                 object.setIconUrl(File.separator + fileIcon);
@@ -119,7 +118,6 @@ public class StickerController {
             if (fileNameBanner != null) {
                 object.setPreviewUrl(File.separator + fileNameBanner);
             }
-
             object.setName(dto.getName());
             object.setIorder(dto.getIorder());
             object.setIsNew(dto.getIsNew());

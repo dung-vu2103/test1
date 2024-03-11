@@ -55,6 +55,7 @@
 
                             <th class="text-center" scope="col" th:text="#{no}"></th>
                             <th class="text-center" scope="col" th:text="#{Name}"></th>
+                            <th class="text-center" scope="col" th:text="#{img}"></th>
                             <th class="text-center" scope="col" th:text="#{Action}"></th>
 
                         </tr>
@@ -65,6 +66,16 @@
                                 th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
                             </th>
                             <td th:text="${admin.name}"></td>
+                            <td>
+                                <div class="dropdown" th:if="${admin.img != null && admin.img != ''}">
+                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                         aria-expanded="false"
+                                         style="height: 35px" th:src="${admin.img}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img style="height: 200px" th:src="${admin.img}">
+                                    </div>
+                                </div>
+                            </td>
                             <td class="text-center">
                                 <div>
                                     <a href="javascript:void(0);" class="btn" title="View"
@@ -101,6 +112,10 @@
                             <tr>
                                 <th style="text-align: left;" th:text="#{Name}"></th>
                                 <td style="text-align: left;" th:text="${admin.name}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{img}"></th>
+                                <td style="text-align: left;" th:text="${admin.img}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -205,8 +220,8 @@
         });
 
 
-
     }
+
     $("#closeDel").click(function () {
         $("#popup-delete").modal('hide');
     });

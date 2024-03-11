@@ -6,4 +6,5 @@ import lombok.Data;
 public class MinDto {
     private Integer id;
     private String name;
+    private String img;
 }

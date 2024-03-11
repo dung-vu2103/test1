@@ -1,5 +1,6 @@
 package com.ringme.cms.common;
 
+import com.ringme.cms.config.App;
 import com.ringme.cms.config.AppConfiguration;
 import com.ringme.cms.dto.UploadDto;
 import lombok.extern.log4j.Log4j2;
@@ -14,14 +15,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Base64;
-
 @Log4j2
 @Component
-public class UploadFile {
+public class UpFile {
     @Autowired
-    AppConfiguration appConfiguration;
+   AppConfiguration appConfiguration;
     public Path processFilePath() {
         log.info("appConfiguration|" + appConfiguration.getRootPath());
         return Paths.get(appConfiguration.getRootPath());
@@ -69,7 +68,6 @@ public class UploadFile {
         }
         return null;
     }
-
     public Path createImageFile(String thumbUpload, String type) {
         try {
             if(thumbUpload == null || thumbUpload.equals(""))
@@ -87,9 +85,9 @@ public class UploadFile {
             log.info("dkdkkdkkddkđk" +dataArray[0]);
             String fileName = Helper.generateRandomString(32);
             Path timePath = Helper.getPathByTime();
-            Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);
+            Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix1()).resolve(type).resolve(timePath);
             relativePath = relativePath.resolve(fileName + "." + fileExtension);
-            Path obsoluteSavePath = Paths.get(appConfiguration.getRootPath()).resolve(relativePath);
+            Path obsoluteSavePath = Paths.get(appConfiguration.getRootPath1()).resolve(relativePath);
             Path folderParent = obsoluteSavePath.getParent();
             if(!Files.exists(folderParent)) {
                 Files.createDirectories(folderParent);
@@ -108,7 +106,6 @@ public class UploadFile {
         }
         return null;
     }
-
     public Path getSavedPath(UploadDto data, String type){
         try {
             String filename = data.getFileName();
@@ -132,124 +129,6 @@ public class UploadFile {
         }
         return null;
     }
-
-    public Path saveFileChunk2Storage(MultipartFile fileChunk, String type){
-        try {
-            Path ROOT_FOLDER = Paths.get(appConfiguration.getRootPath());
-
-            String originalFilename = fileChunk.getOriginalFilename();
-
-            if(!StringUtils.hasLength(originalFilename))
-                return null;
-
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-
-            if(!StringUtils.hasLength(fileExtension))
-                return null;
-
-            String fileName = Helper.generateRandomString(32);
-            Path timePath = Helper.getPathByTime();
-
-            Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);
-
-            relativePath = relativePath.resolve(fileName + "." + fileExtension);
-
-            Path obsolutePath = ROOT_FOLDER.resolve(relativePath);
-
-            log.info("CHUNK|" + fileChunk.getContentType() + "|relativePath = " + relativePath + "|obsolutePath = " + obsolutePath);
-            Path folderPath = obsolutePath.getParent();
-            if (!Files.exists(folderPath)) {
-                Files.createDirectories(folderPath);
-            }
-
-            try (OutputStream os = Files.newOutputStream(obsolutePath)) {
-                os.write(fileChunk.getBytes());
-                os.flush();
-            } catch (Exception e) {
-                log.error("ERROR|" + e.getMessage(), e);
-                return null;
-            }
-
-            return obsolutePath;
-        } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public Path createGameFile(MultipartFile file, String type) {
-        try {
-            if (file == null || file.isEmpty())
-                return null;
-
-            // Lấy phần mở rộng từ tên tệp gốc
-            String originalFileName = file.getOriginalFilename();
-            String fileExtension = "ttf";
-
-            if (originalFileName != null && originalFileName.contains(".")) {
-                fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-            }
-
-            String fileName = Helper.generateRandomString(32);
-
-            String[] timePath = Helper.getTimeNowV2();
-
-            Path pathOnFTPServer = Paths.get(appConfiguration.getGameDirectory()).resolve(type).resolve(timePath[0]);
-            pathOnFTPServer = pathOnFTPServer.resolve(fileName + "." + fileExtension);
-
-            log.info("PATH|" + "|pathOnFTPServer = " + pathOnFTPServer);
-
-            //nếu uplaod FTP thì dùng đoạn này
-//            try {
-//                //upload file vtt dùng lại hàm audio
-//                uploadFTPGameFile(file, pathOnFTPServer);
-//            } catch (Exception e) {
-//                log.error("ERROR|" + e.getMessage(), e);
-//            }
-
-            pathOnFTPServer = Paths.get(appConfiguration.getGameDirectory()).resolve(type).resolve(timePath[0]);
-            pathOnFTPServer = pathOnFTPServer.resolve(fileName + "." + fileExtension);
-            Path absoluteSavePath = Paths.get(appConfiguration.getRootPath()).resolve(pathOnFTPServer);
-            Path folderParent = absoluteSavePath.getParent();
-            if (!Files.exists(folderParent)) {
-                Files.createDirectories(folderParent);
-            }
-            log.info("PATH|" + "|pathOnFTPServer = " + pathOnFTPServer + "|absolutePath = " + absoluteSavePath);
-
-            file.transferTo(absoluteSavePath.toFile());
-
-            return pathOnFTPServer;
-        } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public String[] createImageFileInfo(String thumbUpload, String type) {
-        try {
-            if(thumbUpload == null || thumbUpload.equals(""))
-                return null;
-            String imgBase64 = thumbUpload.trim().replace("data:image/jpeg;base64,", "");
-            byte[] imageData = Base64.getDecoder().decode(imgBase64);
-
-            String fileExtension = "jpg"; // You can change this based on the image type
-            String fileName = Helper.generateRandomString(32);
-            String time = Helper.getTimeNow();
-            Path staticPath = Paths.get(appConfiguration.getFileInDBPrefix());
-            Path imagePath = Paths.get(type + "/" + time);
-
-            String[] fileInfo = new String[3];
-            fileInfo[0] = staticPath.resolve(imagePath).toString().replaceAll("\\\\", "/");
-            fileInfo[1] = staticPath.resolve(imagePath).resolve(fileName + "." + fileExtension).toString().replaceAll("\\\\", "/");
-            fileInfo[2] = fileName + "." + fileExtension;
-
-            return fileInfo;
-        } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
-        }
-        return null;
-    }
-
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadBase64(String thumbUpload, String[] fileName) {
         try {
@@ -269,4 +148,5 @@ public class UploadFile {
             log.error("ERROR|" + e.getMessage(), e);
         }
     }
+
 }

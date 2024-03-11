@@ -23,4 +23,10 @@ public class AppConfiguration {
 
     @Value("${api-top-game-event}")
     private String apiTopGameEvent;
+    @Value("${cms.file.in.db.prefix}")
+    private String fileInDBPrefix1;
+
+    @Value("${cms.file.store.root-path}")
+    private String rootPath1;
+
 }

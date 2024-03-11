@@ -1,10 +1,12 @@
 package com.ringme.cms.controller.kakoakcms;
 
+import com.ringme.cms.common.UpFile;
 import com.ringme.cms.dto.kakoakcms.MinDto;
 import com.ringme.cms.dto.kakoakcms.sticker.StickerDto;
 import com.ringme.cms.model.kakoakcms.Min;
 import com.ringme.cms.model.kakoakcms.sticker.Sticker;
 import com.ringme.cms.service.MinService;
+import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,6 +30,8 @@ public class Min1Controller {
         private MessageSource messageSource;
         @Autowired
         MinService adminService;
+        @Autowired
+        UpFile upFile;
 
         @GetMapping(value={"/get","/get/{page}"})
         private String index1(@PathVariable(required = false) Integer page,
@@ -88,7 +92,9 @@ public class Min1Controller {
         return "redirect:/admin11/get/";
     }
     @PostMapping("/save")
-    public String save(@Valid @ModelAttribute("model") MinDto dto, Errors error, RedirectAttributes redirectAttributes
+    public String save(@Valid @ModelAttribute("model") MinDto dto, Errors error,
+                       @RequestParam(name = "iconUpload", required = false) String iconUpload
+                       ,RedirectAttributes redirectAttributes
                       ) {
         log.info("---SAVE DTO---|" + dto);
         if(!error.hasErrors()){
@@ -99,12 +105,16 @@ public class Min1Controller {
                 object = adminService.findById(dto.getId());
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
             }
-
-
+            Path icon=upFile.createImageFile(iconUpload,"image");
+            if (icon != null) {
+                object.setImg(File.separator +icon);
+            }
 
             object.setName(dto.getName());
-
+            log.info("object1111111111111111 " + object);
             adminService.save(object);
+
+
         } else {
             log.error("ERROR|Save|" + error);
             if(dto.getId() == null)
