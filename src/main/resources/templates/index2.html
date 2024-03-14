@@ -2,21 +2,17 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{kakoak_layout.html}">
-
 <head>
     <!-- header from the content page-->
     <link th:href="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
     <script th:src="@{/webjars/AdminLTE/3.2.0/plugins/daterangepicker/daterangepicker.js}"></script>
-
-
 </head>
-
 <body id="page-top">
 <div class="router_inner" layout:fragment="page_content">
     <div class="container-fluid">
         <div class="card card-default">
             <div class="card-body">
-                <form th:action="@{/admin11/get}" method="get">
+                <form th:action="@{/user1/get}" method="get">
                     <div class="row mb-3">
                         <div class="col-12 col-md-3 mb-3">
                             <label for="name" style="font-weight: bold" th:text="#{name}"></label>
@@ -27,7 +23,7 @@
                                class="form-control" hidden>
 
                         <div class="col-12 text-center pt-3">
-                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2" onclick="fun(event)">
+                            <button type="submit" style="cursor: pointer;" class="btn btn-success m-2">
                                 <i class="fas fa-search"></i><span class="px-2" th:text="#{search}"></span>
                             </button>
 
@@ -36,7 +32,7 @@
                                 <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
                             </button>
 
-                            <a th:href="@{/admin11/create}" style="cursor: pointer;" class="btn btn-success m-2">
+                            <a th:href="@{/user1/create}" style="cursor: pointer;" class="btn btn-success m-2">
                                 <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
                             </a>
                         </div>
@@ -52,41 +48,53 @@
                     <table class="table custom-table table-bordered">
                         <thead class="thead-light">
                         <tr>
-
                             <th class="text-center" scope="col" th:text="#{no}"></th>
                             <th class="text-center" scope="col" th:text="#{Name}"></th>
-                            <th class="text-center" scope="col" th:text="#{img}"></th>
+                            <th class="text-center" scope="col" th:text="#{age}"></th>
+                            <th class="text-center" scope="col" th:text="#{email}"></th>
+                            <th class="text-center" scope="col" th:text="#{address}"></th>
+                            <th class="text-center" scope="col" th:text="#{phone}"></th>
+                            <th class="text-center" scope="col" th:text="#{Image}"></th>
                             <th class="text-center" scope="col" th:text="#{Action}"></th>
-
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="admin,item : ${admins}">
+                        <tr th:each="user,item : ${users}">
                             <th class="text-center" scope="row" style="font-weight: normal; color: #000000;"
                                 th:text="${item.index + pageSize*currentPage - (pageSize-1)}">1
                             </th>
-                            <td th:text="${admin.name}"></td>
                             <td>
-                                <div class="dropdown" th:if="${admin.img != null && admin.img != ''}">
+                                <a th:href="@{'/book/index?userId=' + ${user.id}}" class="btn"
+                                   title="Book "
+                                   style="color: #00709E; background: transparent; white-space: nowrap;">
+                                    <span th:text="${user.name}"></span>
+                                </a>
+                            </td>
+                            <td th:text="${user.age}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.address}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td>
+                                <div class="dropdown" th:if="${user.image != null && user.image != ''}">
                                     <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                          aria-expanded="false"
-                                         style="height: 35px" th:src="${admin.img}">
+                                         style="height: 35px" th:src="${user.image}">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <img style="height: 200px" th:src="${admin.img}">
+                                        <img style="height: 200px" th:src="${user.image}">
                                     </div>
                                 </div>
                             </td>
                             <td class="text-center">
                                 <div>
                                     <a href="javascript:void(0);" class="btn" title="View"
-                                       th:attr="onclick=|viewDetail('${admin.id}')|" style="color: #00709E; background: transparent;
+                                       th:attr="onclick=|viewDetail('${user.id}')|" style="color: #00709E; background: transparent;
                                          white-space: nowrap;">
                                         <i class="far fa-eye"></i>
                                     </a>
-                                    <a th:href="@{'/admin11/update/' + ${admin.id}}" class="btn" title="Update">
+                                    <a th:href="@{'/user1/update/' + ${user.id}}" class="btn" title="Update">
                                         <i class="far fa-edit" style="color: #00709e;"></i>
                                     </a>
-                                    <a th:attr="onclick=|deleteIcon('${admin.id}', '${currentPage}', '${pageSize}')|"
+                                    <a th:attr="onclick=|deleteIcon('${user.id}', '${currentPage}', '${pageSize}')|"
                                        style="cursor: pointer;" type="button" class="btn" title="Delete">
                                         <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
                                     </a>
@@ -100,10 +108,9 @@
             </div>
         </div>
     </div>
-
     <div id="view-modal-xl" class="modal fade" th:fragment="view_detail">
         <div class="modal-dialog modal-xl">
-            <div class="modal-content" th:if="${admin  != null}">
+            <div class="modal-content" th:if="${user  != null}">
                 <div class="text-center p-3" id="outPopup">
                     <h3 style="color: #00709E;" th:text="#{title.view}"></h3>
                     <div>
@@ -111,11 +118,36 @@
                             <tbody id="detail_author">
                             <tr>
                                 <th style="text-align: left;" th:text="#{Name}"></th>
-                                <td style="text-align: left;" th:text="${admin.name}"></td>
+                                <td style="text-align: left;" th:text="${user.name}"></td>
                             </tr>
                             <tr>
-                                <th style="text-align: left;" th:text="#{img}"></th>
-                                <td style="text-align: left;" th:text="${admin.img}"></td>
+                                <th style="text-align: left;" th:text="#{Age}"></th>
+                                <td style="text-align: left;" th:text="${user.age}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{Email}"></th>
+                                <td style="text-align: left;" th:text="${user.email}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{Address}"></th>
+                                <td style="text-align: left;" th:text="${user.address}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{Phone}"></th>
+                                <td style="text-align: left;" th:text="${user.phone}"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;" th:text="#{image}"></th>
+                                <td style="text-align: left;">
+                                    <div class="dropdown" th:if="${user.image != null && user.image != ''}">
+                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                             aria-expanded="false"
+                                             style="height: 35px" th:src="${user.image}">
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                            <img style="height: 200px" th:src="${user.image}">
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -124,7 +156,6 @@
             </div>
         </div>
     </div>
-
     <div id="popup-delete" class="modal fade">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -136,21 +167,9 @@
             </div>
         </div>
     </div>
-
-
 </div>
-
-
 <!-- REQUIRED SCRIPTS -->
 <script layout:fragment="content_page_script">
-    function fun(event){
-        event.preventDefault();
-        var k=document.getElementById("name").value;
-
-        console.log(k);
-        console.log( document.getElementById("name").value=2);
-
-    }
     function linkpage(page) {
         console.log(page);
         var urlPage = window.location.href;
@@ -204,7 +223,7 @@
 
     function viewDetail(id) {
         console.log("Open Popup Detail: " + id);
-        $.get("[[@{/admin11/view/}]]" + id,
+        $.get("[[@{/user1/view/}]]" + id,
             function (data) {
                 console.log(data);
                 $("#view-modal-xl").replaceWith(data);
@@ -212,33 +231,27 @@
             }
         );
     }
-
     function deleteIcon(id, page, pageSize) {
         if (page == null || page == "" || page == "null")
             page = 1;
         if (pageSize == null || pageSize == "" || pageSize == "null")
             pageSize = 10;
-
         $("#popup-delete").modal('show');
 
         $("#confirmDel").click(function () {
             $("#popup-delete").modal('hide');
             window.location.href = `[[${@environment.getProperty(
-                'server.servlet.context-path')}]]/admin11/delete/${page}?id=${id}&pageSize=${pageSize}`;
+                'server.servlet.context-path')}]]/user1/delete/${page}?id=${id}&pageSize=${pageSize}`;
         });
-
-
+        $("#closeDel").click(function () {
+            $("#popup-delete").modal('hide');
+        });
+        var reset = document.querySelector('#reset')
+        reset.onclick = function (e) {
+            e.preventDefault();
+            $('#name').val('');
+        }
     }
-
-    $("#closeDel").click(function () {
-        $("#popup-delete").modal('hide');
-    });
-    var reset = document.querySelector('#reset')
-    reset.onclick = function (e) {
-        e.preventDefault();
-        $('#name').val('');
-    }
-
 </script>
 </body>
 </html>

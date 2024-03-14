@@ -69,7 +69,6 @@ public class UploadFile {
         }
         return null;
     }
-
     public Path createImageFile(String thumbUpload, String type) {
         try {
             if(thumbUpload == null || thumbUpload.equals(""))
