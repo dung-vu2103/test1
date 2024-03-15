@@ -16,4 +16,5 @@ public class BookDto {
     private String book_name;
     private float price;
     private String createDate;
+    private String image;
 }

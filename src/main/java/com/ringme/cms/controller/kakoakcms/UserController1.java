@@ -72,7 +72,6 @@ public class UserController1 {
         log.info("---SAVE DTO---|" + dto);
         if(!error.hasErrors()){
             User1 object = new User1();
-
             if(dto.getId() == null) {
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.create.success", null, LocaleContextHolder.getLocale()));
             } else {
@@ -83,7 +82,6 @@ public class UserController1 {
             if (icon != null) {
                 object.setImage(File.separator +icon);
             }
-
             object.setName(dto.getName());
             object.setAge(dto.getAge());
             object.setAddress(dto.getAddress());

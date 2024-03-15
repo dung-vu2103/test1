@@ -2,11 +2,10 @@ package com.ringme.cms.controller.kakoakcms;
 
 import com.ringme.cms.common.UploadFile;
 import com.ringme.cms.dto.kakoakcms.BookDto;
-import com.ringme.cms.dto.kakoakcms.sticker.StickerItemDto;
+
 import com.ringme.cms.model.kakoakcms.Book;
 import com.ringme.cms.model.kakoakcms.User1;
-import com.ringme.cms.model.kakoakcms.sticker.Sticker;
-import com.ringme.cms.model.kakoakcms.sticker.StickerItem;
+
 import com.ringme.cms.service.BookService;
 import com.ringme.cms.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -54,7 +54,7 @@ public class BookController {
         model.addAttribute("totalItems", objectPage.getTotalElements());
         model.addAttribute("models", objectPage.toList());
         model.addAttribute("user1", user1);
-        model.addAttribute("title", messageSource.getMessage("title.stickerItem", null, LocaleContextHolder.getLocale()));
+        model.addAttribute("title", messageSource.getMessage("title.book", null, LocaleContextHolder.getLocale()));
         return "index3";
     }
     @GetMapping("/create")
@@ -73,7 +73,9 @@ public class BookController {
         return "form3";
     }
     @PostMapping("/save")
-    public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error, RedirectAttributes redirectAttributes) {
+    public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error,
+                       @RequestParam(name = "imageUrlUpload",required = false) MultipartFile imageUrlUpload,
+                       RedirectAttributes redirectAttributes) {
         log.info("---SAVE DTO---|" + dto);
         if(!error.hasErrors()){
             Book object = new Book();
@@ -82,11 +84,17 @@ public class BookController {
             } else {
                 object = bookService.findById(dto.getId());
             }
+
             object.setUserId(dto.getUserId());
             object.setBook_name(dto.getBook_name());
             object.setPrice(dto.getPrice());
-
-            bookService.save(object);
+          String[] file=uploadFile.fileName(imageUrlUpload,"books");
+          if(file !=null || !file[2].equals(dto.getImage()))
+          {
+              object.setImage("/" + file[1]);
+              uploadFile.upload(imageUrlUpload,file);
+          }
+          bookService.save(object);
         } else {
             log.error("ERROR|Save|" + error);
             if(dto.getId() == null)

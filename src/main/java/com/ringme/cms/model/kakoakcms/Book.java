@@ -1,6 +1,5 @@
 package com.ringme.cms.model.kakoakcms;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +23,8 @@ public class Book {
     private float price;
     @Column(name = "date")
     private Date createDate;
+    @Column(name = "image")
+    private String image;
     // @ManyToOne()
     //@JoinColumn(name = "user1_id")
     //private User1 user1;

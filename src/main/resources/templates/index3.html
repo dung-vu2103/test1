@@ -46,6 +46,7 @@
                             <th class="text-center" scope="col" th:text="#{BookName}"></th>
                             <th class="text-center" scope="col" th:text="#{Price}"></th>
                             <th class="text-center" scope="col" th:text="#{CreateDate}"></th>
+                            <th class="text-center" scope="col" th:text="#{Image}"></th>
                             <th class="text-center" scope="col" th:text="#{action}"></th>
                         </tr>
                         </thead>
@@ -54,6 +55,15 @@
                             <td class="text-center" th:text="${model.book_name}"></td>
                             <td class="text-center" th:text="${model.price}"></td>
                             <td class="text-center" th:text="${model.createDate}"></td>
+                            <td>
+                                <div class="dropdown" th:if="${model.image != null &&model.image != ''}">
+                                    <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                         style="height: 35px" th:src="${model.image}">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <img style="height: 200px" th:src="${model.image}">
+                                    </div>
+                                </div>
+                            </td>
                             <td class="text-center">
                                 <div>
                                     <a th:href="@{'/book/update/' + ${model.id}}" class="btn" title="Update">

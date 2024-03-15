@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Base64;
 
 @Log4j2
@@ -26,7 +25,7 @@ public class UploadFile {
         log.info("appConfiguration|" + appConfiguration.getRootPath());
         return Paths.get(appConfiguration.getRootPath());
     }
-    @Deprecated
+
     public void upload(MultipartFile image, String[] fileName) {
         try {
             Path ROOT_FOLDER = Paths.get(appConfiguration.getRootPath());
@@ -44,7 +43,6 @@ public class UploadFile {
             log.error("ERROR|" + e.getMessage(), e);
         }
     }
-    @Deprecated
     public String[] fileName(MultipartFile image, String type){
         try {
             log.info("appConfiguration|" + appConfiguration.getFileInDBPrefix());
@@ -107,7 +105,6 @@ public class UploadFile {
         }
         return null;
     }
-
     public Path getSavedPath(UploadDto data, String type){
         try {
             String filename = data.getFileName();
@@ -118,20 +115,16 @@ public class UploadFile {
 
             if(fileExtension == null || fileExtension.isEmpty())
                 return null;
-
             String fileName = Helper.generateRandomString(32);
             Path timePath = Helper.getPathByTime();
             Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);
-
             relativePath = relativePath.resolve(fileName + "." + fileExtension);
-
             return relativePath;
         } catch (Exception e) {
             log.error("ERROR|" + e.getMessage(), e);
         }
         return null;
     }
-
     public Path saveFileChunk2Storage(MultipartFile fileChunk, String type){
         try {
             Path ROOT_FOLDER = Paths.get(appConfiguration.getRootPath());
