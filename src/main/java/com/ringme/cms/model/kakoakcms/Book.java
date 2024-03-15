@@ -19,12 +19,17 @@ public class Book {
     private Integer userId;
     @Column(name = "book_name")
     private String book_name;
+
+
     @Column(name = "price")
     private float price;
     @Column(name = "date")
     private Date createDate;
     @Column(name = "image")
     private String image;
+
+    public void setCreateDate(Date date) {
+    }
     // @ManyToOne()
     //@JoinColumn(name = "user1_id")
     //private User1 user1;

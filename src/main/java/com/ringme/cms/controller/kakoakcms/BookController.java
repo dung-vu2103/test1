@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("book")
@@ -42,16 +43,16 @@ public class BookController {
                              @RequestParam(name = "pageSize", required = false) Integer pageSize,
                              @RequestParam(name = "userId") Integer userId, Model model) {
         if(page == null)
-            page = 1;
+            page = (Integer) 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = (Integer) 10;
         Page<Book> objectPage = bookService.get(userId, page, pageSize);
         User1 user1 = userService.findById(userId);
         model.addAttribute("currentPage", page);
         model.addAttribute("userId", userId);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", objectPage.getTotalPages());
-        model.addAttribute("totalItems", objectPage.getTotalElements());
+        model.addAttribute("totalPages", Optional.of(objectPage.getTotalPages()));
+        model.addAttribute("totalItems", Optional.of(objectPage.getTotalElements()));
         model.addAttribute("models", objectPage.toList());
         model.addAttribute("user1", user1);
         model.addAttribute("title", messageSource.getMessage("title.book", null, LocaleContextHolder.getLocale()));
@@ -76,7 +77,7 @@ public class BookController {
     public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error,
                        @RequestParam(name = "imageUrlUpload",required = false) MultipartFile imageUrlUpload,
                        RedirectAttributes redirectAttributes) {
-        log.info("---SAVE DTO---|" + dto);
+
         if(!error.hasErrors()){
             Book object = new Book();
             if(dto.getId() == null) {
@@ -114,9 +115,9 @@ public class BookController {
                          @RequestParam(name = "id", required = false) Integer id,
                          RedirectAttributes redirectAttributes) {
         if(page == null)
-            page = 1;
+            page = (Integer) 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = (Integer) 10;
         log.info("id|{}", id);
         bookService.delete(id);
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.delete.success", null, LocaleContextHolder.getLocale()));

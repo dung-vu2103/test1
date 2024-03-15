@@ -3,7 +3,9 @@ package com.ringme.cms.common;
 import com.google.gson.JsonArray;
 import com.ringme.cms.dto.AjaxSearchDto;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.logging.Log;
 
+import java.io.Console;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -12,9 +14,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
+
 
 @Log4j2
 public class Helper {
+    private static final Logger logger = Logger.getLogger(Helper.class.getName());
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
     public static String generateRandomString(int length) {
         Random random = new Random();
@@ -37,7 +42,7 @@ public class Helper {
 
             return time;
         } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
+           logger.info("error" + e.getMessage());
         }
         return null;
     }

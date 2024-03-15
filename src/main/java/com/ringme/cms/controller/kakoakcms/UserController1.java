@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+
 @Log4j2
 @Controller
 @RequestMapping("/user1")
@@ -35,10 +37,10 @@ public class UserController1 {
                           @RequestParam(value = "name", required = false) String name
             , Model model) {
         if (page == null) {
-            page = 1;
+            page = (Integer) 1;
         }
         if (pageSize == null) {
-            pageSize = 10;
+            pageSize = (Integer) 10;
         }
         UserDto userDto = userService.processSearch(name);
         Page<User1> oblectPage = userService.getAll(userDto, page, pageSize);
@@ -46,8 +48,8 @@ public class UserController1 {
         model.addAttribute("currentPage", page);
         model.addAttribute("name", name);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", oblectPage.getTotalPages());
-        model.addAttribute("totalItems", oblectPage.getTotalElements());
+        model.addAttribute("totalPages", Optional.of(oblectPage.getTotalPages()));
+        model.addAttribute("totalItems", Optional.of(oblectPage.getTotalElements()));
         model.addAttribute("users", users);
         return "index2";
     }
@@ -108,9 +110,9 @@ public class UserController1 {
                          @RequestParam(name = "id", required = false) Integer id,
                          RedirectAttributes redirectAttributes) {
         if(page == null)
-            page = 1;
+            page = (Integer) 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = (Integer) 10;
         try {
             userService.delete(id);
             redirectAttributes.addFlashAttribute("success",

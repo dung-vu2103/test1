@@ -26,7 +26,7 @@ public class UpFile {
         log.info("appConfiguration|" + appConfiguration.getRootPath());
         return Paths.get(appConfiguration.getRootPath());
     }
-    @Deprecated
+
     public void upload(MultipartFile image, String[] fileName) throws IOException {
         Path rootPath=Paths.get(appConfiguration.getRootPath());
         if(fileName == null)
@@ -35,12 +35,14 @@ public class UpFile {
             Files.createDirectories(rootPath.resolve(fileName[0]));
         }
         Path file=rootPath.resolve(fileName[1]);
-        OutputStream os=Files.newOutputStream(file);
-        os.write(image.getBytes());
+        try(OutputStream os=Files.newOutputStream(file)){
+            os.write(image.getBytes());
+        };
+
 
 
     }
-    @Deprecated
+
     public String[] fileName(MultipartFile image, String type){
         try {
           String originalFilename=image.getOriginalFilename();

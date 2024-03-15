@@ -22,6 +22,8 @@ import javax.validation.Valid;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+
 @Log4j2
 @Controller
 @RequestMapping("/admin11")
@@ -39,10 +41,10 @@ public class Min1Controller {
                               @RequestParam(value = "name", required = false) String name
                 , Model model) {
             if (page == null) {
-                page = 1;
+                page = (Integer) 1;
             }
             if (pageSize == null) {
-                pageSize = 10;
+                pageSize = (Integer) 10;
             }
             MinDto minDto = adminService.processSearch(name);
             Page<Min> oblectPage = adminService.get(minDto, page, pageSize);
@@ -51,8 +53,8 @@ public class Min1Controller {
             model.addAttribute("currentPage", page);
             model.addAttribute("name", name);
             model.addAttribute("pageSize", pageSize);
-            model.addAttribute("totalPages", oblectPage.getTotalPages());
-            model.addAttribute("totalItems", oblectPage.getTotalElements());
+            model.addAttribute("totalPages", Optional.of(oblectPage.getTotalPages()));
+            model.addAttribute("totalItems", Optional.of(oblectPage.getTotalElements()));
             model.addAttribute("admins", admins);
 
             return "index1";
@@ -78,9 +80,9 @@ public class Min1Controller {
                          @RequestParam(name = "id", required = false) Integer id,
                          RedirectAttributes redirectAttributes) {
         if(page == null)
-            page = 1;
+            page = (Integer) 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = (Integer) 10;
         try {
             adminService.delete(id);
             redirectAttributes.addFlashAttribute("success",
