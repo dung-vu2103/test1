@@ -1,5 +1,6 @@
 package com.ringme.cms.controller.kakoakcms;
 
+import com.ringme.cms.common.UpFile;
 import com.ringme.cms.common.UploadFile;
 import com.ringme.cms.dto.kakoakcms.BookDto;
 
@@ -36,42 +37,45 @@ public class BookController {
     @Autowired
     BookService bookService;
     @Autowired
+    UpFile upFile;
+    @Autowired
     private MessageSource messageSource;
 
     @GetMapping(value = {"/index", "/index/{page}"})
     public String getAllPage(@PathVariable(required = false) Integer page,
                              @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                             @RequestParam(name = "userId") Integer userId, Model model) {
+                             @RequestParam(name = "userId") Integer userId,
+                             Model model) {
         if(page == null)
-            page = (Integer) 1;
+            page =  1;
         if(pageSize == null)
-            pageSize = (Integer) 10;
+            pageSize =  10;
         Page<Book> objectPage = bookService.get(userId, page, pageSize);
         User1 user1 = userService.findById(userId);
         model.addAttribute("currentPage", page);
         model.addAttribute("userId", userId);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", Optional.of(objectPage.getTotalPages()));
-        model.addAttribute("totalItems", Optional.of(objectPage.getTotalElements()));
+        model.addAttribute("totalPages", objectPage.getTotalPages());
+        model.addAttribute("totalItems", objectPage.getTotalElements());
         model.addAttribute("models", objectPage.toList());
         model.addAttribute("user1", user1);
         model.addAttribute("title", messageSource.getMessage("title.book", null, LocaleContextHolder.getLocale()));
-        return "index3";
+        return "/book-list/index3";
     }
     @GetMapping("/create")
     public String create(@RequestParam(name = "userId") Integer userId, Model model) {
         Book dto = new Book();
         dto.setUserId(userId);
         model.addAttribute("model", dto);
-        model.addAttribute("title", messageSource.getMessage("title.sticker-item.create", null, LocaleContextHolder.getLocale()));
-        return "form3";
+        model.addAttribute("title", messageSource.getMessage("title.book.create", null, LocaleContextHolder.getLocale()));
+        return "/book-list/form3";
     }
     @GetMapping("/update/{id}")
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         Book dto = bookService.findById(id);
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker-item.update", null, LocaleContextHolder.getLocale()));
-        return "form3";
+        return "/book-list/form3";
     }
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error,
@@ -80,8 +84,10 @@ public class BookController {
 
         if(!error.hasErrors()){
             Book object = new Book();
+
             if(dto.getId() == null) {
-                object.setCreateDate(new Date());
+
+               object.setCreateDate(new Date());
             } else {
                 object = bookService.findById(dto.getId());
             }
@@ -89,12 +95,14 @@ public class BookController {
             object.setUserId(dto.getUserId());
             object.setBook_name(dto.getBook_name());
             object.setPrice(dto.getPrice());
-          String[] file=uploadFile.fileName(imageUrlUpload,"books");
-          if(file !=null || !file[2].equals(dto.getImage()))
+          String[] file=upFile.fileName(imageUrlUpload,"books");
+          if(file !=null &&(dto.getId() == null || !file[2].equals(dto.getImage())) )
           {
               object.setImage("/" + file[1]);
-              uploadFile.upload(imageUrlUpload,file);
+             upFile.upload(imageUrlUpload,file);
           }
+          log.info("date" + object.getCreateDate());
+          log.info("1234" +object.getBook_name());
           bookService.save(object);
         } else {
             log.error("ERROR|Save|" + error);
@@ -113,14 +121,15 @@ public class BookController {
     public String delete(@PathVariable(required = false) Integer page,
                          @RequestParam(name = "pageSize", required = false) Integer pageSize,
                          @RequestParam(name = "id", required = false) Integer id,
+                         @RequestParam(name = "userId", required = false) Integer userId,
                          RedirectAttributes redirectAttributes) {
         if(page == null)
-            page = (Integer) 1;
+            page = 1;
         if(pageSize == null)
-            pageSize = (Integer) 10;
+            pageSize = 10;
         log.info("id|{}", id);
         bookService.delete(id);
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.delete.success", null, LocaleContextHolder.getLocale()));
-        return "redirect:/book/index/";
+        return "redirect:/book/index/" +page +"?pageSize=" +pageSize + "&userId=" +userId;
     }
 }

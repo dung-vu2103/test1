@@ -65,6 +65,7 @@ public class StickerItemController {
     public String delete(@PathVariable(required = false) Integer page,
                          @RequestParam(name = "pageSize", required = false) Integer pageSize,
                          @RequestParam(name = "id", required = false) Long id,
+                         @RequestParam(name = "stickerId", required = false) Long stickerId,
                          RedirectAttributes redirectAttributes) {
         if(page == null)
             page = 1;
@@ -73,7 +74,7 @@ public class StickerItemController {
         log.info("id|{}", id);
         service.delete(id);
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.delete.success", null, LocaleContextHolder.getLocale()));
-        return "redirect:/sticker-item/index/" + page + "?pageSize=" + pageSize;
+        return "redirect:/sticker-item/index/" + page + "?pageSize=" + pageSize  + "&stickerId=" + stickerId;
     }
 
     @GetMapping("/create")

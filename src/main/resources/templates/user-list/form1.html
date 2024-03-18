@@ -15,11 +15,11 @@
     <div class="container-fluid">
         <div class="card card-default">
             <div class="card-body">
-                <form th:action="@{/user1/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                <form th:action="@{/User/save}" method="post" th:object="${model}" enctype="multipart/form-data">
                     <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
                     <div class="row">
                         <div class="col-6 mt-3">
-                            <label for="name" style="font-weight: bold"><span>[[#{name}]]</span><span style="color:red"> *</span></label>
+                            <label for="name" style="font-weight: bold"><span>[[#{Name}]]</span><span style="color:red"> *</span></label>
                             <input type="text" id="name" th:field="*{name}" name="name" value="${name}"
                                    class="form-control" aria-label="title" required>
                         </div>
@@ -39,16 +39,17 @@
                                    class="form-control" aria-label="title" required>
                         </div>
                         <div class="col-6 mt-3">
-                            <label for="phone" style="font-weight: bold"><span>[[#{phone}]]</span><span style="color:red"> *</span></label>
+                            <label for="phone" style="font-weight: bold"><span>[[#{Phone}]]</span><span style="color:red"> *</span></label>
                             <input type="text" id="phone" th:field="*{phone}" name="phone" value="${phone}"
                                    class="form-control" aria-label="title" required>
                         </div>
                         <div class="col-6 mt-3">
-                            <div id="dnd" class="form-group h-80 w-100 d-inline-block">
+                            <div id="dnd2" class="form-group h-80 w-100 d-inline-block">
                                 <label for="file_image">Img</label>
                                 <div id="image_upload" class="text-center h-100">
-                                    <p th:if="${model.id != null}"><img id="previewImage" th:src="(${@environment.getProperty('domain.nginx')} + ${model.image})"/></p>
+                                    <p th:if="${model.id != null}"><img id="previewImage" th:src=" ${model.image}"/></p>
                                     <p th:if="${model.id == null}"><img id="previewImage" th:src="@{/img/bg_login4.jpg}" class="img-fluid img-thumbnail"/></p>
+
                                 </div>
                             </div>
                             <input type="file" id="file_image" name="iconUpload2" accept="image/*" hidden="hidden" style="cursor: pointer;">

@@ -89,7 +89,7 @@
                                     <a th:href="@{'/sticker-item/update/' + ${model.id}}" class="btn" title="Update">
                                         <i class="far fa-edit" style="color: #00709e;"></i>
                                     </a>
-                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}')|"
+                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}', '${model.stickerId}')|"
                                        style="cursor: pointer;" type="button" class="btn" title="Delete">
                                         <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
                                     </a>
@@ -174,7 +174,7 @@
         window.location.href = newUrl;
     }
 
-    function deleteIcon(id, page, pageSize) {
+    function deleteIcon(id, page, pageSize, stickerId) {
         if(page == null || page == "" || page == "null")
             page = 1;
         if(pageSize == null || pageSize == "" || pageSize == "null")
@@ -184,7 +184,7 @@
 
         $("#confirmDel").click(function() {
             $("#popup-delete").modal('hide');
-            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/sticker-item/delete/${page}?id=${id}&pageSize=${pageSize}`;
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/sticker-item/delete/${page}?id=${id}&pageSize=${pageSize}&stickerId=${stickerId}`;
         });
 
         $("#closeDel").click(function() {

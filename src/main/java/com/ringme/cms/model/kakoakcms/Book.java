@@ -28,8 +28,7 @@ public class Book {
     @Column(name = "image")
     private String image;
 
-    public void setCreateDate(Date date) {
-    }
+
     // @ManyToOne()
     //@JoinColumn(name = "user1_id")
     //private User1 user1;

@@ -69,7 +69,7 @@
                                     <a th:href="@{'/book/update/' + ${model.id}}" class="btn" title="Update">
                                         <i class="far fa-edit" style="color: #00709e;"></i>
                                     </a>
-                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}')|"
+                                    <a th:attr="onclick=|deleteIcon('${model.id}', '${currentPage}', '${pageSize}','${model.userId}')|"
                                        style="cursor: pointer;" type="button" class="btn" title="Delete">
                                         <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
                                     </a>
@@ -151,7 +151,7 @@
         var newUrl = utlBase + urlParram;
         window.location.href = newUrl;
     }
-    function deleteIcon(id, page, pageSize) {
+    function deleteIcon(id, page, pageSize, userId) {
         if(page == null || page == "" || page == "null")
             page = 1;
         if(pageSize == null || pageSize == "" || pageSize == "null")
@@ -159,7 +159,7 @@
         $("#popup-delete").modal('show');
         $("#confirmDel").click(function() {
             $("#popup-delete").modal('hide');
-            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/book/delete/${page}?id=${id}&pageSize=${pageSize}`;
+            window.location.href = `[[${@environment.getProperty('server.servlet.context-path')}]]/book/delete/${page}?id=${id}&pageSize=${pageSize}&userId=${userId}`;
         });
         $("#closeDel").click(function() {
             $("#popup-delete").modal('hide');

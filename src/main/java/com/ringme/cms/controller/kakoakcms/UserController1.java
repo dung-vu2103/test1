@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Log4j2
 @Controller
-@RequestMapping("/user1")
+@RequestMapping("/User")
 public class UserController1 {
     @Autowired
     private MessageSource messageSource;
@@ -31,58 +31,61 @@ public class UserController1 {
     UserService userService;
     @Autowired
     UpFile upFile;
-    @GetMapping(value={"/get","/get/{page}"})
+
+    @GetMapping(value = {"/index", "/index/{page}"})
     private String index(@PathVariable(required = false) Integer page,
-                          @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                          @RequestParam(value = "name", required = false) String name
-            , Model model) {
-        if (page == null) {
-            page = (Integer) 1;
-        }
-        if (pageSize == null) {
-            pageSize = (Integer) 10;
-        }
-        UserDto userDto = userService.processSearch(name);
-        Page<User1> oblectPage = userService.getAll(userDto, page, pageSize);
-        List<User1> users = oblectPage.toList();
-        model.addAttribute("currentPage", page);
-        model.addAttribute("name", name);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", Optional.of(oblectPage.getTotalPages()));
-        model.addAttribute("totalItems", Optional.of(oblectPage.getTotalElements()));
-        model.addAttribute("users", users);
-        return "index2";
+                         @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                         @RequestParam(value = "name", required = false) String name, Model model) {
+        if (page == null)
+            page = 1;
+            if (pageSize == null)
+                pageSize = 10;
+
+            UserDto userDto = userService.processSearch(name);
+            Page<User1> oblectPage = userService.getAll(userDto, page, pageSize);
+            List<User1> users = oblectPage.toList();
+            model.addAttribute("currentPage", page);
+            model.addAttribute("name", name);
+            model.addAttribute("pageSize", pageSize);
+            model.addAttribute("totalPages", oblectPage.getTotalPages());
+            model.addAttribute("totalItems", oblectPage.getTotalElements());
+            model.addAttribute("users", users);
+            return "/user-list/index2";
+
     }
+
     @GetMapping("/create")
     public String create(Model model) {
         User1 dto = new User1();
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker.create", null, LocaleContextHolder.getLocale()));
-        return "form1";
+        return "/user-list/form1";
     }
+
     @GetMapping("/view/{id}")
     public String detail(@PathVariable(name = "id") Integer id, Model model) {
         User1 object = userService.findById(id);
         log.info("objecttttt" + object);
         model.addAttribute("user", object);
-        return "index2::view_detail";
+        return "/user-list/index2::view_detail";
     }
+
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("model") UserDto dto, Errors error,
                        @RequestParam(name = "iconUpload", required = false) String iconUpload
             , RedirectAttributes redirectAttributes) {
         log.info("---SAVE DTO---|" + dto);
-        if(!error.hasErrors()){
+        if (!error.hasErrors()) {
             User1 object = new User1();
-            if(dto.getId() == null) {
+            if (dto.getId() == null) {
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.create.success", null, LocaleContextHolder.getLocale()));
             } else {
                 object = userService.findById(dto.getId());
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
             }
-            Path icon=upFile.createImageFile(iconUpload,"image");
+            Path icon = upFile.createImageFile(iconUpload, "image");
             if (icon != null) {
-                object.setImage(File.separator +icon);
+                object.setImage(File.separator + icon);
             }
             object.setName(dto.getName());
             object.setAge(dto.getAge());
@@ -93,26 +96,27 @@ public class UserController1 {
             userService.save(object);
         } else {
             log.error("ERROR|Save|" + error);
-            if(dto.getId() == null)
-                return "redirect:/user1/create";
+            if (dto.getId() == null)
+                return "redirect:/User/create";
             else
-                return "redirect:/user1/update/" + dto.getId();
+                return "redirect:/User/update/" + dto.getId();
         }
-        if(dto.getId() == null)
+        if (dto.getId() == null)
             redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.create.success", null, LocaleContextHolder.getLocale()));
         else
             redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
-        return "redirect:/user1/get";
+        return "redirect:/User/index";
     }
+
     @GetMapping(value = {"/delete", "/delete/{page}"})
     public String delete(@PathVariable(required = false) Integer page,
                          @RequestParam(name = "pageSize", required = false) Integer pageSize,
                          @RequestParam(name = "id", required = false) Integer id,
                          RedirectAttributes redirectAttributes) {
-        if(page == null)
-            page = (Integer) 1;
-        if(pageSize == null)
-            pageSize = (Integer) 10;
+        if (page == null)
+            page = 1;
+        if (pageSize == null)
+            pageSize = 10;
         try {
             userService.delete(id);
             redirectAttributes.addFlashAttribute("success",
@@ -121,12 +125,14 @@ public class UserController1 {
         } catch (Exception e) {
             log.error("ERROR" + e.getMessage(), e);
         }
-        return "redirect:/user1/get/";
+        return "redirect:/User/index/";
     }
+
     @GetMapping("/update/{id}")
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         User1 min = userService.findById(id);
-        model.addAttribute("model",min);
-        return "form1";
+        model.addAttribute("model", min);
+        return "/user-list/form1";
     }
 }
+
