@@ -59,7 +59,7 @@ public class BookController {
         model.addAttribute("models", objectPage.toList());
         model.addAttribute("user1", user1);
         model.addAttribute("title", messageSource.getMessage("title.book", null, LocaleContextHolder.getLocale()));
-        return "/book-list/index";
+        return "book-list/index";
     }
     @GetMapping("/create")
     public String create(@RequestParam(name = "userId") Integer userId, Model model) {
@@ -67,14 +67,14 @@ public class BookController {
         dto.setUserId(userId);
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.book.create", null, LocaleContextHolder.getLocale()));
-        return "/book-list/form";
+        return "book-list/form";
     }
     @GetMapping("/update/{id}")
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         Book dto = bookService.findById(id);
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker-item.update", null, LocaleContextHolder.getLocale()));
-        return "/book-list/form";
+        return "book-list/form";
     }
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error,

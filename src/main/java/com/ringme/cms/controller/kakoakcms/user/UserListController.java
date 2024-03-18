@@ -49,7 +49,7 @@ public class UserListController {
             model.addAttribute("totalPages", oblectPage.getTotalPages());
             model.addAttribute("totalItems", oblectPage.getTotalElements());
             model.addAttribute("users", users);
-            return "/user-list/index";
+            return "user-list/index";
 
     }
 
@@ -58,7 +58,7 @@ public class UserListController {
         User1 dto = new User1();
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker.create", null, LocaleContextHolder.getLocale()));
-        return "/user-list/form";
+        return "user-list/form";
     }
 
     @GetMapping("/view/{id}")
@@ -66,7 +66,7 @@ public class UserListController {
         User1 object = userService.findById(id);
         log.info("objecttttt" + object);
         model.addAttribute("user", object);
-        return "/user-list/index::view_detail";
+        return "user-list/index::view_detail";
     }
 
     @PostMapping("/save")
@@ -131,7 +131,7 @@ public class UserListController {
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         User1 min = userService.findById(id);
         model.addAttribute("model", min);
-        return "/user-list/form";
+        return "user-list/form";
     }
 }
 
