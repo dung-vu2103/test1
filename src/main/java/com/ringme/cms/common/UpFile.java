@@ -17,61 +17,64 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+
 @Log4j2
 @Component
 public class UpFile {
     @Autowired
-   AppConfiguration appConfiguration;
+    AppConfiguration appConfiguration;
+
     public Path processFilePath() {
         log.info("appConfiguration|" + appConfiguration.getRootPath());
         return Paths.get(appConfiguration.getRootPath());
     }
 
-    public void upload(MultipartFile image, String[] fileName){
-        try{
-            Path rootPath=Paths.get(appConfiguration.getRootPath());
-            if(fileName == null)
+    public void upload(MultipartFile image, String[] fileName) {
+        try {
+            Path rootPath = Paths.get(appConfiguration.getRootPath());
+            if (fileName == null)
                 return;
-            if(!Files.exists(rootPath.resolve(fileName[0]))){
+            if (!Files.exists(rootPath.resolve(fileName[0]))) {
                 Files.createDirectories(rootPath.resolve(fileName[0]));
             }
-            Path file=rootPath.resolve(fileName[1]);
+            Path file = rootPath.resolve(fileName[1]);
             log.info("file 1111" + file);
-            try(OutputStream os=Files.newOutputStream(file)) {
+            try (OutputStream os = Files.newOutputStream(file)) {
                 os.write(image.getBytes());
             }
 
-        }catch (Exception e)
-        {
-            log.error("Error" +e.getMessage(),e);
+        } catch (Exception e) {
+            log.error("Error" + e.getMessage(), e);
         }
 
     }
-    public String[] fileName(MultipartFile image, String type){
+
+    public String[] fileName(MultipartFile image, String type) {
         try {
-          String originalFilename=image.getOriginalFilename();
-          if(originalFilename.equals("") || originalFilename == null)
-              return null;
-          String fileExtension=originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-          if(fileExtension == null || fileExtension.equals(""))
-              return null;
-          String name=Helper.generateRandomString(32);
-          String date=Helper.getTimeNow();
-          Path staticPath = Paths.get(appConfiguration.getFileInDBPrefix());
-          Path imgaePath=Paths.get(type + "/" + date);
-          String[] file=new String[3];
-          file[0] =staticPath.resolve(imgaePath).toString().replaceAll("\\\\","/");
-          file[1]= staticPath.resolve(imgaePath).resolve( name + "." +fileExtension).toString().replaceAll("\\\\","/");
-          file[2]=originalFilename;
-          return file;
+            String originalFilename = image.getOriginalFilename();
+            if (originalFilename.equals("") || originalFilename == null)
+                return null;
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+            if (fileExtension == null || fileExtension.equals(""))
+                return null;
+            String name = Helper.generateRandomString(32);
+            String date = Helper.getTimeNow();
+            Path staticPath = Paths.get(appConfiguration.getFileInDBPrefix());
+            Path imgaePath = Paths.get(type + "/" + date);
+            String[] file = new String[3];
+            file[0] = staticPath.resolve(imgaePath).toString().replaceAll("\\\\", "/");
+            file[1] = staticPath.resolve(imgaePath).resolve(name + "." + fileExtension).toString().replaceAll("\\\\", "/");
+            file[2] = originalFilename;
+            return file;
         } catch (Exception e) {
             log.error("ERROR|" + e.getMessage(), e);
         }
         return null;
     }
+
     public Path createImageFile(String thumbUpload, String type) {
         try {
-            if(thumbUpload == null || thumbUpload.equals(""))
+            if (thumbUpload == null || thumbUpload.equals(""))
                 return null;
             String[] dataArray = thumbUpload.trim().split(",");
             log.info("dhhhhhhhhhhhdhd" + dataArray.toString());
@@ -83,14 +86,14 @@ public class UpFile {
             } else {
                 imgBase64 = thumbUpload;
             }
-            log.info("dkdkkdkkddkđk" +dataArray[0]);
+            log.info("dkdkkdkkddkđk" + dataArray[0]);
             String fileName = Helper.generateRandomString(32);
             Path timePath = Helper.getPathByTime();
             Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);
             relativePath = relativePath.resolve(fileName + "." + fileExtension);
             Path obsoluteSavePath = Paths.get(appConfiguration.getRootPath()).resolve(relativePath);
             Path folderParent = obsoluteSavePath.getParent();
-            if(!Files.exists(folderParent)) {
+            if (!Files.exists(folderParent)) {
                 Files.createDirectories(folderParent);
             }
             log.info("PATH|" + "|relativePath = " + relativePath + "|obsolutePath = " + obsoluteSavePath);

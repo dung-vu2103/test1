@@ -1,4 +1,4 @@
-package com.ringme.cms.dto.kakoakcms;
+package com.ringme.cms.dto.kakoakcms.user;
 
 import lombok.*;
 

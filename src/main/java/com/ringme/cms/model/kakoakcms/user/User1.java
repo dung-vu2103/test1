@@ -1,4 +1,4 @@
-package com.ringme.cms.model.kakoakcms;
+package com.ringme.cms.model.kakoakcms.user;
 
 import lombok.Data;
 import lombok.Getter;

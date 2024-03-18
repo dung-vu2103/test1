@@ -15,7 +15,7 @@
     <div class="container-fluid">
         <div class="card card-default">
             <div class="card-body">
-                <form th:action="@{/User/save}" method="post" th:object="${model}" enctype="multipart/form-data">
+                <form th:action="@{/list-user/save}" method="post" th:object="${model}" enctype="multipart/form-data">
                     <input type="hidden" id="id" name="id" th:value="${model.id}?${model.id}">
                     <div class="row">
                         <div class="col-6 mt-3">
@@ -58,7 +58,7 @@
                         <div class="col d-flex align-items-end justify-content-center pt-3"
                              style="padding-left: 0 !important;">
                             <a id="backSchedule" type="button" class="btn btn-success me-md-2 m-2"
-                               th:href="@{/user1/get}" th:text="#{back}"
+                               th:href="@{/list-user/index}" th:text="#{back}"
                                style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></a>
                             <button id="saveButton" type="submit" class="btn btn-success me-md-2 m-2" th:text="#{save}"
                                     style="height: 30px; width: 125px; left: 886px; top: 389px; border-radius: 3px;"></button>
@@ -90,6 +90,7 @@
             </div>
         </div>
     </div>
+</div>
     <script layout:fragment="content_page_script">
         $(function() {
             $('#image_upload').height($('#image_upload').height());

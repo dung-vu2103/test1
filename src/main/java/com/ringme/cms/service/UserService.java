@@ -1,7 +1,7 @@
 package com.ringme.cms.service;
 
-import com.ringme.cms.dto.kakoakcms.UserDto;
-import com.ringme.cms.model.kakoakcms.User1;
+import com.ringme.cms.dto.kakoakcms.user.UserDto;
+import com.ringme.cms.model.kakoakcms.user.User1;
 import org.springframework.data.domain.Page;
 
 public interface UserService {

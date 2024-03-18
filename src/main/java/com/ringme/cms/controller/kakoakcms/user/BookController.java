@@ -1,11 +1,11 @@
-package com.ringme.cms.controller.kakoakcms;
+package com.ringme.cms.controller.kakoakcms.user;
 
 import com.ringme.cms.common.UpFile;
 import com.ringme.cms.common.UploadFile;
-import com.ringme.cms.dto.kakoakcms.BookDto;
+import com.ringme.cms.dto.kakoakcms.user.BookDto;
 
-import com.ringme.cms.model.kakoakcms.Book;
-import com.ringme.cms.model.kakoakcms.User1;
+import com.ringme.cms.model.kakoakcms.user.Book;
+import com.ringme.cms.model.kakoakcms.user.User1;
 
 import com.ringme.cms.service.BookService;
 import com.ringme.cms.service.UserService;
@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("book")
@@ -60,7 +59,7 @@ public class BookController {
         model.addAttribute("models", objectPage.toList());
         model.addAttribute("user1", user1);
         model.addAttribute("title", messageSource.getMessage("title.book", null, LocaleContextHolder.getLocale()));
-        return "/book-list/index3";
+        return "/book-list/index";
     }
     @GetMapping("/create")
     public String create(@RequestParam(name = "userId") Integer userId, Model model) {
@@ -68,14 +67,14 @@ public class BookController {
         dto.setUserId(userId);
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.book.create", null, LocaleContextHolder.getLocale()));
-        return "/book-list/form3";
+        return "/book-list/form";
     }
     @GetMapping("/update/{id}")
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         Book dto = bookService.findById(id);
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker-item.update", null, LocaleContextHolder.getLocale()));
-        return "/book-list/form3";
+        return "/book-list/form";
     }
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("model") BookDto dto, Errors error,

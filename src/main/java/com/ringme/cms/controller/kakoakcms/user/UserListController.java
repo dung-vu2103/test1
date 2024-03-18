@@ -1,8 +1,8 @@
-package com.ringme.cms.controller.kakoakcms;
+package com.ringme.cms.controller.kakoakcms.user;
 
 import com.ringme.cms.common.UpFile;
-import com.ringme.cms.dto.kakoakcms.UserDto;
-import com.ringme.cms.model.kakoakcms.User1;
+import com.ringme.cms.dto.kakoakcms.user.UserDto;
+import com.ringme.cms.model.kakoakcms.user.User1;
 import com.ringme.cms.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,11 @@ import javax.validation.Valid;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @Controller
-@RequestMapping("/User")
-public class UserController1 {
+@RequestMapping("/list-user")
+public class UserListController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -50,7 +49,7 @@ public class UserController1 {
             model.addAttribute("totalPages", oblectPage.getTotalPages());
             model.addAttribute("totalItems", oblectPage.getTotalElements());
             model.addAttribute("users", users);
-            return "/user-list/index2";
+            return "/user-list/index";
 
     }
 
@@ -59,7 +58,7 @@ public class UserController1 {
         User1 dto = new User1();
         model.addAttribute("model", dto);
         model.addAttribute("title", messageSource.getMessage("title.sticker.create", null, LocaleContextHolder.getLocale()));
-        return "/user-list/form1";
+        return "/user-list/form";
     }
 
     @GetMapping("/view/{id}")
@@ -67,7 +66,7 @@ public class UserController1 {
         User1 object = userService.findById(id);
         log.info("objecttttt" + object);
         model.addAttribute("user", object);
-        return "/user-list/index2::view_detail";
+        return "/user-list/index::view_detail";
     }
 
     @PostMapping("/save")
@@ -97,15 +96,15 @@ public class UserController1 {
         } else {
             log.error("ERROR|Save|" + error);
             if (dto.getId() == null)
-                return "redirect:/User/create";
+                return "redirect:/list-user/create";
             else
-                return "redirect:/User/update/" + dto.getId();
+                return "redirect:/list-user/update/" + dto.getId();
         }
         if (dto.getId() == null)
             redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.create.success", null, LocaleContextHolder.getLocale()));
         else
             redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
-        return "redirect:/User/index";
+        return "redirect:/list-user/index";
     }
 
     @GetMapping(value = {"/delete", "/delete/{page}"})
@@ -125,14 +124,14 @@ public class UserController1 {
         } catch (Exception e) {
             log.error("ERROR" + e.getMessage(), e);
         }
-        return "redirect:/User/index/";
+        return "redirect:/list-user/index/";
     }
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable(name = "id") Integer id, Model model) {
         User1 min = userService.findById(id);
         model.addAttribute("model", min);
-        return "/user-list/form1";
+        return "/user-list/form";
     }
 }
 

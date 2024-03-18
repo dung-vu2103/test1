@@ -1,6 +1,6 @@
 package com.ringme.cms.service;
 
-import com.ringme.cms.model.kakoakcms.Book;
+import com.ringme.cms.model.kakoakcms.user.Book;
 import org.springframework.data.domain.Page;
 
 public interface BookService {

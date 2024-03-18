@@ -1,9 +1,9 @@
 package com.ringme.cms.service;
 
 import com.ringme.cms.common.Helper;
-import com.ringme.cms.dto.kakoakcms.UserDto;
-import com.ringme.cms.model.kakoakcms.User1;
-import com.ringme.cms.repository.kakoakcms.UserRepoitory;
+import com.ringme.cms.dto.kakoakcms.user.UserDto;
+import com.ringme.cms.model.kakoakcms.user.User1;
+import com.ringme.cms.repository.kakoakcms.user.UserRepoitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

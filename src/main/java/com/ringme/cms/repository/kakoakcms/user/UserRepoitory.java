@@ -1,7 +1,6 @@
-package com.ringme.cms.repository.kakoakcms;
+package com.ringme.cms.repository.kakoakcms.user;
 
-import com.ringme.cms.model.kakoakcms.Book;
-
+import com.ringme.cms.model.kakoakcms.user.User1;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,13 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book,Integer> {
+public interface UserRepoitory extends JpaRepository<User1,Integer> {
     @Query(value = """
-            select * from book1 where (:user_id is null or user_id=:user_id)
+            select * from user where (:name is null or name like CONCAT('%',:name,'%'))
             """,
             countQuery= """
-                    SELECT COUNT(*) FROM book1 where :user_id is null or user_id=:user_id)
+                    SELECT COUNT(*) FROM user where (:name is null or name like CONCAT('%',:name,'%'))
                     """,
             nativeQuery = true)
-    Page<Book> get(@Param("user_id") Integer userId, Pageable pageable);
+    Page<User1> get(@Param("name") String name, Pageable pageable);
 }

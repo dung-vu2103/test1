@@ -32,7 +32,7 @@
                                 <i class="fa fa-refresh"></i><span class="px-2" th:text="#{reset}"></span>
                             </button>
 
-                            <a th:href="@{/User/create}" style="cursor: pointer;" class="btn btn-success m-2">
+                            <a th:href="@{/list-user/create}" style="cursor: pointer;" class="btn btn-success m-2">
                                 <i class="fas fa-plus"></i><span class="px-2" th:text="#{create}"></span>
                             </a>
                         </div>
@@ -91,7 +91,7 @@
                                          white-space: nowrap;">
                                         <i class="far fa-eye"></i>
                                     </a>
-                                    <a th:href="@{'/User/update/' + ${user.id}}" class="btn" title="Update">
+                                    <a th:href="@{'/list-user/update/' + ${user.id}}" class="btn" title="Update">
                                         <i class="far fa-edit" style="color: #00709e;"></i>
                                     </a>
                                     <a th:attr="onclick=|deleteIcon('${user.id}', '${currentPage}', '${pageSize}')|"
@@ -223,7 +223,7 @@
 
     function viewDetail(id) {
         console.log("Open Popup Detail: " + id);
-        $.get("[[@{/User/view/}]]" + id,
+        $.get("[[@{/list-user/view/}]]" + id,
             function (data) {
                 console.log(data);
                 $("#view-modal-xl").replaceWith(data);
@@ -241,7 +241,7 @@
         $("#confirmDel").click(function () {
             $("#popup-delete").modal('hide');
             window.location.href = `[[${@environment.getProperty(
-                'server.servlet.context-path')}]]/User/delete/${page}?id=${id}&pageSize=${pageSize}`;
+                'server.servlet.context-path')}]]/list-user/delete/${page}?id=${id}&pageSize=${pageSize}`;
         });
         $("#closeDel").click(function () {
             $("#popup-delete").modal('hide');

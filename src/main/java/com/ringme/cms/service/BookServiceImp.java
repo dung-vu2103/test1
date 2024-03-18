@@ -1,18 +1,13 @@
 package com.ringme.cms.service;
 
 
-import com.ringme.cms.common.Helper;
-import com.ringme.cms.dto.kakoakcms.BookDto;
-import com.ringme.cms.model.kakoakcms.Book;
-import com.ringme.cms.repository.kakoakcms.BookRepository;
+import com.ringme.cms.model.kakoakcms.user.Book;
+import com.ringme.cms.repository.kakoakcms.user.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Handler;
 
 @Service
 public class BookServiceImp implements BookService {
