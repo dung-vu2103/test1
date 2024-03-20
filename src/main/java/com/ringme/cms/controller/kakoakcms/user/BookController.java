@@ -26,7 +26,7 @@ import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
-@RequestMapping("book")
+@RequestMapping("/book")
 @Log4j2
 public class BookController {
     @Autowired
