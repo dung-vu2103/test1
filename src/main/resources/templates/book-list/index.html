@@ -58,9 +58,9 @@
                             <td>
                                 <div class="dropdown" th:if="${model.image != null &&model.image != ''}">
                                     <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                         style="height: 35px" th:src="${model.image}">
+                                         style="height: 35px" th:src="(${@environment.getProperty('domain.nginx')} +${model.image})">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <img style="height: 200px" th:src="${model.image}">
+                                        <img style="height: 200px" th:src="(${@environment.getProperty('domain.nginx')} +${model.image})">
                                     </div>
                                 </div>
                             </td>

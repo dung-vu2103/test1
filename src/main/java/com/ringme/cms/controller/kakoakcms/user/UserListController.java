@@ -34,22 +34,33 @@ public class UserListController {
     @GetMapping(value = {"/index", "/index/{page}"})
     private String index(@PathVariable(required = false) Integer page,
                          @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                         @RequestParam(value = "name", required = false) String name, Model model) {
+                         @RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "address", required = false) String address
+            , Model model) {
         if (page == null)
             page = 1;
-            if (pageSize == null)
-                pageSize = 10;
+        if (pageSize == null)
+            pageSize = 10;
+        UserDto userDto = null;
 
-            UserDto userDto = userService.processSearch(name);
+
+            userDto = userService.processSearch(name,address);
+
+        if (userDto != null) {
             Page<User1> oblectPage = userService.getAll(userDto, page, pageSize);
             List<User1> users = oblectPage.toList();
             model.addAttribute("currentPage", page);
             model.addAttribute("name", name);
+            model.addAttribute("address", address);
             model.addAttribute("pageSize", pageSize);
             model.addAttribute("totalPages", oblectPage.getTotalPages());
             model.addAttribute("totalItems", oblectPage.getTotalElements());
             model.addAttribute("users", users);
-            return "user-list/index";
+
+        }
+
+
+        return "user-list/index";
 
     }
 

@@ -15,9 +15,10 @@ public class UserServiceImp implements UserService {
     @Autowired
     UserRepoitory userRepoitory;
     @Override
-    public UserDto processSearch(String name) {
+    public UserDto processSearch(String name,String address) {
         UserDto userDto=new UserDto();
         userDto.setName(Helper.processStringSearch(name));
+        userDto.setAddress(Helper.processStringSearch(address));
         return userDto;
     }
 
@@ -25,7 +26,7 @@ public class UserServiceImp implements UserService {
     public Page<User1> getAll(UserDto userDto, int pageNO, int pageSize) {
         Pageable pageable= PageRequest.of(pageNO-1,pageSize);
 
-        return userRepoitory.get(userDto.getName(),pageable);
+        return userRepoitory.get(userDto.getName(),userDto.getAddress(),pageable);
     }
     @Override
     public User1 findById(Integer id) {
@@ -38,5 +39,12 @@ public class UserServiceImp implements UserService {
     @Override
     public void delete(Integer id) {
         userRepoitory.deleteById(id);
+    }
+
+    @Override
+    public UserDto getAddress(String address) {
+        UserDto userDto=new UserDto();
+        userDto.setAddress(Helper.processStringSearch(address));
+        return userDto;
     }
 }

@@ -12,11 +12,16 @@
     <div class="container-fluid">
         <div class="card card-default">
             <div class="card-body">
-                <form th:action="@{/User/index}" method="get">
+                <form th:action="@{/list-user/index}" method="get">
                     <div class="row mb-3">
                         <div class="col-12 col-md-3 mb-3">
                             <label for="name" style="font-weight: bold" th:text="#{name}"></label>
                             <input type="text" id="name" th:value="${name}?${name}" name="name"
+                                   class="form-control" aria-label="Rule Name">
+                        </div>
+                        <div class="col-12 col-md-3 mb-3">
+                            <label for="address" style="font-weight: bold" th:text="#{address}"></label>
+                            <input type="text" id="address" th:value="${address}?${address}" name="address"
                                    class="form-control" aria-label="Rule Name">
                         </div>
                         <input type="text" id="pageSizeInput" name="pageSize" th:value="${pageSize}?${pageSize}"
@@ -246,12 +251,22 @@
         $("#closeDel").click(function () {
             $("#popup-delete").modal('hide');
         });
-        var reset = document.querySelector('#reset')
-        reset.onclick = function (e) {
-            e.preventDefault();
-            $('#name').val('');
-        }
     }
+     document.addEventListener('DOMContentLoaded', function () {
+        // Find the reset button
+        var resetButton = document.getElementById('reset');
+        if (resetButton) {
+            // Add a click event listener to the reset button
+            resetButton.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent the default form submission behavior
+                // Reset the value of the input fields by setting their value to an empty string
+                document.getElementById('name').value = '';
+                document.getElementById('address').value = '';
+            });
+        } else {
+            console.error('Reset button not found.');
+        }
+    });
 </script>
 </body>
 </html>

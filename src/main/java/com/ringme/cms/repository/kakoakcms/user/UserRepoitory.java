@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepoitory extends JpaRepository<User1,Integer> {
     @Query(value = """
-            select * from user where (:name is null or name like CONCAT('%',:name,'%'))
+            select * from user where (:name is null or name like CONCAT('%',:name,'%')) and 
+            (:address is null or address like CONCAT('%',:address,'%'))
             """,
             countQuery= """
-                    SELECT COUNT(*) FROM user where (:name is null or name like CONCAT('%',:name,'%'))
+                    SELECT COUNT(*) FROM user where where (:name is null or name like CONCAT('%',:name,'%')) and 
+            (:address is null or address like CONCAT('%',:address,'%'))
                     """,
             nativeQuery = true)
-    Page<User1> get(@Param("name") String name, Pageable pageable);
+    Page<User1> get(@Param("name") String name,@Param("address") String address, Pageable pageable);
 }
