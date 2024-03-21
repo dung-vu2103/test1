@@ -1,6 +1,7 @@
 package com.ringme.cms.controller.kakoakcms.user;
 
 import com.ringme.cms.common.UpFile;
+import com.ringme.cms.common.UploadFile;
 import com.ringme.cms.dto.kakoakcms.user.UserDto;
 import com.ringme.cms.model.kakoakcms.user.User1;
 import com.ringme.cms.service.UserService;
@@ -30,6 +31,8 @@ public class UserListController {
     UserService userService;
     @Autowired
     UpFile upFile;
+    @Autowired
+    UploadFile uploadFile;
 
     @GetMapping(value = {"/index", "/index/{page}"})
     private String index(@PathVariable(required = false) Integer page,
@@ -93,7 +96,7 @@ public class UserListController {
                 object = userService.findById(dto.getId());
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
             }
-            Path icon = upFile.createImageFile(iconUpload, "image");
+            Path icon = uploadFile.createImageFile(iconUpload, "image");
             if (icon != null) {
                 object.setImage(File.separator + icon);
             }

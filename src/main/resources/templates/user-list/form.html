@@ -47,7 +47,7 @@
                             <div id="dnd2" class="form-group h-80 w-100 d-inline-block">
                                 <label for="file_image">Img</label>
                                 <div id="image_upload" class="text-center h-100">
-                                    <p th:if="${model.id != null}"><img id="previewImage" th:src="(${@environment.getProperty('domain.nginx')} + ${model.image})"/></p>
+                                    <p th:if="${model.id != null}"><img id="previewImage" th:src="${model.image}"/></p>
                                     <p th:if="${model.id == null}"><img id="previewImage" th:src="@{/img/bg_login4.jpg}" class="img-fluid img-thumbnail"/></p>
 
                                 </div>

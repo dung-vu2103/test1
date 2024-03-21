@@ -72,7 +72,7 @@ public class UploadFile {
             if(thumbUpload == null || thumbUpload.equals(""))
                 return null;
             String[] dataArray = thumbUpload.trim().split(",");
-            log.info("dhhhhhhhhhhhdhd" + dataArray.toString());
+
             String imgBase64 = "";
             String fileExtension = "jpg";
             if (dataArray.length > 1) {
@@ -81,7 +81,7 @@ public class UploadFile {
             } else {
                 imgBase64 = thumbUpload;
             }
-            log.info("dkdkkdkkddkđk" +dataArray[0]);
+
             String fileName = Helper.generateRandomString(32);
             Path timePath = Helper.getPathByTime();
             Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);

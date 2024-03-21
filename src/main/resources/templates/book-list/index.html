@@ -18,9 +18,9 @@
                     <div class="col-4 text-right">
                         <div class="dropdown" th:if="${user1.image != null && user1.image != ''}">
                             <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                 style="height: 35px" th:src="${user1.image}">
+                                 style="height: 35px" th:src="(${@environment.getProperty('domain.nginx')} +${user1.image})">
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <img style="height: 200px" th:src="${user1.image}">
+                                <img style="height: 200px" th:src="(${@environment.getProperty('domain.nginx')} +${user1.image})">
                             </div>
                         </div>
                     </div>
@@ -58,9 +58,9 @@
                             <td>
                                 <div class="dropdown" th:if="${model.image != null &&model.image != ''}">
                                     <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                         style="height: 35px" th:src="(${@environment.getProperty('domain.nginx')} +${model.image})">
+                                         style="height: 35px" th:src="(${@environment.getProperty('domain.nginx')} +${user1.image})">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <img style="height: 200px" th:src="(${@environment.getProperty('domain.nginx')} +${model.image})">
+                                        <img style="height: 200px" th:src="(${@environment.getProperty('domain.nginx')} +${user1.image})">
                                     </div>
                                 </div>
                             </td>
