@@ -94,14 +94,13 @@ public class BookController {
             object.setUserId(dto.getUserId());
             object.setBook_name(dto.getBook_name());
             object.setPrice(dto.getPrice());
-          String[] file=upFile.fileName(imageUrlUpload,"books");
+          String[] file=upFile.filename(imageUrlUpload,"books");
           if(file !=null &&(dto.getId() == null || !file[2].equals(dto.getImage())) )
           {
               object.setImage("/" + file[1]);
-             upFile.upload(imageUrlUpload,file);
+              upFile.update(imageUrlUpload,file);
           }
-          log.info("date" + object.getCreateDate());
-          log.info("1234" +object.getBook_name());
+
           bookService.save(object);
         } else {
             log.error("ERROR|Save|" + error);

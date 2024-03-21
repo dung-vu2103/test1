@@ -81,103 +81,103 @@
                             <td th:text="${user.phone}"></td>
                             <td>
                                 <div class="dropdown" th:if="${user.image != null && user.image != ''}">
+                                   <!-- /* <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                         aria-expanded="false"
+                                         style="height: 35px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}"> */ -->
                                     <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                          aria-expanded="false"
-
-                                         style="height: 35px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
-
+                                         style="height: 35px"   th:src="${user.image}">
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <img style="height: 200px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div>
-                                    <a href="javascript:void(0);" class="btn" title="View"
-                                       th:attr="onclick=|viewDetail('${user.id}')|" style="color: #00709E; background: transparent;
-                                         white-space: nowrap;">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                    <a th:href="@{'/list-user/update/' + ${user.id}}" class="btn" title="Update">
-                                        <i class="far fa-edit" style="color: #00709e;"></i>
-                                    </a>
-                                    <a th:attr="onclick=|deleteIcon('${user.id}', '${currentPage}', '${pageSize}')|"
-                                       style="cursor: pointer;" type="button" class="btn" title="Delete">
-                                        <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div th:replace="common :: table_paging2"></div>
-            </div>
-        </div>
-    </div>
-    <div id="view-modal-xl" class="modal fade" th:fragment="view_detail">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content" th:if="${user  != null}">
-                <div class="text-center p-3" id="outPopup">
-                    <h3 style="color: #00709E;" th:text="#{title.view}"></h3>
-                    <div>
-                        <table class="table table-striped table-bordered detail-view">
-                            <tbody id="detail_author">
-                            <tr>
-                                <th style="text-align: left;" th:text="#{Name}"></th>
-                                <td style="text-align: left;" th:text="${user.name}"></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align: left;" th:text="#{Age}"></th>
-                                <td style="text-align: left;" th:text="${user.age}"></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align: left;" th:text="#{Email}"></th>
-                                <td style="text-align: left;" th:text="${user.email}"></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align: left;" th:text="#{Address}"></th>
-                                <td style="text-align: left;" th:text="${user.address}"></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align: left;" th:text="#{Phone}"></th>
-                                <td style="text-align: left;" th:text="${user.phone}"></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align: left;" th:text="#{image}"></th>
-                                <td style="text-align: left;">
-                                    <div class="dropdown" th:if="${user.image != null && user.image != ''}">
-                                        <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                             aria-expanded="false"
-                                             style="height: 35px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
-
-
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                            <img style="height: 200px"  th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>g
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="popup-delete" class="modal fade">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="text-center">
-                    <p th:text="#{popup.delete}"></p>
-                    <button class="btn btn-primary m-2" id="confirmDel" th:text="#{yes}">yes</button>
-                    <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- REQUIRED SCRIPTS -->
+                                        <!-- /*  <img style="height: 200px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}"> */ -->
+                                        <img style="height: 200px"   th:src="${user.image}">
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="text-center">
+                                  <div>
+                                      <a href="javascript:void(0);" class="btn" title="View"
+                                         th:attr="onclick=|viewDetail('${user.id}')|" style="color: #00709E; background: transparent;
+                                           white-space: nowrap;">
+                                          <i class="far fa-eye"></i>
+                                      </a>
+                                      <a th:href="@{'/list-user/update/' + ${user.id}}" class="btn" title="Update">
+                                          <i class="far fa-edit" style="color: #00709e;"></i>
+                                      </a>
+                                      <a th:attr="onclick=|deleteIcon('${user.id}', '${currentPage}', '${pageSize}')|"
+                                         style="cursor: pointer;" type="button" class="btn" title="Delete">
+                                          <i class="fas fa-trash-alt" style="color: #ff0000;"></i>
+                                      </a>
+                                  </div>
+                              </td>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <div th:replace="common :: table_paging2"></div>
+              </div>
+          </div>
+      </div>
+      <div id="view-modal-xl" class="modal fade" th:fragment="view_detail">
+          <div class="modal-dialog modal-xl">
+              <div class="modal-content" th:if="${user  != null}">
+                  <div class="text-center p-3" id="outPopup">
+                      <h3 style="color: #00709E;" th:text="#{title.view}"></h3>
+                      <div>
+                          <table class="table table-striped table-bordered detail-view">
+                              <tbody id="detail_author">
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{Name}"></th>
+                                  <td style="text-align: left;" th:text="${user.name}"></td>
+                              </tr>
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{Age}"></th>
+                                  <td style="text-align: left;" th:text="${user.age}"></td>
+                              </tr>
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{Email}"></th>
+                                  <td style="text-align: left;" th:text="${user.email}"></td>
+                              </tr>
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{Address}"></th>
+                                  <td style="text-align: left;" th:text="${user.address}"></td>
+                              </tr>
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{Phone}"></th>
+                                  <td style="text-align: left;" th:text="${user.phone}"></td>
+                              </tr>
+                              <tr>
+                                  <th style="text-align: left;" th:text="#{image}"></th>
+                                  <td style="text-align: left;">
+                                      <div class="dropdown" th:if="${user.image != null && user.image != ''}">
+                                          <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false"
+                                               style="height: 35px"   th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
+                                          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                              <img style="height: 200px"  th:src="@{|${@environment.getProperty('domain.nginx')}${user.image}|}">
+                                          </div>
+                                      </div>
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>g
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div id="popup-delete" class="modal fade">
+          <div class="modal-dialog modal-md">
+              <div class="modal-content">
+                  <div class="text-center">
+                      <p th:text="#{popup.delete}"></p>
+                      <button class="btn btn-primary m-2" id="confirmDel" th:text="#{yes}">yes</button>
+                      <button class="btn btn-primary m-2" id="closeDel" th:text="#{close}">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- REQUIRED SCRIPTS -->
 <script layout:fragment="content_page_script">
     function linkpage(page) {
         console.log(page);

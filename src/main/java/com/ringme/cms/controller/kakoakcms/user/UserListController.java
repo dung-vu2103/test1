@@ -96,7 +96,7 @@ public class UserListController {
                 object = userService.findById(dto.getId());
                 redirectAttributes.addFlashAttribute("success", messageSource.getMessage("title.update.success", null, LocaleContextHolder.getLocale()));
             }
-            Path icon = uploadFile.createImageFile(iconUpload, "image");
+            Path icon =upFile.createImg(iconUpload, "image");
             if (icon != null) {
                 object.setImage(File.separator + icon);
             }

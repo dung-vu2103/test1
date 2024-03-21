@@ -29,86 +29,72 @@ public class UpFile {
         return Paths.get(appConfiguration.getRootPath());
     }
 
-    public void upload(MultipartFile image, String[] fileName) {
+    public Path createImg(String chuoi, String type) {
         try {
-            Path rootPath = Paths.get(appConfiguration.getRootPath());
-            if (fileName == null)
-                return;
-            if (!Files.exists(rootPath.resolve(fileName[0]))) {
-                Files.createDirectories(rootPath.resolve(fileName[0]));
+            if (chuoi == null) {
+                return null;
             }
-            Path file = rootPath.resolve(fileName[1]);
-            log.info("file 1111" + file);
-            try (OutputStream os = Files.newOutputStream(file)) {
-                os.write(image.getBytes());
+            String[] a = chuoi.trim().split(",");
+            String imgBase64 = "";
+            String fileExtension = "jpg";
+            if (a.length > 1) {
+                imgBase64 = a[1];
+                fileExtension = a[0].replace("data:image/", "").replace(";base64", "");
+            } else {
+                imgBase64 = chuoi;
             }
+            String name = Helper.generateRandomString(32);
+            Path time = Helper.getPathByTime();
+            Path staticPath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(time);
+            staticPath = staticPath.resolve(name + "." + fileExtension);
+            Path rootPa = Paths.get(appConfiguration.getRootPath()).resolve(staticPath);
+            Path folderParent = rootPa.getParent();
+            if (!Files.exists(folderParent)) {
+                Files.createDirectories(folderParent);
+            }
+            try (OutputStream os = Files.newOutputStream(rootPa)) {
+                os.write(Base64.getDecoder().decode(imgBase64));
+                os.flush();
+            } catch (Exception e) {
+                log.error("error" + e.getMessage());
+            }
+            return staticPath;
 
         } catch (Exception e) {
             log.error("Error" + e.getMessage(), e);
         }
-
+        return null;
     }
-
-    public String[] fileName(MultipartFile image, String type) {
-        try {
-            String originalFilename = image.getOriginalFilename();
-            if (originalFilename.equals("") || originalFilename == null)
-                return null;
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-            if (fileExtension == null || fileExtension.equals(""))
-                return null;
-            String name = Helper.generateRandomString(32);
-            String date = Helper.getTimeNow();
-            Path staticPath = Paths.get(appConfiguration.getFileInDBPrefix());
-            Path imgaePath = Paths.get(type + "/" + date);
-            String[] file = new String[3];
-            file[0] = staticPath.resolve(imgaePath).toString().replaceAll("\\\\", "/");
-            file[1] = staticPath.resolve(imgaePath).resolve(name + "." + fileExtension).toString().replaceAll("\\\\", "/");
-            file[2] = originalFilename;
-            return file;
-        } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
+    public String[] filename(MultipartFile file,String type){
+        try{
+            String orignal=file.getOriginalFilename();
+            String fileExtension = orignal.substring(orignal.lastIndexOf(".") + 1 );
+            String name=Helper.generateRandomString(32);
+            Path time=Helper.getPathByTime();
+            Path dbPah=Paths.get(appConfiguration.getFileInDBPrefix());
+            Path imgPath=Paths.get(type + "/" + time);
+            String[] f=new String[3];
+            f[0]=dbPah.resolve(imgPath).toString().replaceAll("\\\\","/");
+            f[1]=dbPah.resolve(imgPath).resolve(name +"." + fileExtension ).toString().replaceAll("\\\\","/");
+            f[2]=orignal;
+            return f;
+        } catch (Exception e){
+            log.error("error" + e.getMessage(),e);
         }
         return null;
     }
-
-    public Path createImageFile(String thumbUpload, String type) {
-        try {
-            if (thumbUpload == null || thumbUpload.equals(""))
-                return null;
-            String[] dataArray = thumbUpload.trim().split(",");
-            log.info("dhhhhhhhhhhhdhd" + dataArray.toString());
-            String imgBase64 = "";
-            String fileExtension = "jpg";
-            if (dataArray.length > 1) {
-                imgBase64 = dataArray[1];
-                fileExtension = dataArray[0].replace("data:image/", "").replace(";base64", "");
-            } else {
-                imgBase64 = thumbUpload;
+    public void update(MultipartFile file,String[] filename){
+        try{
+            Path rot=Paths.get(appConfiguration.getRootPath());
+            if(!Files.exists(rot.resolve(filename[0]))){
+                Files.createDirectories(rot.resolve(filename[0]));
             }
-            log.info("dkdkkdkkddkđk" + dataArray[0]);
-            String fileName = Helper.generateRandomString(32);
-            Path timePath = Helper.getPathByTime();
-            Path relativePath = Paths.get(appConfiguration.getFileInDBPrefix()).resolve(type).resolve(timePath);
-            relativePath = relativePath.resolve(fileName + "." + fileExtension);
-            Path obsoluteSavePath = Paths.get(appConfiguration.getRootPath()).resolve(relativePath);
-            Path folderParent = obsoluteSavePath.getParent();
-            if (!Files.exists(folderParent)) {
-                Files.createDirectories(folderParent);
+            Path file1=rot.resolve(filename[1]);
+            try (OutputStream os=Files.newOutputStream(file1)){
+                os.write(file.getBytes());
             }
-            log.info("PATH|" + "|relativePath = " + relativePath + "|obsolutePath = " + obsoluteSavePath);
-
-            try (OutputStream os = Files.newOutputStream(obsoluteSavePath)) {
-                os.write(Base64.getDecoder().decode(imgBase64));
-                os.flush();
-            } catch (Exception e) {
-                log.error("ERROR|" + e.getMessage(), e);
-            }
-            return relativePath;
-        } catch (Exception e) {
-            log.error("ERROR|" + e.getMessage(), e);
+        }catch (Exception e){
+            log.error("error" + e.getMessage());
         }
-        return null;
     }
-
 }
